@@ -106,12 +106,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1641308884,
-        "narHash": "sha256-sB9vWPVBn+XBp6Gxpq6euo5SzSCrQI7WE8cSj2l1OVg=",
-        "owner": "dguibert",
-        "repo": "nur-packages",
-        "rev": "1482d8a5980a02a5feaf823c8da6fb8a42eb5fb3",
-        "type": "github"
+        "lastModified": 1643028980,
+        "narHash": "sha256-Ix6cEc7mUlwUiNpDkdKztejsckOx8+gzVOq2eYZ2LTc=",
+        "type": "git",
+        "url": "file:///home/dguibert/nur-packages"
       },
       "original": {
         "owner": "dguibert",
