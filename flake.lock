@@ -107,7 +107,7 @@
       },
       "locked": {
         "lastModified": 1643028980,
-        "narHash": "sha256-Ix6cEc7mUlwUiNpDkdKztejsckOx8+gzVOq2eYZ2LTc=",
+        "narHash": "sha256-8gxOEEp7S5YUSsTbUXqFROb+RvLsso5wRUA8hgAPWtk=",
         "type": "git",
         "url": "file:///home/dguibert/nur-packages"
       },
