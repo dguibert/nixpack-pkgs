@@ -1,0 +1,153 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1642700792,
+        "narHash": "sha256-XqHrk7hFb+zBvRg6Ghl+AZDq03ov6OshJLiSWOoX5es=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "846b2ae0fc4cc943637d3d1def4454213e203cba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "lowdown-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1633514407,
+        "narHash": "sha256-Dw32tiMjdK9t3ETl5fzGrutQTzh2rufgZV4A/BbxuD4=",
+        "owner": "kristapsdz",
+        "repo": "lowdown",
+        "rev": "d2c2b44ff6c27b936ec27358a2653caaef8f73b8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kristapsdz",
+        "repo": "lowdown",
+        "type": "github"
+      }
+    },
+    "nix": {
+      "inputs": {
+        "lowdown-src": "lowdown-src",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1643056083,
+        "narHash": "sha256-xqP0FLGJWWOJ0ku37hF/4kaRgTC7UFfEqhfDyIJSAkQ=",
+        "owner": "dguibert",
+        "repo": "nix",
+        "rev": "2f6a8bc704a44fae31811a5d98c711bcf742252c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "pu",
+        "repo": "nix",
+        "type": "github"
+      }
+    },
+    "nixpack": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "spack": [
+          "spack"
+        ]
+      },
+      "locked": {
+        "lastModified": 1643028710,
+        "narHash": "sha256-5+MzpBSBWrRK2JJV5nES/Yglur7q90BjhyYfP3COyn4=",
+        "ref": "pu",
+        "rev": "b4bf570a07dbb353d2e1456fa62c4b4129fec8be",
+        "revCount": 384,
+        "type": "git",
+        "url": "ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack"
+      },
+      "original": {
+        "ref": "pu",
+        "type": "git",
+        "url": "ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1639996387,
+        "narHash": "sha256-lSuTyyd6IjVO2jAAL+bX7meOHcBfxh/V4IO0KnyA4AA=",
+        "owner": "dguibert",
+        "repo": "nixpkgs",
+        "rev": "b2897673b0215e857c8315dd8ad3af93f727aed6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "pu-cluster",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nur_dguibert": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nix": [
+          "nix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1641308884,
+        "narHash": "sha256-sB9vWPVBn+XBp6Gxpq6euo5SzSCrQI7WE8cSj2l1OVg=",
+        "owner": "dguibert",
+        "repo": "nur-packages",
+        "rev": "1482d8a5980a02a5feaf823c8da6fb8a42eb5fb3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "master",
+        "repo": "nur-packages",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nix": "nix",
+        "nixpack": "nixpack",
+        "nixpkgs": "nixpkgs",
+        "nur_dguibert": "nur_dguibert",
+        "spack": "spack"
+      }
+    },
+    "spack": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1642753546,
+        "narHash": "sha256-gOufNqJTs3CA9s4dXzlPfXaGCnHGqCTh040nb5AO2ZM=",
+        "ref": "develop",
+        "rev": "319b11967524095a22b272c0b012c710956f80a5",
+        "revCount": 24504,
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+      },
+      "original": {
+        "ref": "develop",
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
