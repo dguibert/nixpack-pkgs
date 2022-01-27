@@ -69,27 +69,27 @@
         "rev": "b4bf570a07dbb353d2e1456fa62c4b4129fec8be",
         "revCount": 384,
         "type": "git",
-        "url": "ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
       },
       "original": {
         "ref": "pu",
         "type": "git",
-        "url": "ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1639996387,
-        "narHash": "sha256-lSuTyyd6IjVO2jAAL+bX7meOHcBfxh/V4IO0KnyA4AA=",
+        "lastModified": 1643280501,
+        "narHash": "sha256-si8oPOPRsRgup9hD+CkzBY3aBBZ7dIaKfJhrYM6q8ks=",
         "owner": "dguibert",
         "repo": "nixpkgs",
-        "rev": "b2897673b0215e857c8315dd8ad3af93f727aed6",
+        "rev": "6e7f2ba21477844b0dbc41702e6d521554fc276f",
         "type": "github"
       },
       "original": {
         "owner": "dguibert",
-        "ref": "pu-cluster",
         "repo": "nixpkgs",
+        "rev": "6e7f2ba21477844b0dbc41702e6d521554fc276f",
         "type": "github"
       }
     },
@@ -106,10 +106,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1643028980,
-        "narHash": "sha256-8gxOEEp7S5YUSsTbUXqFROb+RvLsso5wRUA8hgAPWtk=",
+        "lastModified": 1643098397,
+        "narHash": "sha256-A63WJnjxEZ2puQQ+2YojJaHfQfvcTbv1wtDNFF4fdTg=",
         "type": "git",
-        "url": "file:///home/dguibert/nur-packages"
+        "url": "file:///home_nfs/bguibertd/nur-packages"
       },
       "original": {
         "owner": "dguibert",
@@ -131,18 +131,18 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1642753546,
-        "narHash": "sha256-gOufNqJTs3CA9s4dXzlPfXaGCnHGqCTh040nb5AO2ZM=",
+        "lastModified": 1643036258,
+        "narHash": "sha256-sdoZwykT6vKNiWEmMbgCtSWj4wO8pBn87fbg90wbxDw=",
         "ref": "develop",
-        "rev": "319b11967524095a22b272c0b012c710956f80a5",
-        "revCount": 24504,
+        "rev": "1336b7c0e2341af30f7549731fd7eb245efb56a8",
+        "revCount": 24514,
         "type": "git",
-        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
       },
       "original": {
         "ref": "develop",
         "type": "git",
-        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
       }
     }
   },
