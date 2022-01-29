@@ -74,6 +74,9 @@
         #spackPython = "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3";
         spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
         spackEnv.impureEnvVars = [ "http_proxy" "https_proxy" ];
+        repos = [
+          ./repo
+        ];
         repoPatch = {
           openmpi = spec: old: {
             build = {
@@ -119,6 +122,7 @@
               ld = true;
             };
           };
+          hdf5.variants = { hl = true; };
           llvm.variants = {
             flang = true;
             mlir = true;
