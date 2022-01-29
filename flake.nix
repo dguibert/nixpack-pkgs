@@ -310,6 +310,13 @@
 
         viridianSImg = prev.singularity-tools.buildImage {
           name = "viridian";
+          diskSize = 4096;
+          contents = with final.corePacks; [
+            pkgs.py-viridian-workflow
+          ];
+        };
+        viridianDocker = prev.dockerTools.buildImage {
+          name = "viridian";
           contents = with final.corePacks; [
             pkgs.py-viridian-workflow
           ];
