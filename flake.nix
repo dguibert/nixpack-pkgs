@@ -64,6 +64,7 @@
         label="core";
         global.verbose = true;
         global.fixedDeps = true;
+        /* any runtime dependencies use the current packs, others fall back to core */
         global.resolver = deptype:
           if isRLDep deptype
           then null else self;
