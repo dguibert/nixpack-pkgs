@@ -3,7 +3,7 @@
 
   inputs = {
     #nixpkgs.url          = "github:dguibert/nixpkgs/pu-nixpack";
-    nixpkgs.url          = "github:dguibert/nixpkgs?rev=6e7f2ba21477844b0dbc41702e6d521554fc276f";
+    nixpkgs.url          = "github:dguibert/nixpkgs?rev=fa4a95770278b56ca493bafc4496207b9b01eee5";
 
     #nix.url              = "github:dguibert/nix/a828ef7ec896e4318d62d2bb5fd391e1aabf242e";
     nix.url              = "github:dguibert/nix/pu";
@@ -68,12 +68,19 @@
           if isRLDep deptype
           then null else self;
         spackConfig.config.source_cache="/software/spack/mirror";
+        spackConfig.config.url_fetch_method = "curl";
         #spackPython = "/usr/bin/python3";
         #spackPython = "${pkgs.python3}/bin/python3";
         spackPython = "/home_nfs/bguibertd/.home-x86_64/.nix-profile/bin/python3";
         #spackPython = "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3";
         spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
-        spackEnv.impureEnvVars = [ "http_proxy" "https_proxy" ];
+        spackEnv.PROXYCHAINS_CONF_FILE="/home_nfs/bguibertd/proxychains.conf";
+        spackEnv.LD_PRELOAD="/home_nfs/bguibertd/code/proxychains-ng/libproxychains4.so";
+        ## only fixedCA drvs allow impureEnvVars
+        #spackEnv.impureEnvVars = [
+        #  "http_proxy" "https_proxy"
+        #  "PROXYCHAINS_CONF_FILE" "LD_PRELOAD"
+        #];
         repos = [
           ./repo
         ];
