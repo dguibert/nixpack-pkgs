@@ -314,6 +314,17 @@
             pkgs.py-viridian-workflow
           ];
         };
+
+        libffi = prev.libffi.overrideAttrs (o: {
+          doCheck = false; # whoami error with nss_ssd
+        });
+        go_bootstrap = prev.go_bootstrap.overrideAttrs (attrs: {
+          doCheck = false;
+        });
+        go_1_16 = prev.go_1_16.overrideAttrs (attrs: {
+          doCheck = false;
+        });
+
       };
   };
 
