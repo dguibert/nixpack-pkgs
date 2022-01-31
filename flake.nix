@@ -201,7 +201,7 @@
           "" = ["{name}_ROOT"];
         };
         all = {
-          autoload = "none";
+          autoload = "direct";
           prerequisites = "direct";
           suffixes = {
             "^mpi" = "mpi";
@@ -277,7 +277,8 @@
         packs = corePacks system;
       in pkgs // packs // {
         mods = packs.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
-          pkgs = [
+          pkgs = inputs.nixpack.lib.findDeps (x: isRLDep x.deptype)
+          [
             packs.pkgs.openmpi
             packs.pkgs.osu-micro-benchmarks
           ];
