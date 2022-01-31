@@ -70,13 +70,14 @@
           then null else self;
         spackConfig.config.source_cache="/software/spack/mirror";
         spackConfig.config.url_fetch_method = "curl";
-        #spackPython = "/usr/bin/python3";
-        #spackPython = "${pkgs.python3}/bin/python3";
-        spackPython = "/home_nfs/bguibertd/.home-x86_64/.nix-profile/bin/python3";
-        #spackPython = "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3";
+
+        spackPython = "${pkgs.python3}/bin/python3";
+        #spackPython = if system == "x86_64-linux"  then "/home_nfs/bguibertd/.home-x86_64/.nix-profile/bin/python3"
+        #         else if system == "aarch64-linux" then "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3"
+        #         else throw "python not already installed for system: ${system}";
         spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
-        spackEnv.PROXYCHAINS_CONF_FILE="/home_nfs/bguibertd/proxychains.conf";
-        spackEnv.LD_PRELOAD="/home_nfs/bguibertd/code/proxychains-ng/libproxychains4.so";
+        spackEnv.PROXYCHAINS_CONF_FILE="/dev/shm/proxychains.conf";
+        spackEnv.LD_PRELOAD="/dev/shm/libproxychains4.so";
         ## only fixedCA drvs allow impureEnvVars
         #spackEnv.impureEnvVars = [
         #  "http_proxy" "https_proxy"
