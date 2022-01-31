@@ -86,7 +86,10 @@
         repos = [
           ./repo
         ];
-        repoPatch = {
+        repoPatch = let
+          nocompiler = spec: old: { depends = old.depends or {} // { compiler = null; }; };
+        in {
+          arm-forge = nocompiler;
           openmpi = spec: old: {
             build = {
               setup = ''
