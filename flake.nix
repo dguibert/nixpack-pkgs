@@ -55,140 +55,6 @@
     rpmVersion = pkg: inputs.nixpack.lib.capture ["/bin/rpm" "-q" "--queryformat=%{VERSION}" pkg];
     rpmExtern = pkg: { extern = "/usr"; version = rpmVersion pkg; };
 
-    corePacks = system: let
-      pkgs = nixpkgsFor system;
-      bootstrap = bootstrapPacks self;
-      self = inputs.nixpack.lib.packs {
-        inherit system;
-        os = "rhel8";
-        label="core";
-        global.verbose = true;
-        global.fixedDeps = true;
-        /* any runtime dependencies use the current packs, others fall back to core */
-        global.resolver = deptype:
-          if isRLDep deptype
-          then null else self;
-        spackConfig.config.source_cache="/software/spack/mirror";
-        spackConfig.config.url_fetch_method = "curl";
-
-        spackPython = "${pkgs.python3}/bin/python3";
-        #spackPython = if system == "x86_64-linux"  then "/home_nfs/bguibertd/.home-x86_64/.nix-profile/bin/python3"
-        #         else if system == "aarch64-linux" then "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3"
-        #         else throw "python not already installed for system: ${system}";
-        spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
-        spackEnv.PROXYCHAINS_CONF_FILE="/dev/shm/proxychains.conf";
-        spackEnv.LD_PRELOAD="/dev/shm/libproxychains4.so";
-        ## only fixedCA drvs allow impureEnvVars
-        #spackEnv.impureEnvVars = [
-        #  "http_proxy" "https_proxy"
-        #  "PROXYCHAINS_CONF_FILE" "LD_PRELOAD"
-        #];
-        repos = [
-          ./repo
-        ];
-        repoPatch = let
-          nocompiler = spec: old: { depends = old.depends or {} // { compiler = null; }; };
-        in {
-          arm-forge = nocompiler;
-          openmpi = spec: old: {
-            build = {
-              setup = ''
-              configure_args = pkg.configure_args()
-              if spec.satisfies("~pmix"):
-                if '--without-mpix' in configure_args: configure_args.remove('--without-pmix')
-              pkg.configure_args = lambda: configure_args
-            '';
-            };
-          };
-        };
-
-        package = {
-          compiler = bootstrap.pkgs.gcc.withPrefs { version="11"; };
-          openmpi = {
-            version = "4.1";
-            variants = {
-              fabrics = {
-                none = false;
-                ofi = true;
-                ucx = true;
-                psm = false;
-                psm2 = false;
-                verbs = true;
-                #mofed = true;
-              };
-              schedulers = {
-                none = false;
-                slurm = true;
-              };
-              pmi = true;
-              pmix = false;
-              static = false;
-              thread_multiple = true;
-              legacylaunchers = true;
-            };
-          };
-          boost.version = "1.72.0";
-          binutils = {
-            variants = {
-              gold = true;
-              ld = true;
-            };
-          };
-          hdf5.variants = { hl = true; };
-          llvm.variants = {
-            flang = true;
-            mlir = true;
-          };
-          libiberty.variants.pic = true; # for dyninst
-          libfabric = {
-            variants = {
-              fabrics = ["udp" "rxd" "shm" "sockets" "tcp" "rxm" "verbs" "mlx"];
-            };
-          };
-          autoconf  = rpmExtern "autoconf";
-          automake  = rpmExtern "automake";
-          bzip2     = rpmExtern "bzip2";
-          diffutils = rpmExtern "diffutils";
-          libtool   = rpmExtern "libtool";
-          m4        = rpmExtern "m4";
-          openssh   = rpmExtern "openssh";
-          openssl   = rpmExtern "openssl";
-          pkgconfig = rpmExtern "pkgconf";
-          #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
-          gdbm.version= "1.19";
-          slurm     = rpmExtern "slurm" // {
-            variants = {
-              #pmix = true;
-              hwloc = true;
-            };
-          };
-          ucx = {
-            variants = {
-              thread_multiple = true;
-              cma = true;
-              rc = true;
-              dc = true;
-              ud = true;
-              mlx5-dv = true;
-              ib-hw-tm = true;
-              knem = true;
-              rocm = true;
-            };
-          };
-
-          minimap2.variants.js_engine.k8      = false;
-          minimap2.variants.js_engine.node-js = true;
-          py-viridian.version = "main";
-          py-varifier.version = "master";
-
-          cairo.variants = { X = false; fc = true; ft = true; gobject = true; pdf = true; };
-          py-pybind11.version = "2.7.1"; # for py-scpiy
-          py-pythran.version = "0.9.12"; # for py-scpiy
-          py-setuptools.version = "57.4.0"; # for py-scpiy
-        };
-      };
-    in self;
-
     modulesConfig = {
       config = {
         hierarchy = ["mpi"];
@@ -220,28 +86,6 @@
         };
       };
     };
-
-    bootstrapPacks = core: core.withPrefs {
-      label = "bootstrap";
-      global = {
-        resolver = null;
-        tests = false;
-      };
-      package = {
-        /* must be set to an external compiler capable of building compiler (above) */
-        compiler = {
-          name = "gcc";
-        } // rpmExtern "gcc";
-
-        ncurses = rpmExtern "ncurses" // {
-          variants = {
-            termlib = false;
-            abi = "5";
-          };
-        };
-      };
-    };
-
 
     NIX_CONF_DIR_fun = pkgs: let
       nixConf = pkgs.writeTextDir "opt/nix.conf" ''
@@ -293,11 +137,18 @@
     })) // {
       overlay = final: prev: let
         system = prev.system;
-        core_packs = corePacks system;
-        bootstrap_packs = bootstrapPacks core_packs;
-        overlaySelf = with overlaySelf; {
-          bootstrapPacks = bootstrap_packs;
-          corePacks = core_packs;
+        overlaySelf = with overlaySelf; with prev; {
+          inherit isLDep isRDep isRLDep;
+          inherit rpmVersion rpmExtern;
+          bootstrapPacks = import ./bootstrap-pack.nix {
+              inherit corePacks rpmExtern;
+              extraConf = import ./genji-bootstrap.nix { inherit rpmExtern; };
+          };
+
+          corePacks = import ./core-pack.nix inputs.nixpack.lib.packs {
+            inherit system bootstrapPacks pkgs isRLDep rpmExtern;
+            extraConf = import ./genji-core.nix { inherit rpmExtern pkgs; };
+          };
 
           intelPacks = intelOneApiPacks.withPrefs {
             label = "intel";
@@ -313,7 +164,7 @@
               };
             };
           };
-          intelOneApiPacks = core_packs.withPrefs {
+          intelOneApiPacks = corePacks.withPrefs {
             label = "intel-oneapi";
             repoPatch = {
               intel-oneapi-compilers = spec: old: {
