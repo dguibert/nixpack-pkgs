@@ -273,17 +273,7 @@
     let pkgs = nixpkgsFor system;
     in rec {
 
-      legacyPackages = let
-        packs = corePacks system;
-      in pkgs // packs // {
-        mods = packs.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
-          pkgs = inputs.nixpack.lib.findDeps (x: isRLDep x.deptype)
-          [
-            packs.pkgs.openmpi
-            packs.pkgs.osu-micro-benchmarks
-          ];
-        }));
-      };
+      legacyPackages = pkgs;
 
       devShell = with pkgs; mkShell rec {
         name  = "nix-${builtins.replaceStrings [ "/" ] [ "-" ] nixStore}";
@@ -304,41 +294,126 @@
       overlay = final: prev: let
         system = prev.system;
         core_packs = corePacks system;
-      in {
-        corePacks = core_packs;
+        bootstrap_packs = bootstrapPacks core_packs;
+        overlaySelf = with overlaySelf; {
+          bootstrapPacks = bootstrap_packs;
+          corePacks = core_packs;
 
-        nix = prev.nix.overrideAttrs (o: {
-          patches = [
-            "${inputs.nur_dguibert}/pkgs/nix-unshare.patch"
-            #"${inputs.nur_dguibert}/pkgs/nix-sqlite-unix-dotfiles-for-nfs.patch"
-          ];
-        });
+          intelPacks = intelOneApiPacks.withPrefs {
+            label = "intel";
+            repoPatch = {
+              intel-oneapi-compilers = spec: old: {
+                compiler_spec = "intel"; # can be overridden as "intel" with prefs
+                provides = old.provides or {} // {
+                  compiler = ":";
+                };
+                depends = old.depends or {} // {
+                  compiler = null;
+                };
+              };
+            };
+          };
+          intelOneApiPacks = core_packs.withPrefs {
+            label = "intel-oneapi";
+            repoPatch = {
+              intel-oneapi-compilers = spec: old: {
+                compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
+                provides = old.provides or {} // {
+                  compiler = ":";
+                };
+                depends = old.depends or {} // {
+                  compiler = null;
+                };
+              };
+            };
+            package = {
+              compiler = { name = "intel-oneapi-compilers"; };
+              # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x)) {
+              ucx = overlaySelf.corePacks.pkgs.ucx // {
+                depends.compiler = overlaySelf.bootstrapPacks.pkgs.compiler;
+              };
+            };
+          };
 
-        viridianSImg = prev.singularity-tools.buildImage {
-          name = "viridian";
-          diskSize = 4096;
-          contents = with final.corePacks; [
-            pkgs.py-viridian-workflow
-          ];
-        };
-        viridianDocker = prev.dockerTools.buildImage {
-          name = "viridian";
-          contents = with final.corePacks; [
-            pkgs.py-viridian-workflow
-          ];
-        };
+          # pack = import ./pack {
+          #   version
+          #   corePacks
+          #   bootstrapPacks }
 
-        libffi = prev.libffi.overrideAttrs (o: {
-          doCheck = false; # whoami error with nss_ssd
-        });
-        go_bootstrap = prev.go_bootstrap.overrideAttrs (attrs: {
-          doCheck = false;
-        });
-        go_1_16 = prev.go_1_16.overrideAttrs (attrs: {
-          doCheck = false;
-        });
+          findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
+            mods = map (x: if x ? spec
+                           then { pkg=x; }
+                           else x ) pkgs;
+            pred = x: x.pkg != null && (isRLDep x.pkg.deptype);
+            adddeps = s: pkgs: add s (filter (p: p != null && ! (any (x: x.pkg == p.pkg) s) && pred p)
+            (nubBy (x: y: x.pkg == y.pkg) (concatMap (p: map (x: { pkg=x; }) (attrValues p.pkg.spec.depends)) mods)));
+            add = s: pkgs: if pkgs == [] then s else adddeps (s ++ pkgs) pkgs;
+          in add [] (toList mods);
 
-      };
+          mkModules = pack: pkgs: pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
+            coreCompilers = [ final.bootstrapPacks.pkgs.compiler ];
+            pkgs = findModDeps pkgs;
+          }));
+
+          mods_osu = final.mkModules final.corePacks ([]
+            ++ (with final.corePacks.pkgs; [
+                openmpi
+                osu-micro-benchmarks
+              ])
+            ++ (with (final.corePacks.withPrefs {
+              package.openmpi.version = "4.1.0";
+              }).pkgs; [
+                openmpi
+                osu-micro-benchmarks
+              ])
+            ++ (with (intelPacks.withPrefs {
+              }).pkgs; [
+                { pkg=compiler;
+                  projection="{name}-legacy/{version}";
+                  # TODO fix PATH to include legacy compiliers
+                }
+                openmpi
+                osu-micro-benchmarks
+              ])
+            ++ (with (intelOneApiPacks.withPrefs {
+              }).pkgs; [
+                openmpi
+                osu-micro-benchmarks
+              ])
+            );
+
+          nix = prev.nix.overrideAttrs (o: {
+            patches = [
+              "${inputs.nur_dguibert}/pkgs/nix-unshare.patch"
+              #"${inputs.nur_dguibert}/pkgs/nix-sqlite-unix-dotfiles-for-nfs.patch"
+            ];
+          });
+
+          viridianSImg = prev.singularity-tools.buildImage {
+            name = "viridian";
+            diskSize = 4096;
+            contents = with final.corePacks; [
+              pkgs.py-viridian-workflow
+            ];
+          };
+          viridianDocker = prev.dockerTools.buildImage {
+            name = "viridian";
+            contents = with final.corePacks; [
+              pkgs.py-viridian-workflow
+            ];
+          };
+
+          libffi = prev.libffi.overrideAttrs (o: {
+            doCheck = false; # whoami error with nss_ssd
+          });
+          go_bootstrap = prev.go_bootstrap.overrideAttrs (attrs: {
+            doCheck = false;
+          });
+          go_1_16 = prev.go_1_16.overrideAttrs (attrs: {
+            doCheck = false;
+          });
+
+      }; in overlaySelf;
   };
 
 }
