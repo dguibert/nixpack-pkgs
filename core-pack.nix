@@ -86,7 +86,6 @@ let
           fabrics = ["udp" "rxd" "shm" "sockets" "tcp" "rxm" "verbs" "mlx"];
         };
       };
-      gdbm.version= "1.19";
       ucx = {
         variants = {
           thread_multiple = true;
@@ -110,6 +109,25 @@ let
       py-pybind11.version = "2.7.1"; # for py-scpiy
       py-pythran.version = "0.9.12"; # for py-scpiy
       py-setuptools.version = "57.4.0"; # for py-scpiy
+
+      # for aocc, infinite recursion breaking
+      berkeley-db.depends.compiler = bootstrapPacks.pkgs.compiler;
+      freetype.depends.compiler = bootstrapPacks.pkgs.compiler;
+      gdbm.version = "1.19"; # for perl
+      gdbm.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libiconv.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libxml2.depends.compiler = bootstrapPacks.pkgs.compiler;
+      ncurses.depends.compiler = bootstrapPacks.pkgs.compiler;
+      perl.depends.compiler = bootstrapPacks.pkgs.compiler;
+      rdma-core.depends.compiler = bootstrapPacks.pkgs.compiler;
+      readline.depends.compiler = bootstrapPacks.pkgs.compiler;
+      texinfo.depends.compiler = bootstrapPacks.pkgs.compiler;
+      xz.depends.compiler = bootstrapPacks.pkgs.compiler;
+      zlib.depends.compiler = bootstrapPacks.pkgs.compiler;
+
+      # knem: has conflicts: %aocc Linux kernel module must be compiled with gcc
+      knem.depends.compiler = bootstrapPacks.pkgs.compiler;
+      };
     }
     // (extraConf.package or {})
     ;

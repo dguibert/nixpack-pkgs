@@ -137,6 +137,8 @@
     })) // {
       overlay = final: prev: let
         system = prev.system;
+        nocompiler = spec: old: { depends = old.depends or {} // { compiler = null; }; };
+
         overlaySelf = with overlaySelf; with prev; {
           inherit isLDep isRDep isRLDep;
           inherit rpmVersion rpmExtern;
@@ -181,8 +183,33 @@
               compiler = { name = "intel-oneapi-compilers"; };
               # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x)) {
               ucx = overlaySelf.corePacks.pkgs.ucx // {
-                depends.compiler = overlaySelf.bootstrapPacks.pkgs.compiler;
+                depends.compiler = overlaySelf.corePacks.pkgs.compiler;
               };
+            };
+          };
+
+          aoccPacks = corePacks.withPrefs {
+            package = {
+              compiler = { name = "aocc"; };
+              aocc.variants.license-agreed = true;
+            };
+
+            repoPatch = {
+              aocc = spec: old: {
+                paths = {
+                  cc = "bin/clang";
+                  cxx = "bin/clang++";
+                  f77 = "bin/flang";
+                  fc = "bin/flang";
+                };
+                provides = old.provides or {} // {
+                  compiler = ":";
+                };
+                depends = old.depends // {
+                  compiler = null;
+                };
+              };
+
             };
           };
 
@@ -227,6 +254,11 @@
                 osu-micro-benchmarks
               ])
             ++ (with (intelOneApiPacks.withPrefs {
+              }).pkgs; [
+                openmpi
+                osu-micro-benchmarks
+              ])
+            ++ (with (aoccPacks.withPrefs {
               }).pkgs; [
                 openmpi
                 osu-micro-benchmarks
