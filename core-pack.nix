@@ -127,6 +127,14 @@ let
 
       # knem: has conflicts: %aocc Linux kernel module must be compiled with gcc
       knem.depends.compiler = bootstrapPacks.pkgs.compiler;
+
+      blom = {
+        variants = {
+          processors = 512;
+          grid = "channel";
+          mpi = true;
+          parallel_netcdf = true;
+        };
       };
     }
     // (extraConf.package or {})
