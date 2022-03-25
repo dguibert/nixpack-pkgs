@@ -64,11 +64,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1648203274,
-        "narHash": "sha256-7x+XsV32ZELUpSXKwN75awotGxbYT1MPlTP8mW5zrV0=",
+        "lastModified": 1648208472,
+        "narHash": "sha256-MQyb+Ele9C69r8LNeEKSSUTZzzPcwCH9fjIiqqbSQgY=",
         "ref": "pu",
-        "rev": "8a695477cb2249d1ce9ac8125e78b0b1c17fd4b2",
-        "revCount": 441,
+        "rev": "ef23892e8025ac677d58dde5486834f28902dedf",
+        "revCount": 442,
         "type": "git",
         "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
       },
