@@ -135,6 +135,17 @@
       };
 
     })) // {
+      lib.findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
+            mods = map (x: if x ? spec
+                           then { pkg=x; }
+                           else x ) pkgs;
+            pred = x: x.pkg != null && (isRLDep x.pkg.deptype);
+            adddeps = s: pkgs: add s (filter (p: p != null && ! (any (x: x.pkg == p.pkg) s) && pred p)
+            (nubBy (x: y: x.pkg == y.pkg) (concatMap (p: map (x: { pkg=x; }) (attrValues p.pkg.spec.depends)) mods)));
+            add = s: pkgs: if pkgs == [] then s else adddeps (s ++ pkgs) pkgs;
+          in add [] (toList mods);
+
+
       overlay = final: prev: let
         system = prev.system;
         nocompiler = spec: old: { depends = old.depends or {} // { compiler = null; }; };
@@ -218,19 +229,9 @@
           #   corePacks
           #   bootstrapPacks }
 
-          findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
-            mods = map (x: if x ? spec
-                           then { pkg=x; }
-                           else x ) pkgs;
-            pred = x: x.pkg != null && (isRLDep x.pkg.deptype);
-            adddeps = s: pkgs: add s (filter (p: p != null && ! (any (x: x.pkg == p.pkg) s) && pred p)
-            (nubBy (x: y: x.pkg == y.pkg) (concatMap (p: map (x: { pkg=x; }) (attrValues p.pkg.spec.depends)) mods)));
-            add = s: pkgs: if pkgs == [] then s else adddeps (s ++ pkgs) pkgs;
-          in add [] (toList mods);
-
           mkModules = pack: pkgs: pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
             coreCompilers = [ final.bootstrapPacks.pkgs.compiler ];
-            pkgs = findModDeps pkgs;
+            pkgs = self.lib.findModDeps pkgs;
           }));
 
           mods_osu = final.mkModules final.corePacks ([]
