@@ -17,18 +17,21 @@
     nur_dguibert.inputs.flake-utils.follows = "flake-utils";
 
     #nixpack.url = "github:dguibert/nixpack/pu";
-    #nixpack.url = "git+ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack?ref=pu";
-    nixpack.url = "git+file:///home_nfs/bguibertd/software-cepp-spack/nixpack?ref=pu";
+    nixpack.url = "git+ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack?ref=pu";
+    #nixpack.url = "git+file:///home_nfs/bguibertd/software-cepp-spack/nixpack?ref=pu";
     nixpack.inputs.spack.follows = "spack";
     nixpack.inputs.nixpkgs.follows = "nixpkgs";
 
-    #spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
+    spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
     #spack = { url = "git+https://gitlab.bench.local:24443/bguibertd/spack.git?ref=develop"; flake=false; };
-    spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
+    #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?rev=635b4b4ffedb7c635c63975802955f6ace8b8b7d"; flake=false; };
   };
 
   outputs = { self, nixpkgs, ... }@inputs: let
+
+    #host = "genji";
+    host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
     nixpkgsFor = system:
       import nixpkgs {
@@ -38,9 +41,11 @@
         };
         overlays =  [
           inputs.nix.overlay
-          (import "${inputs.nur_dguibert}/hosts/genji/overlay.nix")
           (import "${inputs.nixpack}/nixpkgs/overlay.nix")
           self.overlay
+        ]
+        ++ nixpkgs.lib.optionals (host != "nixos") [
+          (import "${inputs.nur_dguibert}/hosts/${host}/overlay.nix")
         ];
         config = {
           replaceStdenv = import "${inputs.nixpack}/nixpkgs/stdenv.nix";
@@ -52,7 +57,7 @@
     isRDep = builtins.elem "run";
     isRLDep = d: isLDep d || isRDep d;
 
-    rpmVersion = pkg: inputs.nixpack.lib.capture ["/bin/rpm" "-q" "--queryformat=%{VERSION}" pkg];
+    rpmVersion = pkg: inputs.nixpack.lib.capture ["/bin/rpm" "-q" "--queryformat=%{VERSION}" pkg] {};
     rpmExtern = pkg: { extern = "/usr"; version = rpmVersion pkg; };
 
     modulesConfig = {
@@ -136,12 +141,15 @@
 
     })) // {
       lib.findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
-            mods = map (x: if x ? spec
-                           then { pkg=x; }
-                           else x ) pkgs;
-            pred = x: x.pkg != null && (isRLDep x.pkg.deptype);
-            adddeps = s: pkgs: add s (filter (p: p != null && ! (any (x: x.pkg == p.pkg) s) && pred p)
-            (nubBy (x: y: x.pkg == y.pkg) (concatMap (p: map (x: { pkg=x; }) (attrValues p.pkg.spec.depends)) mods)));
+          mods = map (x: if x ? spec
+                         then { pkg=x; }
+                         else x ) pkgs;
+          pred = x: x.pkg != null && (isRLDep x.pkg.deptype);
+
+          pkgOrSpec = p: p.pkg.spec or p.pkg or p;
+          adddeps = s: pkgs: add s (filter (p: p != null && ! (any (x: pkgOrSpec x == pkgOrSpec p) s) && pred p)
+            (nubBy (x: y: pkgOrSpec x == pkgOrSpec y)
+                   (concatMap (p: map (x: { pkg=x; }) (attrValues p.pkg.spec.depends or {})) pkgs)));
             add = s: pkgs: if pkgs == [] then s else adddeps (s ++ pkgs) pkgs;
           in add [] (toList mods);
 
@@ -155,12 +163,12 @@
           inherit rpmVersion rpmExtern;
           bootstrapPacks = import ./bootstrap-pack.nix {
               inherit corePacks rpmExtern;
-              extraConf = import ./genji-bootstrap.nix { inherit rpmExtern; };
+              extraConf = import ./${host}-bootstrap.nix { inherit rpmExtern pkgs; };
           };
 
           corePacks = import ./core-pack.nix inputs.nixpack.lib.packs {
             inherit system bootstrapPacks pkgs isRLDep rpmExtern;
-            extraConf = import ./genji-core.nix { inherit rpmExtern pkgs; };
+            extraConf = import ./${host}-core.nix { inherit rpmExtern pkgs inputs; };
           };
 
           intelPacks = intelOneApiPacks.withPrefs {

@@ -95,7 +95,7 @@ let
           ud = true;
           mlx5-dv = true;
           ib-hw-tm = true;
-          knem = true;
+          knem = false;
           rocm = true;
         };
       };

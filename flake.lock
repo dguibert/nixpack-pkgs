@@ -70,12 +70,12 @@
         "rev": "06837cbba4dfe2be58c11ea893086cb72dbd1df1",
         "revCount": 443,
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "url": "ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack"
       },
       "original": {
         "ref": "pu",
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "url": "ssh://genji/home_nfs/bguibertd/software-cepp-spack/nixpack"
       }
     },
     "nixpkgs": {
@@ -149,18 +149,18 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1643881245,
-        "narHash": "sha256-hHMzfGHnWSPsq48nn3/tuNw0/axkb/Vv6FkEki9wadc=",
+        "lastModified": 1644844268,
+        "narHash": "sha256-s+lFfVRA3Z0nQK1mubxh/KGQ/G2yQ1kBRJrcKHil25M=",
         "ref": "develop",
-        "rev": "cd6c0fa0faec7b3633ea4aa97565852c6a29f449",
-        "revCount": 24687,
+        "rev": "57fff278b8729c11f442a6841e50f1e253e3c1a5",
+        "revCount": 24688,
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       },
       "original": {
         "ref": "develop",
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       }
     }
   },

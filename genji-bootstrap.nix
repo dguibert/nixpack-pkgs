@@ -1,4 +1,5 @@
 { rpmExtern
+, ...
 }: {
   package = {
     /* must be set to an external compiler capable of building compiler (above) */

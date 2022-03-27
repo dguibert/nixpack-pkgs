@@ -1,5 +1,6 @@
 { rpmExtern
 , pkgs
+, ...
 }: {
   os = "rhel8";
   spackConfig.config.source_cache="/software/spack/mirror";
