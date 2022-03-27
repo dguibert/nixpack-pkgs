@@ -267,11 +267,11 @@
                 openmpi
                 osu-micro-benchmarks
               ])
-            ++ (with (aoccPacks.withPrefs {
-              }).pkgs; [
-                openmpi
-                osu-micro-benchmarks
-              ])
+	    #++ (with (aoccPacks.withPrefs {
+            #  }).pkgs; [
+            #    openmpi
+            #    osu-micro-benchmarks
+            #  ])
             );
 
           nix = prev.nix.overrideAttrs (o: {
