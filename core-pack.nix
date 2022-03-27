@@ -113,9 +113,10 @@ let
       # for aocc, infinite recursion breaking
       berkeley-db.depends.compiler = bootstrapPacks.pkgs.compiler;
       freetype.depends.compiler = bootstrapPacks.pkgs.compiler;
-      gdbm.version = "1.19"; # for perl
       gdbm.depends.compiler = bootstrapPacks.pkgs.compiler;
+      gdbm.version = "1.19"; # for perl
       libiconv.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libtool.depends.compiler = bootstrapPacks.pkgs.compiler;
       libxml2.depends.compiler = bootstrapPacks.pkgs.compiler;
       ncurses.depends.compiler = bootstrapPacks.pkgs.compiler;
       perl.depends.compiler = bootstrapPacks.pkgs.compiler;
