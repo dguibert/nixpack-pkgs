@@ -20,6 +20,7 @@
     autoconf  = rpmExtern "autoconf";
     automake  = rpmExtern "automake";
     bzip2     = rpmExtern "bzip2";
+    curl      = rpmExtern "curl";
     diffutils = rpmExtern "diffutils";
     libtool   = rpmExtern "libtool";
     m4        = rpmExtern "m4";
