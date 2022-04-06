@@ -22,16 +22,16 @@
     nixpack.inputs.spack.follows = "spack";
     nixpack.inputs.nixpkgs.follows = "nixpkgs";
 
-    spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
-    #spack = { url = "git+https://gitlab.bench.local:24443/bguibertd/spack.git?ref=develop"; flake=false; };
+    #spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
+    spack = { url = "git+https://gitlab.bench.local:24443/bguibertd/spack.git?ref=develop"; flake=false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?rev=635b4b4ffedb7c635c63975802955f6ace8b8b7d"; flake=false; };
   };
 
   outputs = { self, nixpkgs, ... }@inputs: let
 
-    #host = "genji";
-    host = "nixos";
+    host = "genji";
+    #host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
     nixpkgsFor = system:
       import nixpkgs {
@@ -141,15 +141,27 @@
 
     })) // {
       lib.findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
-          mods = map (x: if x ? spec
-                         then { pkg=x; }
-                         else x ) pkgs;
-          pred = x: x.pkg != null && (isRLDep x.pkg.deptype);
+          mods = map (x: addPkg x) pkgs;
+          addPkg = x: if x ? spec
+                      then if x.spec.extern == null then { pkg=x; }
+                                                    else builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
+                                                         { pkg=x; projection="${x.spec.name}/${x.spec.version}"; }
+                      else x;
+          pred = x: (isRLDep (x.pkg.deptype or []));
 
-          pkgOrSpec = p: p.pkg.spec or p.pkg or p;
-          adddeps = s: pkgs: add s (filter (p: p != null && ! (any (x: pkgOrSpec x == pkgOrSpec p) s) && pred p)
-            (nubBy (x: y: pkgOrSpec x == pkgOrSpec y)
-                   (concatMap (p: map (x: { pkg=x; }) (attrValues p.pkg.spec.depends or {})) pkgs)));
+          pkgOrSpec = p: p.pkg.spec or p;
+          adddeps = s: pkgs: add s
+          (filter (p: builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
+                         p != null
+                      && ! (any (x: pkgOrSpec x == pkgOrSpec p) s)
+                      && pred p)
+              (nubBy (x: y: pkgOrSpec x == pkgOrSpec y)
+                     (concatMap (p: map (x: addPkg x)
+                                        (attrValues (p.pkg.spec.depends or {}))
+                                )
+                  pkgs)
+              )
+            );
             add = s: pkgs: if pkgs == [] then s else adddeps (s ++ pkgs) pkgs;
           in add [] (toList mods);
 
