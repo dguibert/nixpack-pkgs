@@ -20,7 +20,8 @@ class Blom(MesonPackage):
 
     variant('processors',
                description='Number of processors', default=1,
-               values=tuple(list(range(1, 50000))))
+               #values=tuple(list(range(1, 50000)))
+               )
     variant('grid', multi=False,
             values=('gx1v5', 'gx1v6', 'gx3v7', 'tnx0.25v1', 'tnx0.25v3',
                                   'tnx0.25v4', 'tnx1.5v1', 'tnx1v1', 'tnx1v3', 'tnx1v4',
