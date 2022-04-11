@@ -254,36 +254,45 @@
             pkgs = self.lib.findModDeps pkgs;
           }));
 
-          mods_osu = final.mkModules final.corePacks ([]
+          mods_osu = final.mkModules final.corePacks ([
+            ]
             ++ (with final.corePacks.pkgs; [
-                openmpi
+                mpi
                 osu-micro-benchmarks
               ])
             ++ (with (final.corePacks.withPrefs {
               package.openmpi.version = "4.1.0";
               }).pkgs; [
-                openmpi
+                mpi
                 osu-micro-benchmarks
               ])
             ++ (with (intelPacks.withPrefs {
               }).pkgs; [
                 { pkg=compiler;
-                  projection="{name}-legacy/{version}";
+                  projection="intel/{version}";
+                  context.unlocked_paths = [ "intel/{version}" ];
                   # TODO fix PATH to include legacy compiliers
                 }
-                openmpi
+                mpi
                 osu-micro-benchmarks
               ])
             ++ (with (intelOneApiPacks.withPrefs {
               }).pkgs; [
-                openmpi
+                { pkg=compiler;
+                  projection="oneapi/{version}";
+
+                  #environment = {
+                  #  prepend_path.MODULEPATH = "{prefix}/linux-rhel8-x86_64/{name}/{version}";
+                  #};
+                }
+                mpi
                 osu-micro-benchmarks
               ])
-	    #++ (with (aoccPacks.withPrefs {
-            #  }).pkgs; [
-            #    openmpi
-            #    osu-micro-benchmarks
-            #  ])
+            ++ (with (aoccPacks.withPrefs {
+              }).pkgs; [
+                mpi
+                osu-micro-benchmarks
+              ])
             );
 
           nix = prev.nix.overrideAttrs (o: {
