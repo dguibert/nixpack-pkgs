@@ -46,7 +46,7 @@ let
     package = {
       compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="11"; };
       openmpi = {
-        version = "4.1";
+        version = "4.1.3";
         variants = {
           fabrics = {
             none = false;
@@ -110,6 +110,12 @@ let
       py-pythran.version = "0.9.12"; # for py-scpiy
       py-setuptools.version = "57.4.0"; # for py-scpiy
 
+      # no need to be recompiled for each compiler
+      hwloc.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libnl.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libevent.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libpciaccess.depends.compiler = bootstrapPacks.pkgs.compiler;
+      numactl.depends.compiler = bootstrapPacks.pkgs.compiler;
       # for aocc, infinite recursion breaking
       berkeley-db.depends.compiler = bootstrapPacks.pkgs.compiler;
       freetype.depends.compiler = bootstrapPacks.pkgs.compiler;
