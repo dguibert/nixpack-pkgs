@@ -144,14 +144,14 @@
           mods = map (x: addPkg x) pkgs;
           addPkg = x: if x ? spec
                       then if x.spec.extern == null then { pkg=x; }
-                                                    else builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
+                                                    else /*builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"*/
                                                          { pkg=x; projection="${x.spec.name}/${x.spec.version}"; }
                       else x;
           pred = x: (isRLDep (x.pkg.deptype or []));
 
           pkgOrSpec = p: p.pkg.spec or p;
           adddeps = s: pkgs: add s
-          (filter (p: builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
+          (filter (p: /*builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"*/
                          p != null
                       && ! (any (x: pkgOrSpec x == pkgOrSpec p) s)
                       && pred p)
