@@ -9,12 +9,12 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    nur_dguibert.url     = "github:dguibert/nur-packages/master";
+    nur_dguibert.url     = "github:dguibert/nur-packages/pu";
     nur_dguibert.inputs.nixpkgs.follows = "nixpkgs";
     nur_dguibert.inputs.nix.follows = "nix";
     nur_dguibert.inputs.flake-utils.follows = "flake-utils";
 
-    nixpack.url = "github:dguibert/nixpack/pu";
+    nixpack.url = "github:dguibert/nixpack?rev=325c050f04261fa16f6d1181f88433ef2d1c578f";
     nixpack.inputs.spack.follows = "spack";
     nixpack.inputs.nixpkgs.follows = "nixpkgs";
 

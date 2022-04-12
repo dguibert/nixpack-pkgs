@@ -19,7 +19,7 @@
             , spack
             , ... }@inputs: let
 
-    host = "genji";
+    host = "betzy";
     #host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
     nixpkgsFor = system:
