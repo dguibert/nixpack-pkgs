@@ -233,6 +233,33 @@
             };
           };
 
+          blom1ChannelSmallPacks = intelPacks.withPrefs {
+            repoPatch = {
+              intel-parallel-studio = spec: old: {
+                compiler_spec = "intel@19.1.1.217";
+                provides = old.provides or {} // {
+                  compiler = ":";
+                };
+                depends = old.depends or {} // {
+                  compiler = null;
+                };
+              };
+            };
+            package.compiler = { name="intel-parallel-studio"; version="professional.2020.1"; };
+            package.intel-parallel-studio.variants.mpi=false;
+            package.mpi = { name="intel-mpi"; version="2019.7.217"; };
+            package.blom = {
+              version = "feature_blom_atos_performance";
+              variants = {
+                processors="1";
+                grid="channel_small";
+                mpi=true;
+                parallel_netcdf=true;
+                buildtype="release";
+              };
+            };
+          };
+
           # pack = import ./pack {
           #   version
           #   corePacks
