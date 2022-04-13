@@ -17,7 +17,7 @@
     m4        = rpmExtern "m4";
     openssh   = rpmExtern "openssh";
     openssl   = rpmExtern "openssl";
-    pkgconfig = rpmExtern "pkgconf";
+    pkgconfig = rpmExtern "pkgconfig";
     #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
     slurm     = rpmExtern "slurm" // {
         variants = {
