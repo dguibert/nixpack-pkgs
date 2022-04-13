@@ -6,6 +6,7 @@
   spackConfig.config.source_cache="/cluster/projects/nn9560k/dguibert/spack/mirror";
   spackPython = "${pkgs.python3}/bin/python3";
   spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
+  spackEnv.INTEL_LICENSE_FILE="/cluster/installations/licenses/intel/license.lic";
 
   package = {
     autoconf  = rpmExtern "autoconf";
@@ -19,6 +20,7 @@
     openssl   = rpmExtern "openssl";
     pkgconfig = rpmExtern "pkgconfig";
     #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
+    perl = { extern=pkgs.perl; version=pkgs.perl.version; };
     slurm     = rpmExtern "slurm" // {
         variants = {
         #pmix = true;
