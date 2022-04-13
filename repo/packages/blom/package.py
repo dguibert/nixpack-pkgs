@@ -12,6 +12,7 @@ class Blom(MesonPackage):
     homepage = "https://github.com/NorESMhub/BLOM"
     url      = "https://github.com/NorESMhub/BLOM/archive/refs/tags/v1.2.0.tar.gz"
 
+    version('feature_blom_atos_performance', git='https://github.com/NorESMhub/BLOM', branch="feature_blom_atos_performance")
     version('master', git='https://github.com/NorESMhub/BLOM')
     version('1.2.0', sha256='e66e7a109f0204e44e8daf6a23a4ce74b44e0daef445581b14b9a114f2f46022')
     version('1.1.0', sha256='cf3b4e88375a0b628983f1ec8b47c3640ef5d30105d2dd0cd52d8a119abd08eb')
@@ -26,7 +27,7 @@ class Blom(MesonPackage):
             values=('gx1v5', 'gx1v6', 'gx3v7', 'tnx0.25v1', 'tnx0.25v3',
                                   'tnx0.25v4', 'tnx1.5v1', 'tnx1v1', 'tnx1v3', 'tnx1v4',
                                                    'tnx2v1', 'MNP2', 'fuk95',
-                                                   'single_column','channel'),
+                                                   'single_column','channel_small'),
                description='Grid name', default='fuk95')
     # Which executable driver should be built
     variant('driver', multi=False,
