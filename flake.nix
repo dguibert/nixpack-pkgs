@@ -162,14 +162,14 @@
         overlaySelf = with overlaySelf; with prev; {
           inherit isLDep isRDep isRLDep;
           inherit rpmVersion rpmExtern;
-          bootstrapPacks = import ./bootstrap-pack.nix {
+          bootstrapPacks = import ./pakcs/bootstrap.nix {
               inherit corePacks rpmExtern;
-              extraConf = import ./${host}-bootstrap.nix { inherit rpmExtern pkgs; };
+              extraConf = import ./hosts/${host}/bootstrap.nix { inherit rpmExtern pkgs; };
           };
 
-          corePacks = import ./core-pack.nix inputs.nixpack.lib.packs {
+          corePacks = import ./packs/core.nix inputs.nixpack.lib.packs {
             inherit system bootstrapPacks pkgs isRLDep rpmExtern;
-            extraConf = import ./${host}-core.nix { inherit rpmExtern pkgs inputs; };
+            extraConf = import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; };
           };
 
           intelPacks = intelOneApiPacks.withPrefs {
