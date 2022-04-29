@@ -21,7 +21,7 @@ let
     // (extraConf.spackConfig.config or {});
 
     repos = [
-      ./repo
+      ../repo
     ]
     ++ (extraConf.repos or [])
     ;
