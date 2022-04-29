@@ -1,7 +1,7 @@
 { pkgs
 , inputs
 , ...
-}: let 
+}: let
   gccWithFortran = pkgs.wrapCC (pkgs.gcc.cc.override {
     langFortran = true;
   });
@@ -64,7 +64,6 @@ in {
         pmi = false;
         pmix = false;
         static = false;
-        thread_multiple = true;
         legacylaunchers = true;
       };
     };
