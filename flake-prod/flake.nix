@@ -18,9 +18,9 @@
     nixpack.inputs.spack.follows = "spack";
     nixpack.inputs.nixpkgs.follows = "nixpkgs";
 
-    #spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
+    spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
     #spack = { url = "git+https://gitlab.bench.local:24443/bguibertd/spack.git?ref=develop"; flake=false; };
-    spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop&rev=2221070706bf6ad4712d4b1c0b5e590179b11f6c"; flake=false; };
+    #spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop&rev=2221070706bf6ad4712d4b1c0b5e590179b11f6c"; flake=false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack"; flake=false; };
   };
