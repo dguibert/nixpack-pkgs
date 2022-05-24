@@ -202,9 +202,8 @@
             package = {
               compiler = { name = "intel-oneapi-compilers"; };
               # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x)) {
-              ucx = overlaySelf.corePacks.pkgs.ucx // {
-                depends.compiler = overlaySelf.corePacks.pkgs.compiler;
-              };
+              ucx.depends.compiler = overlaySelf.bootstrapPacks.pkgs.compiler;
+              ucx.variants = corePacks.prefs.package.ucx.variants;
             };
           };
 
@@ -259,7 +258,33 @@
               }).pkgs; [
                 { pkg=compiler;
                   projection="intel/{version}";
-                  context.unlocked_paths = [ "intel/{version}" ];
+                  # TODO fix PATH to include legacy compiliers
+                }
+                mpi
+                osu-micro-benchmarks
+              ])
+            ++ (with (intelOneApiPacks.withPrefs {
+              }).pkgs; [
+                { pkg=compiler;
+                  projection="oneapi/{version}";
+                }
+                mpi
+                osu-micro-benchmarks
+              ])
+            ++ (with (aoccPacks.withPrefs {
+              }).pkgs; [
+                mpi
+                osu-micro-benchmarks
+              ])
+            );
+
+          mods_osu_light = final.mkModules final.corePacks ([
+            ]
+            ++ (with (intelPacks.withPrefs {
+              }).pkgs; [
+                { pkg=compiler;
+                  projection="intel/{version}";
+                  #context.unlocked_paths = [ "intel/2022.0.2" ];
                   # TODO fix PATH to include legacy compiliers
                 }
                 mpi
@@ -274,11 +299,6 @@
                   #  prepend_path.MODULEPATH = "{prefix}/linux-rhel8-x86_64/{name}/{version}";
                   #};
                 }
-                mpi
-                osu-micro-benchmarks
-              ])
-            ++ (with (aoccPacks.withPrefs {
-              }).pkgs; [
                 mpi
                 osu-micro-benchmarks
               ])

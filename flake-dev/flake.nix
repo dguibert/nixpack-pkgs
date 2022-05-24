@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url          = "github:dguibert/nixpkgs/pu-nixpack";
-    #nixpkgs.url          = "github:dguibert/nixpkgs?rev=fa4a95770278b56ca493bafc4496207b9b01eee5";
 
     #nix.url              = "github:dguibert/nix/a828ef7ec896e4318d62d2bb5fd391e1aabf242e";
     nix.url              = "github:dguibert/nix/pu";

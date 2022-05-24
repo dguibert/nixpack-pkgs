@@ -61,7 +61,7 @@ let
             none = false;
             slurm = true;
           };
-          pmi = true;
+          pmi = false;
           pmix = true;
           #pmix = false; # patched to mean internal
           static = false;
