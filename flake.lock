@@ -1,0 +1,160 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1652776076,
+        "narHash": "sha256-gzTw/v1vj4dOVbpBSJX4J0DwUR6LIyXo7/SuuTJp1kM=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "04c1b180862888302ddfb2e3ad9eaa63afc60cf8",
+        "type": "github"
+      },
+      "original": {
+        "id": "flake-utils",
+        "type": "indirect"
+      }
+    },
+    "lowdown-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1633514407,
+        "narHash": "sha256-Dw32tiMjdK9t3ETl5fzGrutQTzh2rufgZV4A/BbxuD4=",
+        "owner": "kristapsdz",
+        "repo": "lowdown",
+        "rev": "d2c2b44ff6c27b936ec27358a2653caaef8f73b8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kristapsdz",
+        "repo": "lowdown",
+        "type": "github"
+      }
+    },
+    "nix": {
+      "inputs": {
+        "lowdown-src": "lowdown-src",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-regression": "nixpkgs-regression"
+      },
+      "locked": {
+        "lastModified": 1652427334,
+        "narHash": "sha256-wS4rasIS9LZ0laGMAMuE0T/IYLPYrQPY1AhCt1YGkjM=",
+        "owner": "dguibert",
+        "repo": "nix",
+        "rev": "6d632d87168e5c6fa9be82147c771a3d3f66c165",
+        "type": "github"
+      },
+      "original": {
+        "id": "nix",
+        "type": "indirect"
+      }
+    },
+    "nixpack": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "spack": [
+          "spack"
+        ]
+      },
+      "locked": {
+        "lastModified": 1653400436,
+        "narHash": "sha256-K+bXgm3dX3/gT7Iimx45kdkV0kagI8n639hCEhWdbdY=",
+        "ref": "pu",
+        "rev": "05a76d5b51746619f8395403980dc40ec0dd157b",
+        "revCount": 438,
+        "type": "git",
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+      },
+      "original": {
+        "id": "nixpack",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1651091218,
+        "narHash": "sha256-bYVOJsE8Llvhaa3TBhTRV8muexjmelVS3W5jwygmw+w=",
+        "owner": "dguibert",
+        "repo": "nixpkgs",
+        "rev": "bc2ea7d294f0dc159251283eb5bee80c137fa9ca",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs-regression": {
+      "locked": {
+        "lastModified": 1643052045,
+        "narHash": "sha256-uGJ0VXIhWKGXxkeNnq4TvV3CIOkUJ3PAoLZ3HMzNVMw=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "215d4d0fd80ca5163643b03a33fde804a29cc1e2",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "rev": "215d4d0fd80ca5163643b03a33fde804a29cc1e2",
+        "type": "indirect"
+      }
+    },
+    "nur_dguibert": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nix": [
+          "nix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1641308884,
+        "narHash": "sha256-sB9vWPVBn+XBp6Gxpq6euo5SzSCrQI7WE8cSj2l1OVg=",
+        "owner": "dguibert",
+        "repo": "nur-packages",
+        "rev": "1482d8a5980a02a5feaf823c8da6fb8a42eb5fb3",
+        "type": "github"
+      },
+      "original": {
+        "id": "nur_dguibert",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nix": "nix",
+        "nixpack": "nixpack",
+        "nixpkgs": "nixpkgs",
+        "nur_dguibert": "nur_dguibert",
+        "spack": "spack"
+      }
+    },
+    "spack": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1653424706,
+        "narHash": "sha256-edQ92uEXv6Bq2wgE2ocsArLZNrrXacpubUh7+Q/6y80=",
+        "ref": "develop",
+        "rev": "08fb632556ced21eddb37009a4f6f342b98f6393",
+        "revCount": 26274,
+        "type": "git",
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+      },
+      "original": {
+        "id": "spack",
+        "type": "indirect"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
