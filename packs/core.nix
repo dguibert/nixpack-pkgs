@@ -143,6 +143,9 @@ let
           parallel_netcdf = true;
         };
       };
+
+      #tar dependency zstd: package zstd@1.5.2~programs compression= libs=+shared,+static does not match dependency constraints {"variants":{"programs":true}}
+      zstd.variants.programs = true;
     }
     // (extraConf.package or {})
     ;
