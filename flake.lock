@@ -63,11 +63,10 @@
       "locked": {
         "lastModified": 1653400436,
         "narHash": "sha256-K+bXgm3dX3/gT7Iimx45kdkV0kagI8n639hCEhWdbdY=",
-        "ref": "pu",
+        "owner": "dguibert",
+        "repo": "nixpack",
         "rev": "05a76d5b51746619f8395403980dc40ec0dd157b",
-        "revCount": 438,
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "type": "github"
       },
       "original": {
         "id": "nixpack",
@@ -116,11 +115,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1641308884,
-        "narHash": "sha256-sB9vWPVBn+XBp6Gxpq6euo5SzSCrQI7WE8cSj2l1OVg=",
+        "lastModified": 1651416226,
+        "narHash": "sha256-Y6yz3Cv+wDOHu9tPuLVEMJ1CFcdOXNNgU94BZn2pHu4=",
         "owner": "dguibert",
         "repo": "nur-packages",
-        "rev": "1482d8a5980a02a5feaf823c8da6fb8a42eb5fb3",
+        "rev": "81f660a8112938bc960172f96b956078417b745e",
         "type": "github"
       },
       "original": {
@@ -141,13 +140,13 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1653424706,
-        "narHash": "sha256-edQ92uEXv6Bq2wgE2ocsArLZNrrXacpubUh7+Q/6y80=",
+        "lastModified": 1637155562,
+        "narHash": "sha256-Pw+Pouzcd/+6p7waCAki59XwSv29Xl2MfUoQVlo0Nk4=",
         "ref": "develop",
-        "rev": "08fb632556ced21eddb37009a4f6f342b98f6393",
-        "revCount": 26274,
+        "rev": "635b4b4ffedb7c635c63975802955f6ace8b8b7d",
+        "revCount": 23730,
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       },
       "original": {
         "id": "spack",
