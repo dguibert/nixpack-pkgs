@@ -21,7 +21,7 @@ let
     // (extraConf.spackConfig.config or {});
 
     repos = [
-      ./repo
+      ../repo
     ]
     ++ (extraConf.repos or [])
     ;
@@ -62,9 +62,9 @@ let
             slurm = true;
           };
           pmi = true;
-          pmix = false;
+          pmix = true;
+          #pmix = false; # patched to mean internal
           static = false;
-          thread_multiple = true;
           legacylaunchers = true;
         };
       };
