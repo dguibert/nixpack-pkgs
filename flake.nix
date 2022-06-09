@@ -314,11 +314,11 @@
       };
       in overlaySelf
       # blom configurations
-      // (inputs.nixpkgs.lib.listToAttrs (map (attr: with attr; inputs.nixpkgs.lib.nameValuePair (packs.name + "_" + grid + "_" + processors) (packs.pack grid processors))
+      // (inputs.nixpkgs.lib.listToAttrs (map (attr: with attr; inputs.nixpkgs.lib.nameValuePair (packs.name + variants.name + "Packs_" + grid + "_" + processors) (packs.pack grid processors variants.v))
         (inputs.nixpkgs.lib.cartesianProductOfSets {
           packs = [
-            { name = "blomIntelOrigPacks";
-              pack = grid: processors: final.intelPacks.withPrefs {
+            { name = "blomIntelOrig";
+              pack = grid: processors: v: final.intelPacks.withPrefs {
                 repoPatch = {
                   intel-parallel-studio = spec: old: {
                     compiler_spec = "intel@19.1.1.217";
@@ -335,27 +335,41 @@
                 package.mpi = { name="intel-mpi"; version="2019.7.217"; };
                 package.blom = {
                   version = "local";
-                  variants = {
+                  variants = let self = {
                     inherit grid processors;
                     mpi=true;
                     parallel_netcdf=true;
                     buildtype="release";
-                  };
+                  } // (v self); in self;
                 };
               };
             }
 
-            { name = "blomOneApiPacks";
-              pack = grid: processors: final.intelPacks.withPrefs {
+            { name = "blomOneApi";
+              pack = grid: processors: v: final.intelOneApiPacks.withPrefs {
                 package.mpi = { name="intel-oneapi-mpi"; };
                 package.blom = {
                   version = "local";
-                  variants = {
+                  variants = let self = {
                     inherit grid processors;
                     mpi=true;
                     parallel_netcdf=true;
                     buildtype="release";
-                  };
+                  } // (v self); in self;
+                };
+              };
+            }
+            { name = "blomIntel";
+              pack = grid: processors: v: final.intelPacks.withPrefs {
+                package.mpi = { name="intel-oneapi-mpi"; };
+                package.blom = {
+                  version = "local";
+                  variants = let self = {
+                    inherit grid processors;
+                    mpi=true;
+                    parallel_netcdf=true;
+                    buildtype="release";
+                  } // (v self); in self;
                 };
               };
             }
@@ -377,6 +391,14 @@
             "256"
             "512"
             "1024"
+          ];
+          variants = [
+            { name=""; v=variants: {}; }
+            { name = "Opt1";
+              v= variants: with variants; {
+                openmp = if processors != "1" then "enabled" else "disabled" ;
+              };
+            }
           ];
         })));
   };
