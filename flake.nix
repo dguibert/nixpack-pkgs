@@ -334,7 +334,7 @@
                 package.intel-parallel-studio.variants.mpi=false;
                 package.mpi = { name="intel-mpi"; version="2019.7.217"; };
                 package.blom = {
-                  version = "feature_blom_atos_performance";
+                  version = "local";
                   variants = {
                     inherit grid processors;
                     mpi=true;
@@ -349,7 +349,7 @@
               pack = grid: processors: final.intelPacks.withPrefs {
                 package.mpi = { name="intel-oneapi-mpi"; };
                 package.blom = {
-                  version = "feature_blom_atos_performance";
+                  version = "local";
                   variants = {
                     inherit grid processors;
                     mpi=true;
@@ -362,6 +362,8 @@
           ];
           grid = [
             "channel_small"
+            "channel_medium"
+            "channel_large"
           ];
           processors = [
             "1"

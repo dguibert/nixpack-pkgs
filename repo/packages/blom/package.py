@@ -12,12 +12,14 @@ class Blom(MesonPackage):
     homepage = "https://github.com/NorESMhub/BLOM"
     url      = "https://github.com/NorESMhub/BLOM/archive/refs/tags/v1.2.0.tar.gz"
 
-    version('feature_blom_atos_performance', git='https://github.com/NorESMhub/BLOM', branch="feature_blom_atos_performance")
     version('master', git='https://github.com/NorESMhub/BLOM')
     version('1.2.0', sha256='e66e7a109f0204e44e8daf6a23a4ce74b44e0daef445581b14b9a114f2f46022')
     version('1.1.0', sha256='cf3b4e88375a0b628983f1ec8b47c3640ef5d30105d2dd0cd52d8a119abd08eb')
     version('1.0.0', sha256='4a568fc251040087f66711b4a9f3f6bde7e6af400b95591dfe048b7319de0a98')
 
+    version('local', git='/cluster/projects/nn9560k/dguibert/blom', branch="feature_blom_atos_performance")
+    version('esiwace_atos_perf', git='https://github.com/ESiWACE-S1/BLOM', branch="feature_blom_atos_performance")
+    version('feature_blom_atos_performance', git='https://github.com/NorESMhub/BLOM', branch="feature_blom_atos_performance")
 
     variant('processors',
                description='Number of processors', default=1,
@@ -25,9 +27,9 @@ class Blom(MesonPackage):
                )
     variant('grid', multi=False,
             values=('gx1v5', 'gx1v6', 'gx3v7', 'tnx0.25v1', 'tnx0.25v3',
-                                  'tnx0.25v4', 'tnx1.5v1', 'tnx1v1', 'tnx1v3', 'tnx1v4',
-                                                   'tnx2v1', 'MNP2', 'fuk95',
-                                                   'single_column','channel_small'),
+                    'tnx0.25v4', 'tnx1.5v1', 'tnx1v1', 'tnx1v3', 'tnx1v4',
+                    'tnx2v1', 'MNP2', 'fuk95',
+                    'single_column','channel_small', 'channel_medium', 'channel_large'),
                description='Grid name', default='fuk95')
     # Which executable driver should be built
     variant('driver', multi=False,
