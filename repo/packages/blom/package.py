@@ -91,7 +91,9 @@ class Blom(MesonPackage):
     def install_blom(self):
         with working_dir(self.build_directory):
           mkdir(prefix.bin)
-          install('./blom', prefix.bin)
+          proc = get_variant_values(self.spec, 'processors')
+          conf = get_variant_values(self.spec, 'grid')
+          install('./blom', prefix.bin+'/blom.{0}.{1}'.format(conf,proc))
 
 def get_variant_values(spec, name):
     value = spec.variants[name].value
