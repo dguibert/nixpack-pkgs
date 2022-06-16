@@ -57,7 +57,7 @@ class Blom(MesonPackage):
     variant('mpi', default=False, description='Enable MPI work sharing')
     variant('parallel_netcdf', default=False, description='Enable parallel version of NetCDF')
     variant('optims', multi=True, default='no', description='Enable option(s)',
-            values=('no','opt1'))
+            values=('no','opt1','opt2'))
 
 
     # FIXME: Add dependencies if required.

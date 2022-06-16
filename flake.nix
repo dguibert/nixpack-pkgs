@@ -398,6 +398,21 @@
               v= variants: with variants; {
                 optims.no = false;
                 optims.opt1 = true;
+                optims.opt2 = false;
+              };
+            }
+            { name = "Opt2";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt1 = false;
+                optims.opt2 = true;
+              };
+            }
+            { name = "Opts";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt1 = true;
+                optims.opt2 = true;
               };
             }
           ];
