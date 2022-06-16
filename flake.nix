@@ -396,7 +396,8 @@
             { name=""; v=variants: {}; }
             { name = "Opt1";
               v= variants: with variants; {
-                openmp = if processors != "1" then "enabled" else "disabled" ;
+                optims.no = false;
+                optims.opt1 = true;
               };
             }
           ];

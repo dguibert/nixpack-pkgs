@@ -55,8 +55,9 @@ class Blom(MesonPackage):
     # Build configuration
     variant('openmp', default='auto', description='Enable OpenMP')
     variant('mpi', default=False, description='Enable MPI work sharing')
-    variant('parallel_netcdf', default=False, description='Enable parallel version of NetCDF',
-    )
+    variant('parallel_netcdf', default=False, description='Enable parallel version of NetCDF')
+    variant('optims', multi=True, default='no', description='Enable option(s)',
+            values=('no','opt1'))
 
 
     # FIXME: Add dependencies if required.
@@ -86,6 +87,7 @@ class Blom(MesonPackage):
         args.append('-Dopenmp={0}'.format(get_variant_values(spec, 'openmp')))
         args.append(opt_bool('+mpi' in spec, 'mpi'))
         args.append(opt_bool('+parallel_netcdf' in spec, 'parallel_netcdf'))
+        args.append('-Doptims={0}'.format(get_variant_values(spec, 'optims')))
 
         return args
 
