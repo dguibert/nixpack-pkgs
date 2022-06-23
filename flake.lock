@@ -141,11 +141,11 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1637155562,
-        "narHash": "sha256-Pw+Pouzcd/+6p7waCAki59XwSv29Xl2MfUoQVlo0Nk4=",
+        "lastModified": 1655989582,
+        "narHash": "sha256-k4rJQX4muiZ95b59uQLOpTAZQmfS4TMLhGOXWbSPK+E=",
         "ref": "develop",
-        "rev": "635b4b4ffedb7c635c63975802955f6ace8b8b7d",
-        "revCount": 23730,
+        "rev": "fb1f5ad322d3fea18d53659020c21123bcdaf3a8",
+        "revCount": 26575,
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       },
