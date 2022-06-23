@@ -10,10 +10,13 @@ let
   self = packs (extraConf // {
     inherit system;
     label="core";
-    global.verbose = true;
-    global.fixedDeps = true;
-    /* any runtime dependencies use the current packs, others fall back to core */
-    global.resolver = deptype: if isRLDep deptype then null else self;
+    global = {
+      verbose = true;
+      fixedDeps = true;
+      /* any runtime dependencies use the current packs, others fall back to core */
+      resolver = deptype: if isRLDep deptype then null else self;
+    }
+    // (extraConf.global or {});
 
     spackConfig.config = {
       url_fetch_method = "curl";
@@ -68,6 +71,7 @@ let
           legacylaunchers = true;
         };
       };
+      pmix.version = "4.1.1";
       boost.version = "1.72.0";
       binutils = {
         variants = {
@@ -137,7 +141,7 @@ let
 
       blom = {
         variants = {
-          processors = 512;
+          processors = "512";
           grid = "channel";
           mpi = true;
           parallel_netcdf = true;
