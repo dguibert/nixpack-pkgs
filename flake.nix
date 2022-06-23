@@ -29,7 +29,7 @@
           # gcc = { arch = "x86-64" /*target*/; };
         };
         overlays =  [
-          inputs.nix.overlay
+          inputs.nix.overlays.default
           (import "${inputs.nixpack}/nixpkgs/overlay.nix")
           self.overlay
         ]
