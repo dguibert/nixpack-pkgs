@@ -243,66 +243,84 @@
           }));
 
           mods_osu = final.mkModules final.corePacks ([
-            ]
-            ++ (with final.corePacks.pkgs; [
-                mpi
-                osu-micro-benchmarks
-              ])
-            ++ (with (final.corePacks.withPrefs {
-              package.openmpi.version = "4.1.0";
-              }).pkgs; [
-                mpi
-                osu-micro-benchmarks
-              ])
-            ++ (with (intelPacks.withPrefs {
-              }).pkgs; [
-                { pkg=compiler;
-                  projection="intel/{version}";
-                  # TODO fix PATH to include legacy compiliers
-                }
-                mpi
-                osu-micro-benchmarks
-              ])
-            ++ (with (intelOneApiPacks.withPrefs {
-              }).pkgs; [
-                { pkg=compiler;
-                  projection="oneapi/{version}";
-                }
-                mpi
-                osu-micro-benchmarks
-              ])
-            ++ (with (aoccPacks.withPrefs {
-              }).pkgs; [
-                mpi
-                osu-micro-benchmarks
-              ])
-            );
+          ]
+          ++ (builtins.concatMap (attr: with attr; let
+                 pack = (mpis.pack or (x: x)) packs.pack;
+                 enabled = (packs.enable or (_: true) attr) && (mpis.enable or (_: true) attr) && (pkgs.enable or (_: true) attr);
+               in if ! enabled then [] else
+                    (packs.pkgs or (p: []) pack)
+                 ++ (pkgs.pkgs pack)
+                  )
+          (inputs.nixpkgs.lib.cartesianProductOfSets {
+            packs = [
+              { name = "core";
+                pack = final.corePacks;
+              }
+              #{ name = "core-ompi414";
+              #  pack = final.corePacks.withPrefs {
+              #    package.openmpi.version = "4.1.4";
+              #  };
+              #}
+              { name = "aocc";
+                pack = final.aoccPacks;
+              }
+              # Intel
+              { name = "intel";
+                pack = final.intelPacks;
+                pkgs = pack: [
+                  { pkg=pack.pkgs.compiler;
+                    projection="intel/{version}";
+                    # TODO fix PATH to include legacy compiliers
+                  }
+                ];
+              }
+              # Oneapi
+              { name = "oneapi";
+                pack = final.intelOneApiPacks;
+                pkgs = pack: [
+                  { pkg=pack.pkgs.compiler;
+                    projection="oneapi/{version}";
+                  }
+                ];
+              }
+            ];
+            mpis = [
+              { name="default"; }
+              { name="ompi410";
+                enable = attr: builtins.trace "ompi410 cond: ${attr.packs.name} ${toString (attr.packs.name == "core")}" attr.packs.name == "core";
+                pack = pack: pack.withPrefs {
+                  package.openmpi.version = "4.1.0";
+                };
+              }
+              { name="ompi-cuda";
+                enable = attr: builtins.trace "ompi-cuda cond: ${attr.packs.name} ${toString (attr.packs.name == "core")}" attr.packs.name == "core";
+                pack = pack: pack.withPrefs {
+                  package.openmpi.variants = (pack.getPackagePrefs "openmpi").variants // {
+                    cuda = true;
+                  };
+                  package.ucx.variants = ((pack.getPackagePrefs "ucx").variants or {}) // {
+                    cuda = true;
+                    gdrcopy = true;
+                    rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
+                  };
+                  package.hwloc.variants = ((pack.getPackagePrefs "hwloc").variants or {}) // {
+                    cuda = true;
+                  };
+                };
+              }
 
-          mods_osu_light = final.mkModules final.corePacks ([
-            ]
-            ++ (with (intelPacks.withPrefs {
-              }).pkgs; [
-                { pkg=compiler;
-                  projection="intel/{version}";
-                  #context.unlocked_paths = [ "intel/2022.0.2" ];
-                  # TODO fix PATH to include legacy compiliers
-                }
-                mpi
-                osu-micro-benchmarks
-              ])
-            ++ (with (intelOneApiPacks.withPrefs {
-              }).pkgs; [
-                { pkg=compiler;
-                  projection="oneapi/{version}";
-
-                  #environment = {
-                  #  prepend_path.MODULEPATH = "{prefix}/linux-rhel8-x86_64/{name}/{version}";
-                  #};
-                }
-                mpi
-                osu-micro-benchmarks
-              ])
-            );
+            ];
+            pkgs = [
+              { name = "osu";
+                pkgs = pack: with pack.pkgs; [
+                  mpi
+                  osu-micro-benchmarks
+                ];
+              }
+            ];
+          })
+          )
+          );
 
           nix = prev.nix.overrideAttrs (o: {
             patches = [
