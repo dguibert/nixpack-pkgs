@@ -120,7 +120,7 @@ let
 
       cairo.variants = { X = false; fc = true; ft = true; gobject = true; pdf = true; };
       py-pybind11.version = "2.7.1"; # for py-scpiy
-      py-pythran.version = "0.9.12"; # for py-scpiy
+      py-pythran.version = "0.10"; # for py-scpiy
       py-setuptools.version = "57.4.0"; # for py-scpiy
 
       # no need to be recompiled for each compiler

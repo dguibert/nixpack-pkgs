@@ -332,13 +332,21 @@
           viridianSImg = prev.singularity-tools.buildImage {
             name = "viridian";
             diskSize = 4096;
-            contents = with final.corePacks; [
+            contents = with final.corePacks.withPrefs {
+              package.compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="9.5.0";
+                package.mpfr.version = "3.1.6";
+              }; # racon: has conflicts: %gcc@:4.7,10.1.0:
+            }; [
               pkgs.py-viridian-workflow
             ];
           };
           viridianDocker = prev.dockerTools.buildImage {
             name = "viridian";
-            contents = with final.corePacks; [
+            contents = with final.corePacks.withPrefs {
+              package.compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="9.5.0";
+                depends.mpfr.version = "3.1.6";
+              }; # racon: has conflicts: %gcc@:4.7,10.1.0:
+            }; [
               pkgs.py-viridian-workflow
             ];
           };
