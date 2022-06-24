@@ -130,7 +130,7 @@
 
     })) // {
       lib.findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
-          mods = map (x: addPkg x) pkgs;
+          mods = inputs.nixpkgs.lib.unique (map (x: addPkg x) pkgs);
           addPkg = x: if x ? spec
                       then if x.spec.extern == null then { pkg=x; }
                                                     else /*builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"*/
