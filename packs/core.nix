@@ -30,8 +30,17 @@ let
     ;
     repoPatch = let
       nocompiler = spec: old: { depends = old.depends or {} // { compiler = null; }; };
+
+      no_lua_recdep = spec: old: {
+        depends = old.depends // {
+          lua-luajit = null; # conflicts with lua
+          lua-luajit-openresty = null;
+        };
+      };
     in {
       arm-forge = nocompiler;
+      lua-luafilesystem = no_lua_recdep;
+      lua-luaposix = no_lua_recdep;
       openmpi = spec: old: {
         build = {
           setup = ''
