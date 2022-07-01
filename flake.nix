@@ -394,6 +394,14 @@
           ];
           variants = [
             { name=""; v=variants: {}; }
+            { name = "Opt0";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = false;
+                optims.opt2 = false;
+              };
+            }
             { name = "Opt1";
               v= variants: with variants; {
                 optims.no = false;
@@ -408,9 +416,18 @@
                 optims.opt2 = true;
               };
             }
+            { name = "SafeOpts";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = true;
+                optims.opt2 = false;
+              };
+            }
             { name = "Opts";
               v= variants: with variants; {
                 optims.no = false;
+                optims.opt0 = true;
                 optims.opt1 = true;
                 optims.opt2 = true;
               };

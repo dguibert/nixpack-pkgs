@@ -17,7 +17,8 @@ class Blom(MesonPackage):
     version('1.1.0', sha256='cf3b4e88375a0b628983f1ec8b47c3640ef5d30105d2dd0cd52d8a119abd08eb')
     version('1.0.0', sha256='4a568fc251040087f66711b4a9f3f6bde7e6af400b95591dfe048b7319de0a98')
 
-    version('local', git='/cluster/projects/nn9560k/dguibert/blom', branch="feature_blom_atos_performance")
+    #version('local', git='/cluster/projects/nn9560k/dguibert/blom', branch="feature_blom_atos_performance")
+    version('local', git='/cluster/projects/nn9560k/dguibert/blom', rev="b582a06c97ba1c501889f1794e6e069d0c1e3634")
     version('esiwace_atos_perf', git='https://github.com/ESiWACE-S1/BLOM', branch="feature_blom_atos_performance")
     version('feature_blom_atos_performance', git='https://github.com/NorESMhub/BLOM', branch="feature_blom_atos_performance")
 
@@ -57,7 +58,7 @@ class Blom(MesonPackage):
     variant('mpi', default=False, description='Enable MPI work sharing')
     variant('parallel_netcdf', default=False, description='Enable parallel version of NetCDF')
     variant('optims', multi=True, default='no', description='Enable option(s)',
-            values=('no','opt1','opt2'))
+            values=('no','opt0','opt1','opt2'))
 
 
     # FIXME: Add dependencies if required.
