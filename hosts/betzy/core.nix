@@ -19,8 +19,8 @@
     openssh   = rpmExtern "openssh";
     openssl   = rpmExtern "openssl";
     pkgconfig = rpmExtern "pkgconfig";
-    #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
-    perl = { extern=pkgs.perl; version=pkgs.perl.version; };
+    #perl = { extern=pkgs.perl; version=pkgs.perl.version; };
+    perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
     slurm     = rpmExtern "slurm" // {
         variants = {
         #pmix = true;

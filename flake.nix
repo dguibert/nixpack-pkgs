@@ -1,6 +1,7 @@
 {
   description = "A flake for building packages on /software-like structure";
 
+  inputs.nixpkgs.url          = "github:dguibert/nixpkgs/pu-nixpack";
   inputs.nix.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nur_dguibert.inputs.nixpkgs.follows = "nixpkgs";
   inputs.nur_dguibert.inputs.nix.follows = "nix";
@@ -201,9 +202,10 @@
             };
             package = {
               compiler = { name = "intel-oneapi-compilers"; };
-              # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x)) {
-              ucx.depends.compiler = overlaySelf.bootstrapPacks.pkgs.compiler;
-              ucx.variants = corePacks.prefs.package.ucx.variants;
+              # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
+              ucx = overlaySelf.corePacks.pkgs.ucx // {
+                depends.compiler = overlaySelf.corePacks.pkgs.compiler;
+              };
             };
           };
 
@@ -231,52 +233,6 @@
 
             };
           };
-
-          blom1ChannelSmallPacksOrig = intelPacks.withPrefs {
-            repoPatch = {
-              intel-parallel-studio = spec: old: {
-                compiler_spec = "intel@19.1.1.217";
-                provides = old.provides or {} // {
-                  compiler = ":";
-                };
-                depends = old.depends or {} // {
-                  compiler = null;
-                };
-              };
-            };
-            package.compiler = { name="intel-parallel-studio"; version="professional.2020.1"; };
-            package.intel-parallel-studio.variants.mpi=false;
-            package.mpi = { name="intel-mpi"; version="2019.7.217"; };
-            package.blom = {
-              version = "feature_blom_atos_performance";
-              variants = {
-                processors="1";
-                grid="channel_small";
-                mpi=true;
-                parallel_netcdf=true;
-                buildtype="release";
-              };
-            };
-          };
-
-          blom1ChannelSmallPacks = intelPacks.withPrefs {
-            package.mpi = { name="intel-oneapi-mpi"; };
-            package.blom = {
-              version = "feature_blom_atos_performance";
-              variants = {
-                processors="1";
-                grid="channel_small";
-                mpi=true;
-                parallel_netcdf=true;
-                buildtype="release";
-              };
-            };
-          };
-
-          # pack = import ./pack {
-          #   version
-          #   corePacks
-          #   bootstrapPacks }
 
           mkModules = pack: pkgs: pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
             coreCompilers = [ final.bootstrapPacks.pkgs.compiler ];
@@ -394,7 +350,129 @@
             doCheck = false;
           });
 
-      }; in overlaySelf;
+      };
+      in overlaySelf
+      # blom configurations
+      // (inputs.nixpkgs.lib.listToAttrs (map (attr: with attr; inputs.nixpkgs.lib.nameValuePair (packs.name + variants.name + "Packs_" + grid + "_" + processors) (packs.pack grid processors variants.v))
+        (inputs.nixpkgs.lib.cartesianProductOfSets {
+          packs = [
+            { name = "blomIntelOrig";
+              pack = grid: processors: v: final.intelPacks.withPrefs {
+                repoPatch = {
+                  intel-parallel-studio = spec: old: {
+                    compiler_spec = "intel@19.1.1.217";
+                    provides = old.provides or {} // {
+                      compiler = ":";
+                    };
+                    depends = old.depends or {} // {
+                      compiler = null;
+                    };
+                  };
+                };
+                package.compiler = { name="intel-parallel-studio"; version="professional.2020.1"; };
+                package.intel-parallel-studio.variants.mpi=false;
+                package.mpi = { name="intel-mpi"; version="2019.7.217"; };
+                package.blom = {
+                  version = "local";
+                  variants = let self = {
+                    inherit grid processors;
+                    mpi=true;
+                    parallel_netcdf=true;
+                    buildtype="release";
+                  } // (v self); in self;
+                };
+              };
+            }
+
+            { name = "blomOneApi";
+              pack = grid: processors: v: final.intelOneApiPacks.withPrefs {
+                package.mpi = { name="intel-oneapi-mpi"; };
+                package.blom = {
+                  version = "local";
+                  variants = let self = {
+                    inherit grid processors;
+                    mpi=true;
+                    parallel_netcdf=true;
+                    buildtype="release";
+                  } // (v self); in self;
+                };
+              };
+            }
+            { name = "blomIntel";
+              pack = grid: processors: v: final.intelPacks.withPrefs {
+                package.mpi = { name="intel-oneapi-mpi"; };
+                package.blom = {
+                  version = "local";
+                  variants = let self = {
+                    inherit grid processors;
+                    mpi=true;
+                    parallel_netcdf=true;
+                    buildtype="release";
+                  } // (v self); in self;
+                };
+              };
+            }
+          ];
+          grid = [
+            "channel_small"
+            "channel_medium"
+            "channel_large"
+          ];
+          processors = [
+            "1"
+            "2"
+            "4"
+            "8"
+            "16"
+            "32"
+            "64"
+            "128"
+            "256"
+            "512"
+            "1024"
+          ];
+          variants = [
+            { name=""; v=variants: {}; }
+            { name = "Opt0";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = false;
+                optims.opt2 = false;
+              };
+            }
+            { name = "Opt1";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt1 = true;
+                optims.opt2 = false;
+              };
+            }
+            { name = "Opt2";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt1 = false;
+                optims.opt2 = true;
+              };
+            }
+            { name = "SafeOpts";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = true;
+                optims.opt2 = false;
+              };
+            }
+            { name = "Opts";
+              v= variants: with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = true;
+                optims.opt2 = true;
+              };
+            }
+          ];
+        })));
   };
 
 }

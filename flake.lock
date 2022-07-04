@@ -84,8 +84,10 @@
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
+        "owner": "dguibert",
+        "ref": "pu-nixpack",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-regression": {
@@ -117,11 +119,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1641308884,
-        "narHash": "sha256-sB9vWPVBn+XBp6Gxpq6euo5SzSCrQI7WE8cSj2l1OVg=",
+        "lastModified": 1649855144,
+        "narHash": "sha256-egXSGY71Cck9OqrUguUfc0z1qPQQBWOF/8kT8BN4BSQ=",
         "owner": "dguibert",
         "repo": "nur-packages",
-        "rev": "1482d8a5980a02a5feaf823c8da6fb8a42eb5fb3",
+        "rev": "822add2e35a2aa64a2b798ab2f307b19989f83dc",
         "type": "github"
       },
       "original": {
