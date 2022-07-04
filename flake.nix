@@ -10,6 +10,7 @@
   inputs.nixpack.inputs.spack.follows = "spack";
   inputs.nixpack.inputs.nixpkgs.follows = "nixpkgs";
   inputs.spack.flake=false;
+  inputs.hpcw = { url = "git+file:///home_nfs/bguibertd/work/hpcw"; flake =false; };
 
   outputs = { self
             , nixpkgs
@@ -18,9 +19,10 @@
             , nur_dguibert
             , nixpack
             , spack
+            , hpcw
             , ... }@inputs: let
 
-    host = "betzy";
+    host = "genji";
     #host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
     nixpkgsFor = system:
@@ -170,7 +172,11 @@
 
           corePacks = import ./packs/core.nix inputs.nixpack.lib.packs {
             inherit system bootstrapPacks pkgs isRLDep rpmExtern;
-            extraConf = import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; };
+            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; }) // {
+              repos = [
+                "${inputs.hpcw}/spack/hpcw"
+              ];
+            };
           };
 
           intelPacks = intelOneApiPacks.withPrefs {
@@ -472,7 +478,25 @@
               };
             }
           ];
-        })));
+        })))
+      # hpcw configurations
+      // (inputs.nixpkgs.lib.listToAttrs (map (attr: with attr; inputs.nixpkgs.lib.nameValuePair (packs.name + variants.name + "Packs") (packs.pack variants.prefs))
+        (inputs.nixpkgs.lib.cartesianProductOfSets {
+          packs = [
+            { name = "hpcwCore";
+              pack = prefs: final.corePacks.withPrefs prefs;
+            }
+          ];
+          variants = [
+            { name = "Ifs";
+              prefs = {
+                package.python.version = "2";
+              };
+            }
+          ];
+        })))
+      # end of cartesians products
+      ;
   };
 
 }

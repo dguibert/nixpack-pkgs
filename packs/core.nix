@@ -88,7 +88,7 @@ let
           ld = true;
         };
       };
-      hdf5.variants = { hl = true; };
+      hdf5.variants = { hl = true;  fortran=true; };
       llvm.variants = {
         flang = true;
         mlir = true;
