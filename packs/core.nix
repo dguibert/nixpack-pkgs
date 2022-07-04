@@ -58,7 +58,7 @@ let
     package = {
       compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="11"; };
       openmpi = {
-        version = "4.1.3";
+        version = "4.1.2";
         variants = {
           fabrics = {
             none = false;
