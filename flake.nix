@@ -172,7 +172,17 @@
 
           corePacks = import ./packs/core.nix inputs.nixpack.lib.packs {
             inherit system bootstrapPacks pkgs isRLDep rpmExtern;
+            extraConf = import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; };
+          };
+
+          coreDevPacks = import ./packs/core.nix inputs.nixpack.lib.packs {
+            inherit system bootstrapPacks pkgs isRLDep rpmExtern;
             extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; }) // {
+              global.resolver = deptype: name: if builtins.elem name [
+                  "fiat" "fckit"
+                  "ectrans"
+                ]
+                then null else corePacks;
               repos = [
                 "${inputs.hpcw}/spack/hpcw"
               ];
@@ -486,11 +496,52 @@
             { name = "hpcwCore";
               pack = prefs: final.corePacks.withPrefs prefs;
             }
+            { name = "hpcwCoreDev";
+              pack = prefs: final.coreDevPacks.withPrefs prefs;
+            }
           ];
           variants = [
             { name = "Ifs";
               prefs = {
                 package.python.version = "2";
+              };
+            }
+            { name = "Ectrans";
+              prefs = {
+                package.ectrans.version = "main";
+              };
+            }
+            { name = "EctransMKL";
+              prefs = {
+                package.ectrans.version = "main";
+                package.ectrans.variants.mkl = true;
+              };
+            }
+            { name = "EctransGpu";
+              prefs = {
+                package.ectrans.version = "gpu";
+              };
+            }
+            { name = "NemoSmall";
+              prefs = {
+                #BUILD_COMMAND ./makenemo -a BENCH -m X64_hpcw -j ${NEMO_BUILD_PARALLEL_LEVEL}
+                package.nemo.variants.cfg = "BENCH";
+                #error: xios dependency boost: package boost@1.72.0~atomic~chrono~clanglibcpp~container~context~contract
+                #~coroutine~date_time~debug~exception~fiber~filesystem~graph~graph_parallel~icu~iostreams~json~locale~log
+                # ~math~mpi+multithreaded~nowide~numpy~pic~program_options~python~random~regex~serialization+shared~signals
+                #~singlethreaded~stacktrace~system~taggedlayout~test~thread~timer~type_erasure~versionedlayout~wave context-impl= cxxstd=98 visibility=hiddeni
+                # does not match dependency constraints {"variants":{"atomic":true,"chrono":true,"date_time":true,"exception":true,"filesystem":true,"graph":true,"iostreams":true,"locale":true,"log":true,"math":true,"program_options":true,"random":true,"regex":true,"serialization":true,"signals":true,"system":true,"test":true,"thread":true,"timer":true,"wave":true}}
+                package.boost.variants = {
+                  atomic = true;
+                  chrono = true;
+                  date_time = true;exception = true;filesystem = true;graph = true;iostreams = true;locale = true;log = true;math = true;program_options = true;random = true;regex = true;serialization = true;signals = true;system = true;test = true;thread = true;timer = true;wave = true;
+                };
+              };
+            }
+            { name = "NemoMedium";
+              prefs = {
+                #BUILD_COMMAND ./makenemo -m X64_hpcw -n MY_ORCA25 -r ORCA2_ICE_PISCES  -j ${NEMO_BUILD_PARALLEL_LEVEL} del_key "key_top" add_key "key_si3  key_iomput key_mpp_mpi key_mpi2"
+                package.nemo.variants.cfg = "ORCA2_ICE_PISCES";
               };
             }
           ];
