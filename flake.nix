@@ -172,15 +172,20 @@
 
           corePacks = import ./packs/core.nix inputs.nixpack.lib.packs {
             inherit system bootstrapPacks pkgs isRLDep rpmExtern;
-            extraConf = import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; };
+            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; }) // {
+              repos = [
+                "${inputs.hpcw}/spack/hpcw"
+              ];
+            };
           };
 
           coreDevPacks = import ./packs/core.nix inputs.nixpack.lib.packs {
             inherit system bootstrapPacks pkgs isRLDep rpmExtern;
             extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; }) // {
               global.resolver = deptype: name: if builtins.elem name [
-                  "fiat" "fckit"
-                  "ectrans"
+                  "fiat" "fckit" /*"eckit"*/
+                  "ectrans" "eccodes" "openjpeg"
+                  "compiler" "openmpi"
                 ]
                 then null else corePacks;
               repos = [
@@ -499,6 +504,29 @@
             { name = "hpcwCoreDev";
               pack = prefs: final.coreDevPacks.withPrefs prefs;
             }
+            { name = "hpcwNvhpc";
+              pack = prefs: final.corePacks.withPrefs (prefs // {
+                package = let
+                  core_compiler = { depends.compiler = final.corePacks.pkgs.compiler; };
+                in {
+                  compiler = { name = "nvhpc"; };
+                  nvhpc.variants.blas = false;
+                  nvhpc.variants.lapack = false;
+                  nvhpc.depends.compiler = final.corePacks.pkgs.compiler;
+
+                  cmake = core_compiler;
+                  eckit = core_compiler;
+                } // (prefs.package or {});
+                repoPatch = {
+                  nvhpc = spec: old: {
+                    provides = old.provides or {} // {
+                      compiler = ":";
+                    };
+                    conflicts = [];
+                  };
+                };
+              });
+            }
           ];
           variants = [
             { name = "Ifs";
@@ -519,7 +547,11 @@
             }
             { name = "EctransGpu";
               prefs = {
+                package.compiler = { name = "nvhpc"; };
                 package.ectrans.version = "gpu";
+                package.ectrans.variants.cuda = true;
+                # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
+                package.openjpeg.version = "2.3";
               };
             }
             { name = "NemoSmall";
