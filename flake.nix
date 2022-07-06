@@ -61,7 +61,7 @@
           "lib64" = ["LIBRARY_PATH"];
           "lib/intel64" = ["LIBRARY_PATH"]; # for intel
           "include" = ["C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"];
-          "" = ["{name}_ROOT"];
+          "" = ["{name}_DIR"];
         };
         all = {
           autoload = "direct";
@@ -78,6 +78,13 @@
           environment = {
             set = {
               OPENMPI_VERSION = "{version}";
+            };
+          };
+        };
+        intel = {
+          environment = {
+            set = {
+              ONEAPI_ROOT = "{prefix}";
             };
           };
         };
@@ -131,6 +138,30 @@
         NIX_CONF_DIR = NIX_CONF_DIR_fun pkgs;
       };
 
+      devShells.hpcwIntelEctrans = with pkgs; let
+        mods = mkModules corePacks (with hpcwIntelEctransPacks.pkgs; [
+          compiler
+          mpi
+          fftw
+          blas
+          fiat
+        ]);
+      in stdenvNoCC.mkDerivation {
+        name = "hpcw-intel-ectrans";
+        ENVRC = "hpcw-intel-ectrans";
+        nativeBuildInputs = [ bashInteractive ];
+        shellHook = ''
+          echo "+ source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash"
+          echo "+ ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core"
+          echo "+ ml load intel openmpi fftw fiat openblas"
+          echo "+ ml av"
+          source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
+          ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
+          ml load intel openmpi fftw fiat openblas
+          ml av
+        '';
+      };
+
     })) // {
       lib.findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
           mods = inputs.nixpkgs.lib.unique (map (x: addPkg x) pkgs);
@@ -167,12 +198,13 @@
           inherit rpmVersion rpmExtern;
           bootstrapPacks = import ./packs/bootstrap.nix {
               inherit corePacks rpmExtern;
-              extraConf = import ./hosts/${host}/bootstrap.nix { inherit rpmExtern pkgs; };
+              extraConf = import ./hosts/${host}/bootstrap.nix { inherit rpmExtern; pkgs = final.pkgs; };
           };
 
           corePacks = import ./packs/core.nix inputs.nixpack.lib.packs {
-            inherit system bootstrapPacks pkgs isRLDep rpmExtern;
-            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; }) // {
+            inherit system bootstrapPacks isRLDep rpmExtern;
+            pkgs = final.pkgs;
+            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern inputs; pkgs = final.pkgs; }) // {
               repos = [
                 "${inputs.hpcw}/spack/hpcw"
               ];
@@ -180,8 +212,9 @@
           };
 
           coreDevPacks = import ./packs/core.nix inputs.nixpack.lib.packs {
-            inherit system bootstrapPacks pkgs isRLDep rpmExtern;
-            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern pkgs inputs; }) // {
+            inherit system bootstrapPacks isRLDep rpmExtern;
+            pkgs = final.pkgs;
+            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern inputs; pkgs = final.pkgs; }) // {
               global.resolver = deptype: name: if builtins.elem name [
                   "fiat" "fckit" /*"eckit"*/
                   "ectrans" "eccodes" "openjpeg"
@@ -224,8 +257,8 @@
             package = {
               compiler = { name = "intel-oneapi-compilers"; };
               # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
-              ucx = overlaySelf.corePacks.pkgs.ucx // {
-                depends.compiler = overlaySelf.corePacks.pkgs.compiler;
+              ucx = overlaySelf.corePacks.getPackagePrefs "ucx" // {
+                depends.compiler = overlaySelf.bootstrapPacks.pkgs.compiler;
               };
             };
           };
@@ -503,6 +536,9 @@
             }
             { name = "hpcwCoreDev";
               pack = prefs: final.coreDevPacks.withPrefs prefs;
+            }
+            { name = "hpcwIntel";
+              pack = prefs: final.intelPacks.withPrefs prefs;
             }
             { name = "hpcwNvhpc";
               pack = prefs: final.corePacks.withPrefs (prefs // {
