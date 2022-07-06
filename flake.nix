@@ -543,15 +543,15 @@
             { name = "hpcwNvhpc";
               pack = prefs: final.corePacks.withPrefs (prefs // {
                 package = let
-                  core_compiler = { depends.compiler = final.corePacks.pkgs.compiler; };
+                  bootstrap_compiler = { depends.compiler = final.bootstrapPacks.pkgs.compiler; };
                 in {
                   compiler = { name = "nvhpc"; };
                   nvhpc.variants.blas = false;
                   nvhpc.variants.lapack = false;
-                  nvhpc.depends.compiler = final.corePacks.pkgs.compiler;
+                  nvhpc.depends.compiler = final.bootstrapPacks.pkgs.compiler;
 
-                  cmake = core_compiler;
-                  eckit = core_compiler;
+                  cmake = bootstrap_compiler;
+                  eckit = bootstrap_compiler;
                 } // (prefs.package or {});
                 repoPatch = {
                   nvhpc = spec: old: {
