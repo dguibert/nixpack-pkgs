@@ -258,7 +258,7 @@
               compiler = { name = "intel-oneapi-compilers"; };
               # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
               ucx = overlaySelf.corePacks.getPackagePrefs "ucx" // {
-                depends.compiler = overlaySelf.bootstrapPacks.pkgs.compiler;
+                depends.compiler = overlaySelf.corePacks.pkgs.compiler;
               };
             };
           };
@@ -289,7 +289,7 @@
           };
 
           mkModules = pack: pkgs: pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
-            coreCompilers = [ final.bootstrapPacks.pkgs.compiler ];
+            coreCompilers = [ final.corePacks.pkgs.compiler ];
             pkgs = self.lib.findModDeps pkgs;
           }));
 
@@ -543,15 +543,15 @@
             { name = "hpcwNvhpc";
               pack = prefs: final.corePacks.withPrefs (prefs // {
                 package = let
-                  bootstrap_compiler = { depends.compiler = final.bootstrapPacks.pkgs.compiler; };
+                  core_compiler = { depends.compiler = final.corePacks.pkgs.compiler; };
                 in {
                   compiler = { name = "nvhpc"; };
                   nvhpc.variants.blas = false;
                   nvhpc.variants.lapack = false;
-                  nvhpc.depends.compiler = final.bootstrapPacks.pkgs.compiler;
+                  nvhpc.depends.compiler = final.corePacks.pkgs.compiler;
 
-                  cmake = bootstrap_compiler;
-                  eckit = bootstrap_compiler;
+                  cmake = core_compiler;
+                  eckit = core_compiler;
                 } // (prefs.package or {});
                 repoPatch = {
                   nvhpc = spec: old: {
