@@ -196,97 +196,110 @@
         overlaySelf = with overlaySelf; with prev; {
           inherit isLDep isRDep isRLDep;
           inherit rpmVersion rpmExtern;
-          bootstrapPacks = import ./packs/bootstrap.nix {
-              inherit corePacks rpmExtern;
-              extraConf = import ./hosts/${host}/bootstrap.nix { inherit rpmExtern; pkgs = final.pkgs; };
-          };
+          packs = {
+            bootstrap = { name = "bootstrap";
+              pack = import ./packs/bootstrap.nix {
+                inherit corePacks rpmExtern;
+                extraConf = import ./hosts/${host}/bootstrap.nix { inherit rpmExtern; pkgs = final.pkgs; };
+              };
+            };
 
-          corePacks = import ./packs/core.nix inputs.nixpack.lib.packs {
-            inherit system bootstrapPacks isRLDep rpmExtern;
-            pkgs = final.pkgs;
-            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern inputs; pkgs = final.pkgs; }) // {
-              repos = [
-                "${inputs.hpcw}/spack/hpcw"
+            core = { name = "core";
+              pack = import ./packs/core.nix inputs.nixpack.lib.packs {
+                inherit system bootstrapPacks isRLDep rpmExtern;
+                pkgs = final.pkgs;
+                extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern inputs; pkgs = final.pkgs; }) // {
+                  repos = [
+                    "${inputs.hpcw}/spack/hpcw"
+                  ];
+                };
+              };
+            };
+
+            intel = { name = "intel";
+              pack = intelOneApiPacks.withPrefs {
+                label = "intel";
+                repoPatch = {
+                  intel-oneapi-compilers = spec: old: {
+                    compiler_spec = "intel"; # can be overridden as "intel" with prefs
+                    provides = old.provides or {} // {
+                      compiler = ":";
+                    };
+                    depends = old.depends or {} // {
+                      compiler = null;
+                    };
+                  };
+                };
+              };
+              pkgs = pack: [
+                { pkg=pack.pkgs.compiler;
+                  projection="intel/{version}";
+                  # TODO fix PATH to include legacy compiliers
+                }
               ];
             };
-          };
 
-          coreDevPacks = import ./packs/core.nix inputs.nixpack.lib.packs {
-            inherit system bootstrapPacks isRLDep rpmExtern;
-            pkgs = final.pkgs;
-            extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern inputs; pkgs = final.pkgs; }) // {
-              global.resolver = deptype: name: if builtins.elem name [
-                  "fiat" "fckit" /*"eckit"*/
-                  "ectrans" "eccodes" "openjpeg"
-                  "compiler" "openmpi"
-                ]
-                then null else corePacks;
-              repos = [
-                "${inputs.hpcw}/spack/hpcw"
+            intelOneApi = { name ="intel-oneapi";
+              pack = corePacks.withPrefs {
+                label = "intel-oneapi";
+                repoPatch = {
+                  intel-oneapi-compilers = spec: old: {
+                    compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
+                    provides = old.provides or {} // {
+                      compiler = ":";
+                    };
+                    depends = old.depends or {} // {
+                      compiler = null;
+                    };
+                  };
+                };
+                package = {
+                  compiler = { name = "intel-oneapi-compilers"; };
+                  # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
+                  ucx = overlaySelf.corePacks.getPackagePrefs "ucx" // {
+                    depends.compiler = overlaySelf.corePacks.pkgs.compiler;
+                  };
+                };
+              };
+              pkgs = pack: [
+                { pkg=pack.pkgs.compiler;
+                  projection="oneapi/{version}";
+                }
               ];
             };
-          };
 
-          intelPacks = intelOneApiPacks.withPrefs {
-            label = "intel";
-            repoPatch = {
-              intel-oneapi-compilers = spec: old: {
-                compiler_spec = "intel"; # can be overridden as "intel" with prefs
-                provides = old.provides or {} // {
-                  compiler = ":";
+            aocc = { name ="aocc";
+              pack = corePacks.withPrefs {
+                package = {
+                  compiler = { name = "aocc"; };
+                  aocc.variants.license-agreed = true;
                 };
-                depends = old.depends or {} // {
-                  compiler = null;
+
+                repoPatch = {
+                  aocc = spec: old: {
+                    paths = {
+                      cc = "bin/clang";
+                      cxx = "bin/clang++";
+                      f77 = "bin/flang";
+                      fc = "bin/flang";
+                    };
+                    provides = old.provides or {} // {
+                      compiler = ":";
+                    };
+                    depends = old.depends // {
+                      compiler = null;
+                    };
+                  };
+
                 };
               };
             };
           };
-          intelOneApiPacks = corePacks.withPrefs {
-            label = "intel-oneapi";
-            repoPatch = {
-              intel-oneapi-compilers = spec: old: {
-                compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
-                provides = old.provides or {} // {
-                  compiler = ":";
-                };
-                depends = old.depends or {} // {
-                  compiler = null;
-                };
-              };
-            };
-            package = {
-              compiler = { name = "intel-oneapi-compilers"; };
-              # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
-              ucx = overlaySelf.corePacks.getPackagePrefs "ucx" // {
-                depends.compiler = overlaySelf.corePacks.pkgs.compiler;
-              };
-            };
-          };
-
-          aoccPacks = corePacks.withPrefs {
-            package = {
-              compiler = { name = "aocc"; };
-              aocc.variants.license-agreed = true;
-            };
-
-            repoPatch = {
-              aocc = spec: old: {
-                paths = {
-                  cc = "bin/clang";
-                  cxx = "bin/clang++";
-                  f77 = "bin/flang";
-                  fc = "bin/flang";
-                };
-                provides = old.provides or {} // {
-                  compiler = ":";
-                };
-                depends = old.depends // {
-                  compiler = null;
-                };
-              };
-
-            };
-          };
+          bootstrapPacks = final.packs.bootstrap.pack;
+          corePacks = final.packs.core.pack;
+          intelPacks = final.packs.intel.pack;
+          intelOneApiPacks = final.packs.intelOneApi.pack;
+          aoccPacks = final.packs.aocc.pack;
 
           mkModules = pack: pkgs: pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
             coreCompilers = [ final.corePacks.pkgs.compiler ];
@@ -304,36 +317,10 @@
                   )
           (inputs.nixpkgs.lib.cartesianProductOfSets {
             packs = [
-              { name = "core";
-                pack = final.corePacks;
-              }
-              #{ name = "core-ompi414";
-              #  pack = final.corePacks.withPrefs {
-              #    package.openmpi.version = "4.1.4";
-              #  };
-              #}
-              { name = "aocc";
-                pack = final.aoccPacks;
-              }
-              # Intel
-              { name = "intel";
-                pack = final.intelPacks;
-                pkgs = pack: [
-                  { pkg=pack.pkgs.compiler;
-                    projection="intel/{version}";
-                    # TODO fix PATH to include legacy compiliers
-                  }
-                ];
-              }
-              # Oneapi
-              { name = "oneapi";
-                pack = final.intelOneApiPacks;
-                pkgs = pack: [
-                  { pkg=pack.pkgs.compiler;
-                    projection="oneapi/{version}";
-                  }
-                ];
-              }
+              packs.core
+              packs.aocc
+              packs.intel
+              packs.intelOneApi
             ];
             mpis = [
               { name="default"; }
@@ -533,9 +520,6 @@
           packs = [
             { name = "hpcwCore";
               pack = prefs: final.corePacks.withPrefs prefs;
-            }
-            { name = "hpcwCoreDev";
-              pack = prefs: final.coreDevPacks.withPrefs prefs;
             }
             { name = "hpcwIntel";
               pack = prefs: final.intelPacks.withPrefs prefs;
