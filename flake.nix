@@ -153,12 +153,42 @@
         shellHook = ''
           echo "+ source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash"
           echo "+ ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core"
-          echo "+ ml load intel openmpi fftw fiat openblas"
+          echo "+ ml load intel openmpi fftw fiat openblas cmake"
           echo "+ ml av"
           source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
           ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
-          ml load intel openmpi fftw fiat openblas
+          ml load intel openmpi fftw fiat openblas cmake
           ml av
+          test -e ~/PS1 && source ~/PS1
+        '';
+      };
+      devShells.hpcwIntelIfs = with pkgs; let
+        mods = mkModules corePacks (with hpcwIntelIfsPacks.pkgs; [
+          compiler
+          mpi
+          fftw
+          blas
+          python
+          eccodes
+          cmake
+          netcdf-c
+          netcdf-fortran
+          szip
+        ]);
+      in stdenvNoCC.mkDerivation {
+        name = "hpcw-intel-ifs";
+        ENVRC = "hpcw-intel-ifs";
+        nativeBuildInputs = [ bashInteractive ];
+        shellHook = ''
+          echo "+ source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash"
+          echo "+ ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core"
+          echo "+ ml load intel openmpi fftw fiat openblas cmake"
+          echo "+ ml av"
+          source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
+          ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
+          ml load intel openmpi fftw eccodes openblas cmake python netcdf-c netcdf-fortran
+          ml av
+          test -e ~/PS1 && source ~/PS1
         '';
       };
 

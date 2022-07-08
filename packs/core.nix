@@ -88,7 +88,14 @@ let
           ld = true;
         };
       };
-      hdf5.variants = { hl = true;  fortran=true; };
+      hdf5 = {
+        variants = {
+          hl = true;
+          fortran=true;
+          szip = true;
+        };
+        depends.szip = self.pkgs.szip;
+      };
       llvm.variants = {
         flang = true;
         mlir = true;
