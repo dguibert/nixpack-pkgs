@@ -247,17 +247,30 @@
             };
 
             intel = { name = "intel";
-              pack = intelOneApiPacks.withPrefs {
+              pack = corePacks.withPrefs {
                 label = "intel";
                 repoPatch = {
                   intel-oneapi-compilers = spec: old: {
                     compiler_spec = "intel"; # can be overridden as "intel" with prefs
+                    paths = {
+                      cc =  "compiler/latest/linux/bin/intel64/icc";
+                      cxx = "compiler/latest/linux/bin/intel64/icpc";
+                      f77 = "compiler/latest/linux/bin/intel64/ifort";
+                      fc =  "compiler/latest/linux/bin/intel64/ifort";
+                    };
                     provides = old.provides or {} // {
                       compiler = ":";
                     };
                     depends = old.depends or {} // {
                       compiler = null;
                     };
+                  };
+                };
+                package = {
+                  compiler = { name = "intel-oneapi-compilers"; };
+                  # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
+                  ucx = overlaySelf.corePacks.getPackagePrefs "ucx" // {
+                    depends.compiler = overlaySelf.corePacks.pkgs.compiler;
                   };
                 };
               };
@@ -275,6 +288,12 @@
                 repoPatch = {
                   intel-oneapi-compilers = spec: old: {
                     compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
+                    paths = {
+                      cc =  "compiler/latest/linux/bin/icx";
+                      cxx = "compiler/latest/linux/bin/icx";
+                      f77 = "compiler/latest/linux/bin/ifx";
+                      fc =  "compiler/latest/linux/bin/ifx";
+                    };
                     provides = old.provides or {} // {
                       compiler = ":";
                     };
@@ -582,6 +601,8 @@
             { name = "Ifs";
               prefs = {
                 package.python.version = "2";
+                # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
+                package.openjpeg.version = "2.3";
               };
             }
             { name = "Ectrans";

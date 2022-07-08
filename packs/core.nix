@@ -131,10 +131,12 @@ let
       py-setuptools.version = "57.4.0"; # for py-scpiy
 
       # no need to be recompiled for each compiler
+      cmake.depends.compiler = self.pkgs.compiler;
       hwloc.depends.compiler = self.pkgs.compiler;
       libevent.depends.compiler = self.pkgs.compiler;
       libnl.depends.compiler = self.pkgs.compiler;
       libpciaccess.depends.compiler = self.pkgs.compiler;
+      lua.depends.compiler = self.pkgs.compiler;
       numactl.depends.compiler = self.pkgs.compiler;
       # for aocc, infinite recursion breaking
       berkeley-db.depends.compiler = self.pkgs.compiler;
