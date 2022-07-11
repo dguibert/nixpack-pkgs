@@ -123,7 +123,7 @@
 
       legacyPackages = pkgs;
 
-      devShell = with pkgs; mkShell rec {
+      devShells.default = with pkgs; mkShell rec {
         name  = "nix-${builtins.replaceStrings [ "/" ] [ "-" ] nixStore}";
         ENVRC = name;
         nativeBuildInputs = [ pkgs.nix jq
@@ -138,31 +138,21 @@
         NIX_CONF_DIR = NIX_CONF_DIR_fun pkgs;
       };
 
-      devShells.hpcwIntelEctrans = with pkgs; let
+      devShells.hpcwIntelEctrans = with pkgs; mkDevShell {
+        name = "hpcw-intel-ectrans";
         mods = mkModules corePacks (with hpcwIntelEctransPacks.pkgs; [
           compiler
           mpi
           fftw
           blas
           fiat
+          cmake
         ]);
-      in stdenvNoCC.mkDerivation {
-        name = "hpcw-intel-ectrans";
-        ENVRC = "hpcw-intel-ectrans";
-        nativeBuildInputs = [ bashInteractive ];
-        shellHook = ''
-          echo "+ source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash"
-          echo "+ ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core"
-          echo "+ ml load intel openmpi fftw fiat openblas cmake"
-          echo "+ ml av"
-          source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
-          ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
-          ml load intel openmpi fftw openblas cmake
-          ml av
-          test -e ~/PS1 && source ~/PS1
-        '';
+        autoloads = "intel openmpi fftw openblas cmake";
       };
-      devShells.hpcwIntelIfs = with pkgs; let
+
+      devShells.hpcwIntelIfs = with pkgs; mkDevShell {
+        name = "hpcw-intel-ifs";
         mods = mkModules corePacks (with hpcwIntelIfsPacks.pkgs; [
           compiler
           mpi
@@ -175,21 +165,7 @@
           netcdf-fortran
           szip
         ]);
-      in stdenvNoCC.mkDerivation {
-        name = "hpcw-intel-ifs";
-        ENVRC = "hpcw-intel-ifs";
-        nativeBuildInputs = [ bashInteractive ];
-        shellHook = ''
-          echo "+ source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash"
-          echo "+ ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core"
-          echo "+ ml load intel openmpi fftw fiat openblas cmake"
-          echo "+ ml av"
-          source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
-          ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
-          ml load intel openmpi fftw eccodes openblas cmake python netcdf-c netcdf-fortran
-          ml av
-          test -e ~/PS1 && source ~/PS1
-        '';
+        autoloads = "intel openmpi fftw eccodes openblas cmake python netcdf-c netcdf-fortran";
       };
 
     })) // {
@@ -226,6 +202,30 @@
         overlaySelf = with overlaySelf; with prev; {
           inherit isLDep isRDep isRLDep;
           inherit rpmVersion rpmExtern;
+
+          mkDevShell = {
+            name
+            , mods
+            , autoloads ? ""
+            , ...
+          }@attrs: with pkgs; let
+            in stdenvNoCC.mkDerivation ({
+              ENVRC = name;
+              nativeBuildInputs = [ bashInteractive ];
+              shellHook = ''
+                echo_cmd() {
+                  echo "+ $@"
+                  $@
+                }
+                echo_cmd source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
+                echo_cmd ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
+                echo_cmd ml load ${autoloads}
+                echo_cmd ml av
+                test -e ~/PS1 && source ~/PS1
+                test -e ~/code/git-prompt.sh && source ~/code/git-prompt.sh
+              '';
+            } // attrs);
+
           packs = {
             bootstrap = { name = "bootstrap";
               pack = import ./packs/bootstrap.nix {
