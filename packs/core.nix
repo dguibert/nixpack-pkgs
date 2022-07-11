@@ -137,6 +137,7 @@ let
       libnl.depends.compiler = self.pkgs.compiler;
       libpciaccess.depends.compiler = self.pkgs.compiler;
       lua.depends.compiler = self.pkgs.compiler;
+      python.depends.compiler = self.pkgs.compiler;
       numactl.depends.compiler = self.pkgs.compiler;
       # for aocc, infinite recursion breaking
       berkeley-db.depends.compiler = self.pkgs.compiler;
