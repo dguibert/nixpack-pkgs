@@ -157,7 +157,7 @@
           echo "+ ml av"
           source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
           ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
-          ml load intel openmpi fftw fiat openblas cmake
+          ml load intel openmpi fftw openblas cmake
           ml av
           test -e ~/PS1 && source ~/PS1
         '';
@@ -582,9 +582,6 @@
                   nvhpc.variants.blas = false;
                   nvhpc.variants.lapack = false;
                   nvhpc.depends.compiler = final.corePacks.pkgs.compiler;
-
-                  cmake = core_compiler;
-                  eckit = core_compiler;
                 } // (prefs.package or {});
                 repoPatch = {
                   nvhpc = spec: old: {
