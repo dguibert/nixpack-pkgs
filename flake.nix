@@ -138,6 +138,20 @@
         NIX_CONF_DIR = NIX_CONF_DIR_fun pkgs;
       };
 
+      devShells.hpcwIntelEcrad = with pkgs; mkDevShell {
+        name = "hpcw-intel-ecrad";
+        mods = mkModules corePacks (with hpcwIntelPacks.pkgs; [
+          compiler
+          mpi
+          netcdf-c
+          netcdf-fortran
+          fftw
+          blas
+          cmake
+        ]);
+        autoloads = "intel openmpi fftw openblas cmake netcdf-c netcdf-fortran";
+      };
+
       devShells.hpcwIntelEctrans = with pkgs; mkDevShell {
         name = "hpcw-intel-ectrans";
         mods = mkModules corePacks (with hpcwIntelEctransPacks.pkgs; [
@@ -228,6 +242,7 @@
                 echo_cmd ml av
                 test -e ~/PS1 && source ~/PS1
                 test -e ~/code/git-prompt.sh && source ~/code/git-prompt.sh
+                export __git_ps1
               '';
             } // attrs);
 
@@ -600,6 +615,7 @@
             }
           ];
           variants = [
+            { name = ""; prefs = {}; } # default HPCW
             { name = "Ifs";
               prefs = {
                 package.python.version = "2";
