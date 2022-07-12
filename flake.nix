@@ -168,6 +168,11 @@
         autoloads = "intel openmpi fftw eccodes openblas cmake python netcdf-c netcdf-fortran";
       };
 
+      devShells.software = with pkgs; mkDevShell {
+        name = "slach-software";
+        mods = mods_osu;
+      };
+
     })) // {
       lib.findModDeps = pkgs: with inputs.nixpack.lib; with builtins; let
           mods = inputs.nixpkgs.lib.unique (map (x: addPkg x) pkgs);
