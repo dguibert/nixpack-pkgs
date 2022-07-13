@@ -260,7 +260,7 @@
                 pkgs = final.pkgs;
                 extraConf = (import ./hosts/${host}/core.nix { inherit rpmExtern inputs; pkgs = final.pkgs; }) // {
                   repos = [
-                    "${inputs.hpcw}/spack/hpcw"
+                    (builtins.path { name="hpcw-repo"; path="${inputs.hpcw}/spack/hpcw"; })
                   ];
                 };
               };
