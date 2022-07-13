@@ -148,6 +148,7 @@
           fftw
           blas
           cmake
+          ecrad
         ]);
         autoloads = "intel openmpi fftw openblas cmake netcdf-c netcdf-fortran";
       };
@@ -161,6 +162,7 @@
           blas
           fiat
           cmake
+          ectrans
         ]);
         autoloads = "intel openmpi fftw openblas cmake";
       };
@@ -178,6 +180,7 @@
           netcdf-c
           netcdf-fortran
           szip
+          ifs
         ]);
         autoloads = "intel openmpi fftw eccodes openblas cmake python netcdf-c netcdf-fortran";
       };
