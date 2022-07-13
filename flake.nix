@@ -645,6 +645,16 @@
                 package.openjpeg.version = "2.3";
               };
             }
+            { name = "DwarfPCloudSCGPU";
+              prefs = {
+                package.dwarf-p-cloudsc.variants.gpu = true;
+                package.dwarf-p-cloudsc.variants.cloudsc-gpu-claw = true;
+                #package.dwarf-p-cloudsc.variants.hdf5 = false;
+                #package.dwarf-p-cloudsc.variants.serialbox = true;
+                package.dwarf-p-cloudsc.variants.cloudsc-c = false; # require serialbox?
+                package.serialbox.version = "2.5.4-patched"; # require private url (TODO implement curl -n)
+              };
+            }
             { name = "NemoSmall";
               prefs = {
                 #BUILD_COMMAND ./makenemo -a BENCH -m X64_hpcw -j ${NEMO_BUILD_PARALLEL_LEVEL}

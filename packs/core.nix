@@ -135,6 +135,7 @@ let
       eckit.depends.compiler = self.pkgs.compiler;
       fckit.depends.compiler = self.pkgs.compiler;
       fiat.depends.compiler = self.pkgs.compiler;
+      gettext.depends.compiler = self.pkgs.compiler;
       hwloc.depends.compiler = self.pkgs.compiler;
       libevent.depends.compiler = self.pkgs.compiler;
       libnl.depends.compiler = self.pkgs.compiler;
