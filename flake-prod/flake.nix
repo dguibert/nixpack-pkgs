@@ -2,7 +2,8 @@
   description = "A flake for building packages on /software-like structure";
 
   inputs = {
-    nixpkgs.url          = "github:dguibert/nixpkgs/pu-nixpack";
+    #nixpkgs.url          = "github:dguibert/nixpkgs/pu-nixpack";
+    nixpkgs.url          = "github:dguibert/nixpkgs?rev=fcc37bb4977ad0866db6c9218a80278ae6f2f822";
 
     nix.url              = "github:dguibert/nix/pu";
     nix.inputs.nixpkgs.follows = "nixpkgs";

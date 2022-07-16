@@ -58,7 +58,7 @@ let
     package = {
       compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="11"; };
       openmpi = {
-        version = "4.1.3";
+        version = "4.1.2";
         variants = {
           fabrics = {
             none = false;
@@ -88,7 +88,14 @@ let
           ld = true;
         };
       };
-      hdf5.variants = { hl = true; };
+      hdf5 = {
+        variants = {
+          hl = true;
+          fortran=true;
+          szip = true;
+        };
+        depends.szip = self.pkgs.szip;
+      };
       llvm.variants = {
         flang = true;
         mlir = true;
@@ -124,29 +131,36 @@ let
       py-setuptools.version = "57.4.0"; # for py-scpiy
 
       # no need to be recompiled for each compiler
-      hwloc.depends.compiler = bootstrapPacks.pkgs.compiler;
-      libnl.depends.compiler = bootstrapPacks.pkgs.compiler;
-      libevent.depends.compiler = bootstrapPacks.pkgs.compiler;
-      libpciaccess.depends.compiler = bootstrapPacks.pkgs.compiler;
-      numactl.depends.compiler = bootstrapPacks.pkgs.compiler;
+      cmake.depends.compiler = self.pkgs.compiler;
+      eckit.depends.compiler = self.pkgs.compiler;
+      fckit.depends.compiler = self.pkgs.compiler;
+      fiat.depends.compiler = self.pkgs.compiler;
+      gettext.depends.compiler = self.pkgs.compiler;
+      hwloc.depends.compiler = self.pkgs.compiler;
+      libevent.depends.compiler = self.pkgs.compiler;
+      libnl.depends.compiler = self.pkgs.compiler;
+      libpciaccess.depends.compiler = self.pkgs.compiler;
+      lua.depends.compiler = self.pkgs.compiler;
+      numactl.depends.compiler = self.pkgs.compiler;
+      python.depends.compiler = self.pkgs.compiler;
       # for aocc, infinite recursion breaking
-      berkeley-db.depends.compiler = bootstrapPacks.pkgs.compiler;
-      freetype.depends.compiler = bootstrapPacks.pkgs.compiler;
-      gdbm.depends.compiler = bootstrapPacks.pkgs.compiler;
+      berkeley-db.depends.compiler = self.pkgs.compiler;
+      freetype.depends.compiler = self.pkgs.compiler;
+      gdbm.depends.compiler = self.pkgs.compiler;
       gdbm.version = "1.19"; # for perl
-      libiconv.depends.compiler = bootstrapPacks.pkgs.compiler;
-      libtool.depends.compiler = bootstrapPacks.pkgs.compiler;
-      libxml2.depends.compiler = bootstrapPacks.pkgs.compiler;
-      ncurses.depends.compiler = bootstrapPacks.pkgs.compiler;
-      perl.depends.compiler = bootstrapPacks.pkgs.compiler;
-      rdma-core.depends.compiler = bootstrapPacks.pkgs.compiler;
-      readline.depends.compiler = bootstrapPacks.pkgs.compiler;
-      texinfo.depends.compiler = bootstrapPacks.pkgs.compiler;
-      xz.depends.compiler = bootstrapPacks.pkgs.compiler;
-      zlib.depends.compiler = bootstrapPacks.pkgs.compiler;
+      libiconv.depends.compiler = self.pkgs.compiler;
+      libtool.depends.compiler = self.pkgs.compiler;
+      libxml2.depends.compiler = self.pkgs.compiler;
+      ncurses.depends.compiler = self.pkgs.compiler;
+      perl.depends.compiler = self.pkgs.compiler;
+      rdma-core.depends.compiler = self.pkgs.compiler;
+      readline.depends.compiler = self.pkgs.compiler;
+      texinfo.depends.compiler = self.pkgs.compiler;
+      xz.depends.compiler = self.pkgs.compiler;
+      zlib.depends.compiler = self.pkgs.compiler;
 
       # knem: has conflicts: %aocc Linux kernel module must be compiled with gcc
-      knem.depends.compiler = bootstrapPacks.pkgs.compiler;
+      knem.depends.compiler = self.pkgs.compiler;
 
       blom = {
         variants = {

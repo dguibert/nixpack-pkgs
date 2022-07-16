@@ -2,16 +2,29 @@
   "nodes": {
     "flake-utils": {
       "locked": {
-        "lastModified": 1653893745,
-        "narHash": "sha256-0jntwV3Z8//YwuOjzhV2sgJJPt+HY6KhU7VZUL0fKZQ=",
+        "lastModified": 1656928814,
+        "narHash": "sha256-RIFfgBuKz6Hp89yRr7+NR5tzIAbn52h8vT6vXkYjZoM=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "1ed9fb1935d260de5fe1c2f7ee0ebaae17ed2fa1",
+        "rev": "7e2a3b3dfd9af950a856d66b0a7d01e3c18aa249",
         "type": "github"
       },
       "original": {
         "id": "flake-utils",
         "type": "indirect"
+      }
+    },
+    "hpcw": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1657550693,
+        "narHash": "sha256-lcoyLu6rhT8qbOFr53KSRrDWAd+79U9+1mPYtEFtQ0k=",
+        "type": "git",
+        "url": "file:///home_nfs/bguibertd/work/hpcw"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home_nfs/bguibertd/work/hpcw"
       }
     },
     "lowdown-src": {
@@ -39,11 +52,11 @@
         "nixpkgs-regression": "nixpkgs-regression"
       },
       "locked": {
-        "lastModified": 1655816404,
-        "narHash": "sha256-Fw2YnSLLaXkSjW+7WAUH96paKsQI0LpBjL8KHDO6kvo=",
+        "lastModified": 1656311380,
+        "narHash": "sha256-Esa7Fj0dVCEW6n6LstfmGjs12CltIw6To5bj6mP2Bmk=",
         "owner": "dguibert",
         "repo": "nix",
-        "rev": "f664f377d53846d51dc60421849d2df3b42fc51a",
+        "rev": "288741df6414616b29070acd43ce898b34650932",
         "type": "github"
       },
       "original": {
@@ -61,12 +74,13 @@
         ]
       },
       "locked": {
-        "lastModified": 1653400436,
-        "narHash": "sha256-K+bXgm3dX3/gT7Iimx45kdkV0kagI8n639hCEhWdbdY=",
-        "owner": "dguibert",
-        "repo": "nixpack",
-        "rev": "05a76d5b51746619f8395403980dc40ec0dd157b",
-        "type": "github"
+        "lastModified": 1657276116,
+        "narHash": "sha256-nOqzKGHfzm7aJIEP6K5QLNx2EUtpPZ+FOq6xQTNmDmE=",
+        "ref": "refs/heads/pu",
+        "rev": "9fce082b50c9ad2bfd4bc34924980c21e5cc87ed",
+        "revCount": 441,
+        "type": "git",
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
       },
       "original": {
         "id": "nixpack",
@@ -83,8 +97,10 @@
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
+        "owner": "dguibert",
+        "ref": "pu-nixpack",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-regression": {
@@ -116,11 +132,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1651416226,
-        "narHash": "sha256-Y6yz3Cv+wDOHu9tPuLVEMJ1CFcdOXNNgU94BZn2pHu4=",
+        "lastModified": 1656311081,
+        "narHash": "sha256-lpi4sj4gIdo8fEQ1oduDTBrGP2oqduHpR7oLUPwHloc=",
         "owner": "dguibert",
         "repo": "nur-packages",
-        "rev": "81f660a8112938bc960172f96b956078417b745e",
+        "rev": "ceec118c3172693df87b5e7d08439cebef49a381",
         "type": "github"
       },
       "original": {
@@ -131,6 +147,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "hpcw": "hpcw",
         "nix": "nix",
         "nixpack": "nixpack",
         "nixpkgs": "nixpkgs",
