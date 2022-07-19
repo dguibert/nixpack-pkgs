@@ -919,6 +919,20 @@
                       wave = true;
                     };
                   };
+                  devShell = pack:
+                    with final.pkgs;
+                      mkDevShell {
+                        name = "hpcw-nemo-small";
+                        mods = mkModules corePacks (with pack.pkgs; [
+                          compiler
+                          mpi
+                          xios
+                          cmake
+                          nemo
+                          pkgconf # for hdf5?
+                        ]);
+                        autoloads = "intel openmpi xios cmake";
+                      };
                 }
                 {
                   name = "NemoMedium";
@@ -926,6 +940,20 @@
                     #BUILD_COMMAND ./makenemo -m X64_hpcw -n MY_ORCA25 -r ORCA2_ICE_PISCES  -j ${NEMO_BUILD_PARALLEL_LEVEL} del_key "key_top" add_key "key_si3  key_iomput key_mpp_mpi key_mpi2"
                     package.nemo.variants.cfg = "ORCA2_ICE_PISCES";
                   };
+                  devShell = pack:
+                    with final.pkgs;
+                      mkDevShell {
+                        name = "hpcw-nemo-medium";
+                        mods = mkModules corePacks (with pack.pkgs; [
+                          compiler
+                          mpi
+                          xios
+                          cmake
+                          nemo
+                          pkgconf # for hdf5?
+                        ]);
+                        autoloads = "intel openmpi xios cmake";
+                      };
                 }
               ];
             }))))
