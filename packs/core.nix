@@ -4,59 +4,61 @@ packs:
 , pkgs
 , isRLDep
 , rpmExtern
-, extraConf ? {}
+, extraConf ? { }
 }:
 let
   self = packs (extraConf // {
     inherit system;
-    label="core";
+    label = "core";
     global = {
       verbose = true;
       fixedDeps = true;
       /* any runtime dependencies use the current packs, others fall back to core */
       resolver = deptype: if isRLDep deptype then null else self;
     }
-    // (extraConf.global or {});
+    // (extraConf.global or { });
 
     spackConfig.config = {
       url_fetch_method = "curl";
     }
-    // (extraConf.spackConfig.config or {});
+    // (extraConf.spackConfig.config or { });
 
     repos = [
       ../repo
     ]
-    ++ (extraConf.repos or [])
+    ++ (extraConf.repos or [ ])
     ;
-    repoPatch = let
-      nocompiler = spec: old: { depends = old.depends or {} // { compiler = null; }; };
+    repoPatch =
+      let
+        nocompiler = spec: old: { depends = old.depends or { } // { compiler = null; }; };
 
-      no_lua_recdep = spec: old: {
-        depends = old.depends // {
-          lua-luajit = null; # conflicts with lua
-          lua-luajit-openresty = null;
+        no_lua_recdep = spec: old: {
+          depends = old.depends // {
+            lua-luajit = null; # conflicts with lua
+            lua-luajit-openresty = null;
+          };
         };
-      };
-    in {
-      arm-forge = nocompiler;
-      lua-luafilesystem = no_lua_recdep;
-      lua-luaposix = no_lua_recdep;
-      openmpi = spec: old: {
-        build = {
-          setup = ''
-            configure_args = pkg.configure_args()
-            if spec.satisfies("~pmix"):
-              if '--without-mpix' in configure_args: configure_args.remove('--without-pmix')
-            pkg.configure_args = lambda: configure_args
-          '';
+      in
+      {
+        arm-forge = nocompiler;
+        lua-luafilesystem = no_lua_recdep;
+        lua-luaposix = no_lua_recdep;
+        openmpi = spec: old: {
+          build = {
+            setup = ''
+              configure_args = pkg.configure_args()
+              if spec.satisfies("~pmix"):
+                if '--without-mpix' in configure_args: configure_args.remove('--without-pmix')
+              pkg.configure_args = lambda: configure_args
+            '';
+          };
         };
-      };
-    }
-    // (extraConf.repoPatch or {})
+      }
+      // (extraConf.repoPatch or { })
     ;
 
     package = {
-      compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="11"; };
+      compiler = bootstrapPacks.pkgs.gcc.withPrefs { version = "11"; };
       openmpi = {
         version = "4.1.2";
         variants = {
@@ -91,7 +93,7 @@ let
       hdf5 = {
         variants = {
           hl = true;
-          fortran=true;
+          fortran = true;
           szip = true;
         };
         depends.szip = self.pkgs.szip;
@@ -103,7 +105,7 @@ let
       libiberty.variants.pic = true; # for dyninst
       libfabric = {
         variants = {
-          fabrics = ["udp" "rxd" "shm" "sockets" "tcp" "rxm" "verbs" "mlx"];
+          fabrics = [ "udp" "rxd" "shm" "sockets" "tcp" "rxm" "verbs" "mlx" ];
         };
       };
       ucx = {
@@ -120,7 +122,7 @@ let
         };
       };
 
-      minimap2.variants.js_engine.k8      = false;
+      minimap2.variants.js_engine.k8 = false;
       minimap2.variants.js_engine.node-js = true;
       py-viridian.version = "main";
       py-varifier.version = "master";
@@ -132,9 +134,9 @@ let
 
       # no need to be recompiled for each compiler
       cmake.depends.compiler = self.pkgs.compiler;
-      eckit.depends.compiler = self.pkgs.compiler;
-      fckit.depends.compiler = self.pkgs.compiler;
-      fiat.depends.compiler = self.pkgs.compiler;
+      #eckit.depends.compiler = self.pkgs.compiler;
+      #fckit.depends.compiler = self.pkgs.compiler;
+      #fiat.depends.compiler = self.pkgs.compiler;
       gettext.depends.compiler = self.pkgs.compiler;
       hwloc.depends.compiler = self.pkgs.compiler;
       libevent.depends.compiler = self.pkgs.compiler;
@@ -174,7 +176,8 @@ let
       #tar dependency zstd: package zstd@1.5.2~programs compression= libs=+shared,+static does not match dependency constraints {"variants":{"programs":true}}
       zstd.variants.programs = true;
     }
-    // (extraConf.package or {})
+    // (extraConf.package or { })
     ;
   });
-in self
+in
+self

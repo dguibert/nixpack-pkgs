@@ -23,7 +23,7 @@ index df6c65ff72..a98772b948 100644
 +	asm("vfmadd231pd (%1), %2, %0 %{%3%}": "+v"(result##M##N):"r"(&C[(j+N)*ldc + i + (M*8)]), "v"(beta_512), "Yk"(mask)); \
  	_mm512_mask_storeu_pd(&C[(j+N)*ldc + i + (M*8)], mask, result##M##N)
  #endif
- 
+
 @@ -266,7 +266,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
  	int mm = M - i;
  	if (!mm) return 0;
@@ -67,7 +67,7 @@ index cea63172b3..2366fe3aa9 100644
 +	asm("vfmadd231ps (%1), %2, %0 %{%3%}": "+v"(result##M##N):"r"(&C[(j+N)*ldc + i + (M*16)]), "v"(beta_512), "Yk"(mask)); \
  	_mm512_mask_storeu_ps(&C[(j+N)*ldc + i + (M*16)], mask, result##M##N)
  #endif
- 
+
 @@ -267,7 +267,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
  	int mm = M - i;
  	if (!mm) return 0;
