@@ -56,7 +56,7 @@ let
     ;
 
     package = {
-      compiler = bootstrapPacks.pkgs.gcc.withPrefs { version="11"; };
+      compiler = bootstrapPacks.pkgs.gcc;
       openmpi = {
         version = "4.1.2";
         variants = {
@@ -80,6 +80,7 @@ let
           legacylaunchers = true;
         };
       };
+      gcc.version = "10";
       pmix.version = "4.1.1";
       boost.version = "1.72.0";
       binutils = {
