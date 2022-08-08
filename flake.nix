@@ -186,8 +186,14 @@
       };
 
       devShells.software = with pkgs; mkDevShell {
-        name = "slach-software";
+        name = "slash-software";
         mods = mods_osu;
+      };
+
+      devShells.hip = with pkgs; mkDevShell {
+        name = "slash-hip";
+        mods = mods_hip;
+        autoloads = "gcc hip openmpi cmake";
       };
 
     })) // {
@@ -374,7 +380,7 @@
           aoccPacks = final.packs.aocc.pack;
 
           mkModules = pack: pkgs: pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig ({
-            coreCompilers = [ final.corePacks.pkgs.compiler ];
+            coreCompilers = [ /*pack.pkgs.compiler*/ final.bootstrapPacks.pkgs.compiler ];
             pkgs = self.lib.findModDeps pkgs;
           }));
 
@@ -431,6 +437,34 @@
           })
           )
           );
+
+          mods_hip = final.mkModules final.corePacks (with (corePacks.withPrefs {
+            package.mesa.variants.llvm = false;
+            package.ucx.variants = ((corePacks.getPackagePrefs "ucx").variants or {}) // {
+              cuda = true;
+              gdrcopy = false;
+              rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
+            };
+
+            repoPatch = {
+              llvm-amdgpu = spec: old: {
+                provides = old.provides or {} // {
+                  compiler = null;
+                };
+              };
+            };
+          }).pkgs; [
+            compiler
+            mpi
+            hip
+            { pkg=llvm-amdgpu;
+              context.provides = []; # not real compiler
+            }
+            #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
+            #hipfft
+            cmake
+            cuda
+          ]);
 
           nix = prev.nix.overrideAttrs (o: {
             patches = [
