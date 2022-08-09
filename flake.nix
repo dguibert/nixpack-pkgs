@@ -319,7 +319,7 @@
                     compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
                     paths = {
                       cc =  "compiler/latest/linux/bin/icx";
-                      cxx = "compiler/latest/linux/bin/icx";
+                      cxx = "compiler/latest/linux/bin/icpx";
                       f77 = "compiler/latest/linux/bin/ifx";
                       fc =  "compiler/latest/linux/bin/ifx";
                     };
