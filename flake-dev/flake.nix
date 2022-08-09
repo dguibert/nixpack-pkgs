@@ -2,15 +2,15 @@
   description = "A flake for building packages on /software-like structure";
 
   inputs = {
-    nixpkgs.url          = "github:dguibert/nixpkgs/pu-nixpack";
+    nixpkgs.url = "github:dguibert/nixpkgs/pu-nixpack";
 
     #nix.url              = "github:dguibert/nix/a828ef7ec896e4318d62d2bb5fd391e1aabf242e";
-    nix.url              = "github:dguibert/nix/pu";
+    nix.url = "github:dguibert/nix/pu";
     nix.inputs.nixpkgs.follows = "nixpkgs";
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    nur_dguibert.url     = "github:dguibert/nur-packages/master";
+    nur_dguibert.url = "github:dguibert/nur-packages/master";
     nur_dguibert.inputs.nixpkgs.follows = "nixpkgs";
     nur_dguibert.inputs.nix.follows = "nix";
     nur_dguibert.inputs.flake-utils.follows = "flake-utils";
@@ -27,11 +27,11 @@
     #spack = { url = "git+ssh://genji/home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
     #spack = { url = "git+https://gitlab.bench.local:24443/bguibertd/spack.git?ref=develop"; flake=false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
-    spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack"; flake=false; };
+    spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack"; flake = false; };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?rev=635b4b4ffedb7c635c63975802955f6ace8b8b7d"; flake=false; };
     #spack = { url = "/home_nfs/bguibertd/software-cepp-spack/spack"; flake=false; };
 
-    hpcw = { url = "git+file:///home_nfs/bguibertd/work/hpcw"; flake =false; };
+    hpcw = { url = "git+file:///home_nfs/bguibertd/work/hpcw"; flake = false; };
   };
 
   outputs = { ... }: { };

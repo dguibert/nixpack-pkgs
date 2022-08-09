@@ -1,7 +1,8 @@
 { corePacks
 , rpmExtern
-, extraConf ? {}
-}: let
+, extraConf ? { }
+}:
+let
   self = corePacks.withPrefs {
     label = "bootstrap";
     global = {
@@ -18,5 +19,6 @@
       gdbm.depends.compiler = self.pkgs.compiler;
       gdbm.version = "1.19"; # for perl
     }
-    // (extraConf.package or {});
-  }; in self
+    // (extraConf.package or { });
+  }; in
+self
