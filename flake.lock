@@ -2,11 +2,11 @@
   "nodes": {
     "flake-utils": {
       "locked": {
-        "lastModified": 1656065134,
-        "narHash": "sha256-oc6E6ByIw3oJaIyc67maaFcnjYOz1mMcOtHxbEf9NwQ=",
+        "lastModified": 1659877975,
+        "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "bee6a7250dd1b01844a2de7e02e4df7d8a0a206c",
+        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
         "type": "github"
       },
       "original": {
@@ -17,11 +17,11 @@
     "hpcw": {
       "flake": false,
       "locked": {
-        "lastModified": 1657032589,
-        "narHash": "sha256-R3g6r2Qo/nPye+8lMmm9phiA91cQ+1LwJ8FMmQ8nmUI=",
+        "lastModified": 1658133102,
+        "narHash": "sha256-/WzhOe86iGr4yPOto6G5Mj3CUsPJNgJj3/SMz8a0g/k=",
         "ref": "refs/heads/dg/spack",
-        "rev": "ec9719cdfba3eb981b4376edb4ec2b3e7f439665",
-        "revCount": 953,
+        "rev": "8def7634079afe7317528d978663f8a435b6c0f0",
+        "revCount": 962,
         "type": "git",
         "url": "file:///home_nfs/bguibertd/work/hpcw"
       },
@@ -55,11 +55,11 @@
         "nixpkgs-regression": "nixpkgs-regression"
       },
       "locked": {
-        "lastModified": 1655816404,
-        "narHash": "sha256-Fw2YnSLLaXkSjW+7WAUH96paKsQI0LpBjL8KHDO6kvo=",
+        "lastModified": 1656311380,
+        "narHash": "sha256-Esa7Fj0dVCEW6n6LstfmGjs12CltIw6To5bj6mP2Bmk=",
         "owner": "dguibert",
         "repo": "nix",
-        "rev": "f664f377d53846d51dc60421849d2df3b42fc51a",
+        "rev": "288741df6414616b29070acd43ce898b34650932",
         "type": "github"
       },
       "original": {
@@ -77,13 +77,12 @@
         ]
       },
       "locked": {
-        "lastModified": 1655998502,
-        "narHash": "sha256-EnMR54rDfmPRkaEjS4jPbGieKEBf8cPdcCbTKnAk5uk=",
-        "ref": "refs/heads/pu",
-        "rev": "0920dc4e96577f2effa2524d7391b7137c8bd492",
-        "revCount": 439,
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "lastModified": 1659948320,
+        "narHash": "sha256-/tugJzYMo5ohlU6e0Lbh2F12MppAX6AFpc50356p2O0=",
+        "owner": "dguibert",
+        "repo": "nixpack",
+        "rev": "3bba57bac7025416622ed2c3496721af80232d81",
+        "type": "github"
       },
       "original": {
         "id": "nixpack",
@@ -135,16 +134,39 @@
         ]
       },
       "locked": {
-        "lastModified": 1649855144,
-        "narHash": "sha256-egXSGY71Cck9OqrUguUfc0z1qPQQBWOF/8kT8BN4BSQ=",
+        "lastModified": 1656311081,
+        "narHash": "sha256-lpi4sj4gIdo8fEQ1oduDTBrGP2oqduHpR7oLUPwHloc=",
         "owner": "dguibert",
         "repo": "nur-packages",
-        "rev": "822add2e35a2aa64a2b798ab2f307b19989f83dc",
+        "rev": "ceec118c3172693df87b5e7d08439cebef49a381",
         "type": "github"
       },
       "original": {
         "id": "nur_dguibert",
         "type": "indirect"
+      }
+    },
+    "pre-commit-hooks": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1659629599,
+        "narHash": "sha256-c9rvaqaH3HZo/C70E7rB18YSywa4ryTtN7CZ3cuCmoA=",
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "rev": "6a9402e8f233de16536349d1dd3f4595c23386a4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "type": "github"
       }
     },
     "root": {
@@ -155,6 +177,7 @@
         "nixpack": "nixpack",
         "nixpkgs": "nixpkgs",
         "nur_dguibert": "nur_dguibert",
+        "pre-commit-hooks": "pre-commit-hooks",
         "spack": "spack"
       }
     },
@@ -163,11 +186,11 @@
       "locked": {
         "lastModified": 1655989582,
         "narHash": "sha256-k4rJQX4muiZ95b59uQLOpTAZQmfS4TMLhGOXWbSPK+E=",
-        "ref": "refs/heads/develop",
+        "ref": "develop",
         "rev": "fb1f5ad322d3fea18d53659020c21123bcdaf3a8",
         "revCount": 26575,
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       },
       "original": {
         "id": "spack",

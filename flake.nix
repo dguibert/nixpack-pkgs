@@ -10,7 +10,7 @@
   inputs.nixpack.inputs.spack.follows = "spack";
   inputs.nixpack.inputs.nixpkgs.follows = "nixpkgs";
   inputs.spack.flake = false;
-  inputs.hpcw = { url = "git+file:///home_nfs/bguibertd/work/hpcw"; flake = false; };
+  inputs.hpcw = { url = "git+file:///home_nfs/bguibertd/work/hpcw?ref=refs%2fheads%2fdg%2fspack"; flake = false; };
 
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
@@ -266,29 +266,31 @@
                 };
               };
               pkgs = pack: [
-                { pkg=pack.pkgs.compiler;
-                  projection="intel/{version}";
+                {
+                  pkg = pack.pkgs.compiler;
+                  projection = "intel/{version}";
                   # TODO fix PATH to include legacy compiliers
                 }
               ];
             };
 
-            intelOneApi = { name ="intel-oneapi";
+            intelOneApi = {
+              name = "intel-oneapi";
               pack = corePacks.withPrefs {
                 label = "intel-oneapi";
                 repoPatch = {
                   intel-oneapi-compilers = spec: old: {
                     compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
                     paths = {
-                      cc =  "compiler/latest/linux/bin/icx";
+                      cc = "compiler/latest/linux/bin/icx";
                       cxx = "compiler/latest/linux/bin/icpx";
                       f77 = "compiler/latest/linux/bin/ifx";
-                      fc =  "compiler/latest/linux/bin/ifx";
+                      fc = "compiler/latest/linux/bin/ifx";
                     };
-                    provides = old.provides or {} // {
+                    provides = old.provides or { } // {
                       compiler = ":";
                     };
-                    depends = old.depends or {} // {
+                    depends = old.depends or { } // {
                       compiler = null;
                     };
                   };
@@ -302,13 +304,15 @@
                 };
               };
               pkgs = pack: [
-                { pkg=pack.pkgs.compiler;
-                  projection="oneapi/{version}";
+                {
+                  pkg = pack.pkgs.compiler;
+                  projection = "oneapi/{version}";
                 }
               ];
             };
 
-            aocc = { name ="aocc";
+            aocc = {
+              name = "aocc";
               pack = corePacks.withPrefs {
                 package = {
                   compiler = { name = "aocc"; };
@@ -323,7 +327,7 @@
                       f77 = "bin/flang";
                       fc = "bin/flang";
                     };
-                    provides = old.provides or {} // {
+                    provides = old.provides or { } // {
                       compiler = ":";
                     };
                     depends = old.depends // {
@@ -480,7 +484,7 @@
 
           mods_hip = final.mkModules final.corePacks (with (corePacks.withPrefs {
             package.mesa.variants.llvm = false;
-            package.ucx.variants = ((corePacks.getPackagePrefs "ucx").variants or {}) // {
+            package.ucx.variants = ((corePacks.getPackagePrefs "ucx").variants or { }) // {
               cuda = true;
               gdrcopy = false;
               rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
@@ -488,7 +492,7 @@
 
             repoPatch = {
               llvm-amdgpu = spec: old: {
-                provides = old.provides or {} // {
+                provides = old.provides or { } // {
                   compiler = null;
                 };
               };
@@ -497,8 +501,9 @@
             compiler
             mpi
             hip
-            { pkg=llvm-amdgpu;
-              context.provides = []; # not real compiler
+            {
+              pkg = llvm-amdgpu;
+              context.provides = [ ]; # not real compiler
             }
             #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
             #hipfft
