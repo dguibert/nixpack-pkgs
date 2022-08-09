@@ -1,6 +1,7 @@
-{ rpmExtern
-, pkgs
-, ...
+{
+  rpmExtern,
+  pkgs,
+  ...
 }: {
   os = "rhel7";
   spackConfig.config.source_cache = "/cluster/projects/nn9560k/dguibert/spack/mirror";
@@ -21,11 +22,13 @@
     pkgconfig = rpmExtern "pkgconfig";
     #perl = { extern=pkgs.perl; version=pkgs.perl.version; };
     perl = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
-    slurm = rpmExtern "slurm" // {
-      variants = {
-        #pmix = true;
-        hwloc = true;
+    slurm =
+      rpmExtern "slurm"
+      // {
+        variants = {
+          #pmix = true;
+          hwloc = true;
+        };
       };
-    };
   };
 }

@@ -1,6 +1,7 @@
-{ rpmExtern
-, pkgs
-, ...
+{
+  rpmExtern,
+  pkgs,
+  ...
 }: {
   os = "rhel8";
   spackConfig.config.source_cache = "/software/spack/mirror";
@@ -32,11 +33,13 @@
     openssl = rpmExtern "openssl";
     pkgconfig = rpmExtern "pkgconf";
     #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
-    slurm = rpmExtern "slurm" // {
-      variants = {
-        #pmix = true;
-        hwloc = true;
+    slurm =
+      rpmExtern "slurm"
+      // {
+        variants = {
+          #pmix = true;
+          hwloc = true;
+        };
       };
-    };
   };
 }

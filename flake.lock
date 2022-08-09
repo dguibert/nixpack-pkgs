@@ -26,6 +26,7 @@
         "url": "file:///home_nfs/bguibertd/work/hpcw"
       },
       "original": {
+        "ref": "refs/heads/dg/spack",
         "type": "git",
         "url": "file:///home_nfs/bguibertd/work/hpcw"
       }
