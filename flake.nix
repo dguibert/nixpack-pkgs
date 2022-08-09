@@ -54,16 +54,6 @@
         };
       };
 
-    isLDep = builtins.elem "link";
-    isRDep = builtins.elem "run";
-    isRLDep = d: isLDep d || isRDep d;
-
-    rpmVersion = pkg: inputs.nixpack.lib.capture ["/bin/rpm" "-q" "--queryformat=%{VERSION}" pkg] {};
-    rpmExtern = pkg: {
-      extern = "/usr";
-      version = rpmVersion pkg;
-    };
-
     modulesConfig = {
       config = {
         hierarchy = ["mpi"];
@@ -153,56 +143,10 @@
       };
     }))
     // {
-      lib.findModDeps = pkgs:
-        with inputs.nixpack.lib;
-        with builtins; let
-          mods = inputs.nixpkgs.lib.unique (map (x: addPkg x) pkgs);
-          addPkg = x:
-            if x ? spec
-            then
-              if x.spec.extern == null
-              then {pkg = x;}
-              else
-                /*
-                 builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
-                 */
-                {
-                  pkg = x;
-                  projection = "${x.spec.name}/${x.spec.version}";
-                }
-            else x;
-          pred = x: (isRLDep (x.pkg.deptype or []));
-
-          pkgOrSpec = p: p.pkg.spec or p;
-          adddeps = s: pkgs:
-            add s
-            (
-              filter
-              (p:
-                /*
-                 builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
-                 */
-                  p
-                  != null
-                  && ! (any (x: pkgOrSpec x == pkgOrSpec p) s)
-                  && pred p)
-              (
-                nubBy (x: y: pkgOrSpec x == pkgOrSpec y)
-                (concatMap
-                  (
-                    p:
-                      map (x: addPkg x)
-                      (attrValues (p.pkg.spec.depends or {}))
-                  )
-                  pkgs)
-              )
-            );
-          add = s: pkgs:
-            if pkgs == []
-            then s
-            else adddeps (s ++ pkgs) pkgs;
-        in
-          add [] (toList mods);
+      lib = import ./lib {
+        lib = inputs.nixpkgs.lib;
+        nixpack_lib = inputs.nixpack.lib;
+      };
 
       overlay =
         final: prev: let
@@ -211,8 +155,8 @@
 
           overlaySelf = with overlaySelf;
           with prev; {
-            inherit isLDep isRDep isRLDep;
-            inherit rpmVersion rpmExtern;
+            inherit (self.lib) isLDep isRDep isRLDep;
+            inherit (self.lib) rpmVersion rpmExtern;
 
             mkDevShell = {
               name,
