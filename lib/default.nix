@@ -6,6 +6,29 @@
 in
   virtual_lib
   // rec {
+    loadPacks =
+      prev: dir:
+        with lib;
+        with builtins; let
+          content = readDir dir;
+          filtered = filterAttrs (key: val: ! hasPrefix "." key && (hasSuffix ".nix" key || val == "directory")) content;
+          out = attrNames filtered;
+        in
+          /*
+           if pathExists dir then
+           */
+          listToAttrs (map (n: {
+              name = replaceStrings [".nix"] [""] n;
+              value = removeAttrs (prev.callPackage (dir + "/${n}") {}) ["override"];
+            })
+            out)
+      /*
+       else {}
+       */
+      ;
+
+    packsFun = nixpack_lib.packs;
+
     isLDep = builtins.elem "link";
     isRDep = builtins.elem "run";
     isRLDep = d: isLDep d || isRDep d;

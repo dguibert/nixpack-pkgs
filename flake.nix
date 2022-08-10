@@ -157,6 +157,7 @@
           with prev; {
             inherit (self.lib) isLDep isRDep isRLDep;
             inherit (self.lib) rpmVersion rpmExtern;
+            inherit (self.lib) packsFun loadPacks virtual;
 
             mkDevShell = {
               name,
@@ -197,155 +198,35 @@
                   }
                   // (builtins.removeAttrs attrs ["shellHook"]));
 
-            packs = {
-              bootstrap = {
-                name = "bootstrap";
-                pack = import ./packs/bootstrap.nix {
-                  inherit corePacks rpmExtern;
-                  extraConf = import ./hosts/${host}/bootstrap.nix {
-                    inherit rpmExtern;
-                    pkgs = final.pkgs;
-                  };
+            default_pack = virtual (self:
+              with self; {
+                name = label;
+                pack = packsFun {
+                  inherit os system label global spackConfig repos repoPatch package spackPython spackEnv;
                 };
-              };
+                inherit system;
 
-              core = {
-                name = "core";
-                pack =
-                  import ./packs/core.nix inputs.nixpack.lib.packs
-                  {
-                    inherit system bootstrapPacks isRLDep rpmExtern;
-                    pkgs = final.pkgs;
-                    extraConf =
-                      (import ./hosts/${host}/core.nix {
-                        inherit rpmExtern inputs;
-                        pkgs = final.pkgs;
-                      })
-                      // {
-                        repos = [
-                          (builtins.path {
-                            name = "hpcw-repo";
-                            path = "${inputs.hpcw}/spack/hpcw";
-                          })
-                        ];
-                      };
-                  };
-              };
-
-              intel = {
-                name = "intel";
-                pack = corePacks.withPrefs {
-                  label = "intel";
-                  repoPatch = {
-                    intel-oneapi-compilers = spec: old: {
-                      compiler_spec = "intel"; # can be overridden as "intel" with prefs
-                      paths = {
-                        cc = "compiler/latest/linux/bin/intel64/icc";
-                        cxx = "compiler/latest/linux/bin/intel64/icpc";
-                        f77 = "compiler/latest/linux/bin/intel64/ifort";
-                        fc = "compiler/latest/linux/bin/intel64/ifort";
-                      };
-                      provides =
-                        old.provides
-                        or {}
-                        // {
-                          compiler = ":";
-                        };
-                      depends =
-                        old.depends
-                        or {}
-                        // {
-                          compiler = null;
-                        };
-                    };
-                  };
+                global = {
+                  verbose = true;
+                  fixedDeps = true;
+                  resolver = null;
                 };
-                pkgs = pack: [
-                  {
-                    pkg = pack.pkgs.compiler;
-                    projection = "intel/{version}";
-                    # TODO fix PATH to include legacy compiliers
-                  }
-                ];
-              };
 
-              intelOneApi = {
-                name = "intel-oneapi";
-                pack = corePacks.withPrefs {
-                  label = "intel-oneapi";
-                  repoPatch = {
-                    intel-oneapi-compilers = spec: old: {
-                      compiler_spec = "oneapi"; # can be overridden as "intel" with prefs
-                      paths = {
-                        cc = "compiler/latest/linux/bin/icx";
-                        cxx = "compiler/latest/linux/bin/icpx";
-                        f77 = "compiler/latest/linux/bin/ifx";
-                        fc = "compiler/latest/linux/bin/ifx";
-                      };
-                      provides =
-                        old.provides
-                        or {}
-                        // {
-                          compiler = ":";
-                        };
-                      depends =
-                        old.depends
-                        or {}
-                        // {
-                          compiler = null;
-                        };
-                    };
-                  };
-                  package = {
-                    compiler = {name = "intel-oneapi-compilers";};
-                    # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
-                    ucx =
-                      overlaySelf.corePacks.getPackagePrefs "ucx"
-                      // {
-                        depends.compiler = overlaySelf.corePacks.pkgs.compiler;
-                      };
-                  };
-                };
-                pkgs = pack: [
-                  {
-                    pkg = pack.pkgs.compiler;
-                    projection = "oneapi/{version}";
-                  }
-                ];
-              };
+                spackConfig.config.url_fetch_method = "curl";
+                repos = [];
+                repoPatch = {};
+                package = {};
+              });
 
-              aocc = {
-                name = "aocc";
-                pack = corePacks.withPrefs {
-                  package = {
-                    compiler = {name = "aocc";};
-                    aocc.variants.license-agreed = true;
-                  };
+            packs' = self.lib.loadPacks prev ./packs;
+            host_packs' = self.lib.loadPacks prev ./hosts/${host};
+            packs = packs' // host_packs';
 
-                  repoPatch = {
-                    aocc = spec: old: {
-                      paths = {
-                        cc = "bin/clang";
-                        cxx = "bin/clang++";
-                        f77 = "bin/flang";
-                        fc = "bin/flang";
-                      };
-                      provides =
-                        old.provides
-                        or {}
-                        // {
-                          compiler = ":";
-                        };
-                      depends =
-                        old.depends
-                        // {
-                          compiler = null;
-                        };
-                    };
-                  };
-                };
-              };
+            hpcw_repo = builtins.path {
+              name = "hpcw-repo";
+              path = "${inputs.hpcw}/spack/hpcw";
             };
+
             bootstrapPacks = final.packs.bootstrap.pack;
             corePacks = final.packs.core.pack;
             intelPacks = final.packs.intel.pack;
