@@ -3,7 +3,11 @@ packs.default._merge (self:
     with self; {
       label = "aocc";
       package = {
-        compiler = {name = "aocc";};
+        compiler = {
+          name = "aocc";
+          extern = null;
+          version = null;
+        };
         aocc.variants.license-agreed = true;
       };
 
