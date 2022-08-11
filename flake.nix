@@ -586,31 +586,7 @@
                 }
                 {
                   name = "hpcwNvhpc";
-                  pack = prefs:
-                    final.corePacks.withPrefs (prefs
-                      // {
-                        package = let
-                          core_compiler = {depends.compiler = final.corePacks.pkgs.compiler;};
-                        in
-                          {
-                            compiler = {name = "nvhpc";};
-                            nvhpc.variants.blas = false;
-                            nvhpc.variants.lapack = false;
-                            nvhpc.depends.compiler = final.corePacks.pkgs.compiler;
-                          }
-                          // (prefs.package or {});
-                        repoPatch = {
-                          nvhpc = spec: old: {
-                            provides =
-                              old.provides
-                              or {}
-                              // {
-                                compiler = ":";
-                              };
-                            conflicts = [];
-                          };
-                        };
-                      });
+                  pack = prefs: final.packs.nvhpc.pack.withPrefs prefs;
                 }
               ];
               variants = [
