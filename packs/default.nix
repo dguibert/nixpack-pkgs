@@ -7,7 +7,7 @@
 }:
 default_pack._merge (self:
     with self; {
-      label = "default";
+      label = "core";
       global = {
         resolver = deptype:
           if isRLDep deptype

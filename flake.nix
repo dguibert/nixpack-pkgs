@@ -231,6 +231,52 @@
                   });
               };
 
+            confPacks = inputs.nixpkgs.lib.listToAttrs (
+              inputs.nixpkgs.lib.flatten (map (attr:
+                  with attr; let
+                    pack_ = variants packs;
+                  in [
+                    {
+                      name = pack_.label;
+                      value = pack_;
+                    }
+                  ])
+                ([]
+                  # hpcw configurations
+                  ++ (inputs.nixpkgs.lib.cartesianProductOfSets {
+                    packs = [
+                      packs.default
+                      packs.intel
+                      packs.nvhpc
+                    ];
+                    variants = [
+                      (import ./confs/hpcw.nix final)
+                      (import ./confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
+                      (import ./confs/hpcw-dwarf-p-cloudsc.nix final)
+                      (import ./confs/hpcw-ecrad.nix final)
+                      (import ./confs/hpcw-ectrans.nix final)
+                      (pack:
+                        (import ./confs/hpcw-ectrans.nix final pack)._merge {
+                          label = "hpcw_" + pack.label + "_ectrans_mkl";
+                          package.ectrans.variants.mkl = true;
+                        })
+                      (pack:
+                        (import ./confs/hpcw-ectrans.nix final pack)._merge {
+                          label = "hpcw_" + pack.label + "_ectrans_gpu";
+                          package.ectrans.version = "gpu";
+                          package.ectrans.variants.cuda = true;
+                          # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
+                          package.openjpeg.version = "2.3";
+                        })
+                      (import ./confs/hpcw-ifs.nix final)
+                      (import ./confs/hpcw-nemo-small.nix final)
+                      (import ./confs/hpcw-nemo-medium.nix final)
+                      #(import ./confs/hpcw-nemo-big.nix final)
+                    ];
+                  })))
+              # end of configurations
+            );
+
             hpcw_repo = builtins.path {
               name = "hpcw-repo";
               path = "${inputs.hpcw}/spack/hpcw";
@@ -551,208 +597,6 @@
                 }
               ];
             })))
-          # hpcw configurations
-          // (inputs.nixpkgs.lib.listToAttrs (inputs.nixpkgs.lib.flatten (map (attr:
-              with attr; [
-                {
-                  name = packs.name + variants.name + "Packs";
-                  value = packs.pack variants.prefs;
-                }
-                {
-                  name = packs.name + variants.name + "DevShell";
-                  value = variants.devShell final."${packs.name + variants.name + "Packs"}";
-                }
-              ])
-            (inputs.nixpkgs.lib.cartesianProductOfSets {
-              packs = [
-                {
-                  name = "hpcwCore";
-                  pack = prefs: final.corePacks.withPrefs prefs;
-                }
-                {
-                  name = "hpcwIntel";
-                  pack = prefs: final.intelPacks.withPrefs prefs;
-                }
-                {
-                  name = "hpcwNvhpc";
-                  pack = prefs: final.packs.nvhpc.pack.withPrefs prefs;
-                }
-              ];
-              variants = [
-                {
-                  name = "";
-                  prefs = {};
-                } # default HPCW
-                {
-                  name = "Ifs";
-                  prefs = {
-                    package.python.version = "2";
-                    package.python.depends.compiler = final.corePacks.pkgs.compiler;
-                    # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
-                    package.openjpeg.version = "2.3";
-                    package.openjpeg.depends.compiler = final.corePacks.pkgs.compiler;
-                  };
-                  devShell = pack:
-                    with final.pkgs;
-                      mkDevShell {
-                        name = "hpcw-ifs";
-                        mods = mkModules corePacks (with pack.pkgs; [
-                          compiler
-                          mpi
-                          fftw
-                          blas
-                          python
-                          eccodes
-                          cmake
-                          netcdf-c
-                          netcdf-fortran
-                          szip
-                          ifs
-                        ]);
-                        autoloads = "intel openmpi fftw eccodes openblas cmake python netcdf-c netcdf-fortran";
-                      };
-                }
-                {
-                  name = "Ecrad";
-                  prefs = {};
-                  devShell = pack:
-                    with final.pkgs;
-                      mkDevShell {
-                        name = "hpcw-ecrad";
-                        mods = mkModules corePacks (with pack.pkgs; [
-                          compiler
-                          mpi
-                          netcdf-c
-                          netcdf-fortran
-                          fftw
-                          blas
-                          cmake
-                          ecrad
-                        ]);
-                        autoloads = "intel openmpi fftw openblas cmake netcdf-c netcdf-fortran";
-                      };
-                }
-
-                {
-                  name = "Ectrans";
-                  prefs = {
-                    package.ectrans.version = "main";
-                  };
-                  devShell = pack:
-                    with final.pkgs;
-                      mkDevShell {
-                        name = "hpcw-ectrans";
-                        mods = mkModules corePacks (with pack.pkgs; [
-                          compiler
-                          mpi
-                          fftw
-                          blas
-                          fiat
-                          cmake
-                          ectrans
-                        ]);
-                        autoloads = "intel openmpi fftw openblas cmake";
-                      };
-                }
-                {
-                  name = "EctransMKL";
-                  prefs = {
-                    package.ectrans.version = "main";
-                    package.ectrans.variants.mkl = true;
-                  };
-                }
-                {
-                  name = "EctransGpu";
-                  prefs = {
-                    package.compiler = {name = "nvhpc";};
-                    package.ectrans.version = "gpu";
-                    package.ectrans.variants.cuda = true;
-                    # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
-                    package.openjpeg.version = "2.3";
-                  };
-                }
-                {
-                  name = "DwarfPCloudSCGPU";
-                  prefs = {
-                    package.dwarf-p-cloudsc.variants.gpu = true;
-                    package.dwarf-p-cloudsc.variants.cloudsc-gpu-claw = true;
-                    #package.dwarf-p-cloudsc.variants.hdf5 = false;
-                    #package.dwarf-p-cloudsc.variants.serialbox = true;
-                    package.dwarf-p-cloudsc.variants.cloudsc-c = false; # require serialbox?
-                    package.serialbox.version = "2.5.4-patched"; # require private url (TODO implement curl -n)
-                  };
-                }
-                {
-                  name = "NemoSmall";
-                  prefs = {
-                    #BUILD_COMMAND ./makenemo -a BENCH -m X64_hpcw -j ${NEMO_BUILD_PARALLEL_LEVEL}
-                    package.nemo.variants.cfg = "BENCH";
-                    #error: xios dependency boost: package boost@1.72.0~atomic~chrono~clanglibcpp~container~context~contract
-                    #~coroutine~date_time~debug~exception~fiber~filesystem~graph~graph_parallel~icu~iostreams~json~locale~log
-                    # ~math~mpi+multithreaded~nowide~numpy~pic~program_options~python~random~regex~serialization+shared~signals
-                    #~singlethreaded~stacktrace~system~taggedlayout~test~thread~timer~type_erasure~versionedlayout~wave context-impl= cxxstd=98 visibility=hiddeni
-                    # does not match dependency constraints {"variants":{"atomic":true,"chrono":true,"date_time":true,"exception":true,"filesystem":true,"graph":true,"iostreams":true,"locale":true,"log":true,"math":true,"program_options":true,"random":true,"regex":true,"serialization":true,"signals":true,"system":true,"test":true,"thread":true,"timer":true,"wave":true}}
-                    package.boost.variants = {
-                      atomic = true;
-                      chrono = true;
-                      date_time = true;
-                      exception = true;
-                      filesystem = true;
-                      graph = true;
-                      iostreams = true;
-                      locale = true;
-                      log = true;
-                      math = true;
-                      program_options = true;
-                      random = true;
-                      regex = true;
-                      serialization = true;
-                      signals = true;
-                      system = true;
-                      test = true;
-                      thread = true;
-                      timer = true;
-                      wave = true;
-                    };
-                  };
-                  devShell = pack:
-                    with final.pkgs;
-                      mkDevShell {
-                        name = "hpcw-nemo-small";
-                        mods = mkModules corePacks (with pack.pkgs; [
-                          compiler
-                          mpi
-                          xios
-                          cmake
-                          nemo
-                          pkgconf # for hdf5?
-                        ]);
-                        autoloads = "intel openmpi xios cmake";
-                      };
-                }
-                {
-                  name = "NemoMedium";
-                  prefs = {
-                    #BUILD_COMMAND ./makenemo -m X64_hpcw -n MY_ORCA25 -r ORCA2_ICE_PISCES  -j ${NEMO_BUILD_PARALLEL_LEVEL} del_key "key_top" add_key "key_si3  key_iomput key_mpp_mpi key_mpi2"
-                    package.nemo.variants.cfg = "ORCA2_ICE_PISCES";
-                  };
-                  devShell = pack:
-                    with final.pkgs;
-                      mkDevShell {
-                        name = "hpcw-nemo-medium";
-                        mods = mkModules corePacks (with pack.pkgs; [
-                          compiler
-                          mpi
-                          xios
-                          cmake
-                          nemo
-                          pkgconf # for hdf5?
-                        ]);
-                        autoloads = "intel openmpi xios cmake";
-                      };
-                }
-              ];
-            }))))
         # end of cartesians products
         ;
     };
