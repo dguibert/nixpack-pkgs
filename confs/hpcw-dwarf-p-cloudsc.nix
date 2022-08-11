@@ -14,7 +14,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${package.compiler.name} ${(builtins.parseDrvName mpi.name).name} fftw openblas cmake";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} fftw openblase cmake";
         };
       mods = with final.pkgs;
         mkModules corePacks (with self.pack.pkgs; [

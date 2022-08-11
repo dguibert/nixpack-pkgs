@@ -7,7 +7,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${package.compiler.name} cmake";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} cmake";
         };
 
       mods = with final.pkgs;

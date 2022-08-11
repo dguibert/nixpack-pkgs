@@ -7,7 +7,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${package.compiler.name} ${(builtins.parseDrvName mpi.name).name} fftw openblas cmake netcdf-c netcdf-fortran";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} fftw openblas cmake netcdf-c netcdf-fortran";
         };
       mods = with final.pkgs;
         mkModules corePacks (with self.pack.pkgs; [
