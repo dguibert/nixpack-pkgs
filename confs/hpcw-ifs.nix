@@ -13,21 +13,22 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${package.compiler.name} ${(builtins.parseDrvName mpi.name).name} fftw
-            eccodes openblas cmake python netcdf-c netcdf-fortran";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} fftw eccodes openblas cmake python netcdf-c netcdf-fortran";
         };
-      mods = with final.pkgs;
-        mkModules corePacks (with self.pack.pkgs; [
-          compiler
-          mpi
-          fftw
-          blas
-          python
-          eccodes
-          cmake
-          netcdf-c
-          netcdf-fortran
-          szip
-          ifs
-        ]);
+      mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
+
+      mod_pkgs = with self.pack.pkgs; [
+        compiler
+        mpi
+        fftw
+        blas
+        python
+        eccodes
+        cmake
+        netcdf-c
+        netcdf-fortran
+        szip
+        pkgconf
+        ifs
+      ];
     })

@@ -93,55 +93,66 @@
       };
     };
   in
-    (inputs.flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux"] (system: let
-      pkgs = nixpkgsFor system;
-    in rec {
-      legacyPackages = pkgs;
+    (inputs.flake-utils.lib.eachSystem [
+        "x86_64-linux"
+        /*
+         "aarch64-linux"
+         */
+      ] (system: let
+        pkgs = nixpkgsFor system;
+      in rec {
+        legacyPackages = pkgs;
 
-      devShells.default = with pkgs;
-        mkDevShell {
-          name = "pkgs";
-          mods = [];
-          shellHook = ''
-            ${inputs.self.checks.${system}.pre-commit-check.shellHook}
-          '';
-        };
-
-      devShells.software = with pkgs;
-        mkDevShell {
-          name = "slash-software";
-          mods = mods_osu;
-        };
-
-      devShells.hip = with pkgs;
-        mkDevShell {
-          name = "slash-hip";
-          mods = mods_hip;
-          autoloads = "gcc hip openmpi cmake";
-        };
-
-      checks.pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-        src = ./.;
-        hooks = {
-          #nixpkgs-fmt.enable = true;
-          alejandra.enable = true; # https://github.com/kamadorueda/alejandra/blob/main/integrations/pre-commit-hooks-nix/README.md
-          prettier.enable = true;
-          trailing-whitespace = {
-            enable = true;
-            name = "trim trailing whitespace";
-            entry = "${pkgs.python3.pkgs.pre-commit-hooks}/bin/trailing-whitespace-fixer";
-            types = ["text"];
-            stages = ["commit" "push" "manual"];
+        devShells.default = with pkgs;
+          mkDevShell {
+            name = "pkgs";
+            mods = [];
+            shellHook = ''
+              ${inputs.self.checks.${system}.pre-commit-check.shellHook}
+            '';
           };
-          check-merge-conflict = {
-            enable = true;
-            name = "check for merge conflicts";
-            entry = "${pkgs.python3.pkgs.pre-commit-hooks}/bin/check-merge-conflict";
-            types = ["text"];
+
+        devShells.software = with pkgs;
+          mkDevShell {
+            name = "slash-software";
+            mods = modules.osu;
           };
-        };
-      };
-    }))
+
+        devShells.hip = with pkgs;
+          mkDevShell {
+            name = "slash-hip";
+            mods = modules.hip;
+            autoloads = "gcc hip openmpi cmake";
+          };
+
+        checks =
+          {
+            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+              src = ./.;
+              hooks = {
+                #nixpkgs-fmt.enable = true;
+                alejandra.enable = true; # https://github.com/kamadorueda/alejandra/blob/main/integrations/pre-commit-hooks-nix/README.md
+                prettier.enable = true;
+                trailing-whitespace = {
+                  enable = true;
+                  name = "trim trailing whitespace";
+                  entry = "${pkgs.python3.pkgs.pre-commit-hooks}/bin/trailing-whitespace-fixer";
+                  types = ["text"];
+                  stages = ["commit" "push" "manual"];
+                };
+                check-merge-conflict = {
+                  enable = true;
+                  name = "check for merge conflicts";
+                  entry = "${pkgs.python3.pkgs.pre-commit-hooks}/bin/check-merge-conflict";
+                  types = ["text"];
+                };
+              };
+            };
+          }
+          // (inputs.flake-utils.lib.flattenTree {
+            modules = pkgs.modules;
+          });
+      }))
     // {
       lib = import ./lib {
         lib = inputs.nixpkgs.lib;
@@ -268,6 +279,11 @@
                           # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
                           package.openjpeg.version = "2.3";
                         })
+                      (pack:
+                        (import ./confs/hpcw-ifs.nix final pack)._merge {
+                          label = "hpcw_" + pack.label + "_ifs_nonemo";
+                          package.ifs.variants.nemo = "no";
+                        })
                       (import ./confs/hpcw-ifs.nix final)
                       (import ./confs/hpcw-nemo-small.nix final)
                       (import ./confs/hpcw-nemo-medium.nix final)
@@ -287,54 +303,55 @@
             intelOneApiPacks = final.packs.oneapi.pack;
             aoccPacks = final.packs.aocc.pack;
 
-            mkModules = pack: pkgs:
+            mkModules = name: pack: pkgs:
               pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
                 coreCompilers = [
                   pack.pkgs.compiler
                 ];
                 pkgs = self.lib.findModDeps pkgs;
+                name = "modules-${name}";
               });
 
-            mods_osu = final.mkModules final.corePacks (
-              [
-              ]
-              ++ (
-                builtins.concatMap
-                (
-                  attr:
-                    with attr; let
-                      pack = (mpis.pack or (x: x)) packs.pack;
-                      enabled = (packs.enable or (_: true) attr) && (mpis.enable or (_: true) attr) && (pkgs.enable or (_: true) attr);
-                    in
-                      if ! enabled
-                      then []
-                      else
-                        (packs.pkgs or (p: []) pack)
-                        ++ (pkgs.pkgs pack)
-                )
-                (inputs.nixpkgs.lib.cartesianProductOfSets {
-                  packs = [
-                    packs.default
-                    packs.gcc10
-                    packs.aocc
-                    packs.intel
-                    packs.oneapi
-                  ];
-                  mpis = [
-                    {name = "default";}
-                    {
-                      name = "ompi410";
-                      enable = attr: builtins.trace "ompi410 cond: ${attr.packs.name} ${toString (attr.packs.name == "core")}" attr.packs.name == "core";
-                      pack = pack:
+            modules = recurseIntoAttrs {
+              osu = final.mkModules "osu" final.corePacks (
+                [
+                ]
+                ++ (
+                  builtins.concatMap
+                  (
+                    attr:
+                      with attr; let
+                        pack_ = pkgs (mpis packs);
+                        enabled = pack_.enable or true;
+                      in
+                        if ! enabled
+                        then []
+                        else (pack_.pkgs or (p: []))
+                  )
+                  (inputs.nixpkgs.lib.cartesianProductOfSets {
+                    packs = [
+                      packs.aocc
+                      packs.default
+                      packs.gcc10
+                      packs.intel
+                      packs.nvhpc
+                      packs.oneapi
+                    ];
+                    mpis = [
+                      (pack: pack._merge {label = pack.label + "_default";})
+                      (pack:
                         pack._merge {
+                          label = pack.label + "_ompi410";
+                          enable = false; #builtins.trace "ompi410 cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
+
                           package.openmpi.version = "4.1.0";
-                        };
-                    }
-                    {
-                      name = "ompi-cuda";
-                      enable = attr: builtins.trace "ompi-cuda cond: ${attr.packs.name} ${toString (attr.packs.name == "core")}" attr.packs.name == "core";
-                      pack = pack:
+                          package.openmpi.variants.pmix = false;
+                        })
+                      (pack:
                         pack._merge {
+                          label = pack.label + "_ompi_cuda";
+                          enable = builtins.trace "ompi-cuda cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
+
                           package.openmpi.variants.cuda = true;
                           package.ucx.variants = {
                             cuda = true;
@@ -342,56 +359,59 @@
                             rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
                           };
                           package.hwloc.variants.cuda = true;
-                        };
-                    }
-                  ];
-                  pkgs = [
-                    {
-                      name = "osu";
-                      pkgs = pack:
-                        with pack.pkgs; [
-                          mpi
-                          osu-micro-benchmarks
-                        ];
-                    }
-                  ];
-                })
-              )
-            );
+                        })
+                    ];
+                    pkgs = [
+                      (pack:
+                        pack._merge (self: {
+                          label = pack.label + "_osu";
+                          pkgs = with self.pack.pkgs; [
+                            mpi
+                            osu-micro-benchmarks
+                          ];
+                        }))
+                    ];
+                  })
+                )
+              );
 
-            mods_hip = final.mkModules final.corePacks (with (packs.default._merge {
-                package.mesa.variants.llvm = false;
-                package.ucx.variants = {
-                  cuda = true;
-                  gdrcopy = false;
-                  rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
-                };
-
-                repoPatch = {
-                  llvm-amdgpu = spec: old: {
-                    provides =
-                      old.provides
-                      or {}
-                      // {
-                        compiler = null;
-                      };
+              hip = final.mkModules "hip" final.corePacks (with (packs.default._merge {
+                  package.mesa.variants.llvm = false;
+                  package.ucx.variants = {
+                    cuda = true;
+                    gdrcopy = false;
+                    rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
                   };
-                };
-              })
-              .pack
-              .pkgs; [
-                compiler
-                mpi
-                hip
-                {
-                  pkg = llvm-amdgpu;
-                  context.provides = []; # not real compiler
-                }
-                #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
-                #hipfft
-                cmake
-                cuda
-              ]);
+
+                  repoPatch = {
+                    llvm-amdgpu = spec: old: {
+                      provides =
+                        old.provides
+                        or {}
+                        // {
+                          compiler = null;
+                        };
+                    };
+                  };
+                })
+                .pack
+                .pkgs; [
+                  compiler
+                  mpi
+                  hip
+                  {
+                    pkg = llvm-amdgpu;
+                    context.provides = []; # not real compiler
+                  }
+                  #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
+                  #hipfft
+                  cmake
+                  cuda
+                ]);
+              # hpcw modules
+              hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
+              hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
+            };
 
             nix = prev.nix.overrideAttrs (o: {
               patches = [

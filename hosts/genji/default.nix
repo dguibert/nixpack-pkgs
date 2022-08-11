@@ -1,6 +1,7 @@
 {
   packs',
   rpmExtern,
+  rpmVersion,
   python3,
 }:
 packs'.default._merge (self:
@@ -53,13 +54,11 @@ packs'.default._merge (self:
           }
           // rpmExtern "gcc";
 
-        ncurses =
-          rpmExtern "ncurses"
-          // {
-            variants = {
-              termlib = true;
-              abi = "5";
-            };
+        ncurses = {
+          version = rpmVersion "ncurses";
+          variants = {
+            termlib = true;
           };
+        };
       };
     })
