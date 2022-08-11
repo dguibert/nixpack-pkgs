@@ -220,7 +220,16 @@
 
             packs' = self.lib.loadPacks prev ./packs;
             host_packs' = self.lib.loadPacks prev ./hosts/${host};
-            packs = packs' // host_packs';
+            packs =
+              (packs' // host_packs')
+              // {
+                gcc10 = packs.default._merge (self:
+                  with self; {
+                    label = "gcc10";
+                    package.compiler = packs.default.pack.pkgs.gcc;
+                    package.gcc.version = "10";
+                  });
+              };
 
             hpcw_repo = builtins.path {
               name = "hpcw-repo";
@@ -260,6 +269,7 @@
                 (inputs.nixpkgs.lib.cartesianProductOfSets {
                   packs = [
                     packs.default
+                    packs.gcc10
                     packs.aocc
                     packs.intel
                     packs.oneapi
