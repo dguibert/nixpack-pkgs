@@ -57,7 +57,7 @@ packs'.default._merge (self:
           rpmExtern "ncurses"
           // {
             variants = {
-              termlib = false;
+              termlib = true;
               abi = "5";
             };
           };

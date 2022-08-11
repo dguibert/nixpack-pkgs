@@ -32,16 +32,14 @@ packs.default._merge (self:
           version = null;
         };
         # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
-        #ucx.depends.compiler = pack.pkgs.compiler;
+        ucx.depends.compiler = packs.default.pack.pkgs.compiler;
       };
-    })
-#
-#    pkgs = pack: [
-#      {
-#        pkg = pack.pkgs.compiler;
-#        projection = "intel/{version}";
-#        # TODO fix PATH to include legacy compiliers
-#      }
-#    ];
-#  };
 
+      pkgs = pack: [
+        {
+          pkg = pack.pkgs.compiler;
+          projection = "oneapi/{version}";
+          # TODO fix PATH to include legacy compiliers
+        }
+      ];
+    })

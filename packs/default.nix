@@ -12,7 +12,7 @@ default_pack._merge (self:
         resolver = deptype:
           if isRLDep deptype
           then null
-          else pack;
+          else packs.default.pack;
       };
       repos = [
         ../repo

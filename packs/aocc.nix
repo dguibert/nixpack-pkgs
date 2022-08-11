@@ -32,14 +32,10 @@ packs.default._merge (self:
             };
         };
       };
-    })
-#
-#    pkgs = pack: [
-#      {
-#        pkg = pack.pkgs.compiler;
-#        projection = "intel/{version}";
-#        # TODO fix PATH to include legacy compiliers
-#      }
-#    ];
-#  };
 
+      pkgs = pack: [
+        {
+          pkg = pack.pkgs.compiler;
+        }
+      ];
+    })

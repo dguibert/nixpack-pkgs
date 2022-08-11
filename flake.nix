@@ -227,19 +227,15 @@
               path = "${inputs.hpcw}/spack/hpcw";
             };
 
-            bootstrapPacks = final.packs.bootstrap.pack;
-            corePacks = final.packs.core.pack;
+            corePacks = final.packs.default.pack;
             intelPacks = final.packs.intel.pack;
-            intelOneApiPacks = final.packs.intelOneApi.pack;
+            intelOneApiPacks = final.packs.oneapi.pack;
             aoccPacks = final.packs.aocc.pack;
 
             mkModules = pack: pkgs:
               pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
                 coreCompilers = [
-                  /*
-                   pack.pkgs.compiler
-                   */
-                  final.bootstrapPacks.pkgs.compiler
+                  pack.pkgs.compiler
                 ];
                 pkgs = self.lib.findModDeps pkgs;
               });
@@ -263,10 +259,10 @@
                 )
                 (inputs.nixpkgs.lib.cartesianProductOfSets {
                   packs = [
-                    packs.core
+                    packs.default
                     packs.aocc
                     packs.intel
-                    packs.intelOneApi
+                    packs.oneapi
                   ];
                   mpis = [
                     {name = "default";}
