@@ -280,7 +280,7 @@
                       name = "ompi410";
                       enable = attr: builtins.trace "ompi410 cond: ${attr.packs.name} ${toString (attr.packs.name == "core")}" attr.packs.name == "core";
                       pack = pack:
-                        pack.withPrefs {
+                        pack._merge {
                           package.openmpi.version = "4.1.0";
                         };
                     }
@@ -288,24 +288,14 @@
                       name = "ompi-cuda";
                       enable = attr: builtins.trace "ompi-cuda cond: ${attr.packs.name} ${toString (attr.packs.name == "core")}" attr.packs.name == "core";
                       pack = pack:
-                        pack.withPrefs {
-                          package.openmpi.variants =
-                            (pack.getPackagePrefs "openmpi").variants
-                            // {
-                              cuda = true;
-                            };
-                          package.ucx.variants =
-                            ((pack.getPackagePrefs "ucx").variants or {})
-                            // {
-                              cuda = true;
-                              gdrcopy = true;
-                              rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
-                            };
-                          package.hwloc.variants =
-                            ((pack.getPackagePrefs "hwloc").variants or {})
-                            // {
-                              cuda = true;
-                            };
+                        pack._merge {
+                          package.openmpi.variants.cuda = true;
+                          package.ucx.variants = {
+                            cuda = true;
+                            gdrcopy = true;
+                            rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
+                          };
+                          package.hwloc.variants.cuda = true;
                         };
                     }
                   ];
@@ -323,15 +313,13 @@
               )
             );
 
-            mods_hip = final.mkModules final.corePacks (with (corePacks.withPrefs {
+            mods_hip = final.mkModules final.corePacks (with (packs.default._merge {
                 package.mesa.variants.llvm = false;
-                package.ucx.variants =
-                  ((corePacks.getPackagePrefs "ucx").variants or {})
-                  // {
-                    cuda = true;
-                    gdrcopy = false;
-                    rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
-                  };
+                package.ucx.variants = {
+                  cuda = true;
+                  gdrcopy = false;
+                  rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
+                };
 
                 repoPatch = {
                   llvm-amdgpu = spec: old: {
@@ -344,6 +332,7 @@
                   };
                 };
               })
+              .pack
               .pkgs; [
                 compiler
                 mpi
