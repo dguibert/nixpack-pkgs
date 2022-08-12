@@ -78,6 +78,7 @@ default_pack._merge (self:
             ld = true;
           };
         };
+        szip = { name="libszip"; };
         hdf5 = {
           variants = {
             hl = true;

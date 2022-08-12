@@ -245,7 +245,7 @@
             confPacks = inputs.nixpkgs.lib.listToAttrs (
               inputs.nixpkgs.lib.flatten (map (attr:
                   with attr; let
-                    pack_ = variants packs;
+                    pack_ = variants (mpis packs);
                   in [
                     {
                       name = pack_.label;
@@ -259,6 +259,22 @@
                       packs.default
                       packs.intel
                       packs.nvhpc
+                    ];
+                    mpis = [
+                      (pack: pack)
+                      (pack:
+                        pack._merge (self:
+                          with self; {
+                            label = "${pack.label}_impi";
+                            package.mpi = {name = "intel-mpi";};
+                            # for conditionally load all packages with +mpi%compiler
+                            package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
+                            repoPatch = {
+                              intel-mpi = spec: old: {
+                                depends = old.depends // {compiler.deptype = ["build"];};
+                              };
+                            };
+                          }))
                     ];
                     variants = [
                       (import ./confs/hpcw.nix final)
@@ -411,6 +427,7 @@
               # hpcw modules
               hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
               hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
+              hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
             };
 
             nix = prev.nix.overrideAttrs (o: {
