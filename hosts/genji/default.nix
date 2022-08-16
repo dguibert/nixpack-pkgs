@@ -3,8 +3,22 @@
   rpmExtern,
   rpmVersion,
   python3,
-}:
-packs'.default._merge (self:
+  capture,
+}: let
+  ucx_detect = feature: let
+    info = capture [feature] {
+      name = "ucx_detect.sh";
+      builder = ./ucx_detect.sh;
+    };
+  in
+    builtins.trace info
+    (
+      if info == "true"
+      then true
+      else false
+    );
+in
+  packs'.default._merge (self:
     with self; {
       os = "rhel8";
       spackConfig.config.source_cache = "/software/spack/mirror";
@@ -60,5 +74,51 @@ packs'.default._merge (self:
             termlib = true;
           };
         };
+        hcoll = {
+          extern = "/opt/mellanox/hcoll";
+          version = rpmVersion "hcoll";
+        };
+        knem = rec {
+          extern = "/opt/knem-${version}";
+          version = rpmVersion "knem";
+        };
+        xpmem = {
+          extern = "/opt/xpmem";
+          version = rpmVersion "xpmem";
+        };
+        #pmix = rec { extern= "/opt/pmix/${version}"; version = rpmVersion "pmix"; };
+        openmpi.variants = {
+          lustre = true;
+          fabrics.hcoll = true;
+          fabrics.knem = true;
+        };
+        lustre = rpmExtern "lustre-client";
+        ucx =
+          rpmExtern "ucx"
+          // {
+            variants = {
+              assertions = ucx_detect "--with-assertions";
+              debug = ucx_detect "--enable-debug";
+              logging = ucx_detect "--enable-logging";
+              thread_multiple = ucx_detect "ENABLE_MT\\s\\+1";
+              optimisations = ucx_detect "--enable-optimizations";
+              parameter_checking = ucx_detect "--enable-params-check";
+              verbs = ucx_detect "--with-verbs";
+              #cm = ucx_detect "--with-cm";
+              cma = ucx_detect ":cma";
+              xpmem = ucx_detect ":xpmem";
+              rc = ucx_detect "HAVE_TL_RC\\s\\+1";
+              dc = ucx_detect "HAVE_TL_DC\\s\\+1";
+              ud = ucx_detect "HAVE_TL_UD\\s\\+1";
+              mlx5-dv = ucx_detect "HAVE_INFINIBAND_MLX5DV_H\\s\\+1";
+              ib-hw-tm = ucx_detect "IBV_HW_TM\\s\\+1";
+              knem = ucx_detect ":knem";
+              cuda = ucx_detect ":cuda";
+              gdrcopy = ucx_detect ":gdrcopy";
+              rdmacm = ucx_detect ":rdmacm";
+              vfs = ucx_detect "--with-fuse3";
+              # TODO rocm = true;
+            };
+          };
       };
     })

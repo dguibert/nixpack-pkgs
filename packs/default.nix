@@ -46,25 +46,27 @@ default_pack._merge (self:
       };
 
       package = {
+        # openmpi@4.1.1+atomics~cuda+cxx~cxx_exceptions+gpfs~internal-hwloc~java~legacylaunchers+lustre~memchecker+pmi+pmix+romio~singularity~sqlite3~static+thread_multiple+vt~wrapper-rpath fabrics=cma,hcoll,knem,ucx schedulers=slurm
         openmpi = {
           version = "4.1.3";
           variants = {
             fabrics = {
               none = false;
+              cma = true;
               ofi = true;
               ucx = true;
               psm = false;
               psm2 = false;
-              verbs = true;
-              #mofed = true;
+              verbs = false; # https://github.com/open-mpi/ompi/issues/6517
             };
             schedulers = {
               none = false;
               slurm = true;
             };
-            pmi = false;
+            pmi = false; # when @1.5.5.:4 schedulers=slurm
             pmix = true;
-            #pmix = false; # patched to mean internal
+            romio = true;
+            vt = true;
             static = false;
             legacylaunchers = true;
           };
@@ -78,7 +80,7 @@ default_pack._merge (self:
             ld = true;
           };
         };
-        szip = { name="libszip"; };
+        szip = {name = "libszip";};
         hdf5 = {
           variants = {
             hl = true;
@@ -108,6 +110,7 @@ default_pack._merge (self:
             ib-hw-tm = true;
             knem = false;
             rocm = true;
+            verbs = true;
           };
         };
 

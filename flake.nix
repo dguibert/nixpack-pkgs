@@ -169,6 +169,7 @@
             inherit (self.lib) isLDep isRDep isRLDep;
             inherit (self.lib) rpmVersion rpmExtern;
             inherit (self.lib) packsFun loadPacks virtual;
+            inherit (self.lib) capture;
 
             mkDevShell = {
               name,
