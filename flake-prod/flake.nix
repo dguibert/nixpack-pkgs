@@ -22,7 +22,7 @@
     #spack = { url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop"; flake=false; };
     #spack = { url = "git+https://gitlab.bench.local:24443/bguibertd/spack.git?ref=develop"; flake=false; };
     spack = {
-      url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop&rev=fb1f5ad322d3fea18d53659020c21123bcdaf3a8";
+      url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop&rev=a6be440685ffca1b635b3f06a5f5ef293ce69fd5";
       flake = false;
     };
     #spack = { url = "git+file:///home_nfs/bguibertd/software-cepp-spack/spack?ref=develop"; flake=false; };
