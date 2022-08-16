@@ -197,7 +197,7 @@
                             then "echo_cmd ml load ${autoloads}"
                             else ""
                           }
-                          echo_cmd ml av
+                          LMOD_PAGER=cat echo_cmd ml av
                         ''
                         else ""
                       }
