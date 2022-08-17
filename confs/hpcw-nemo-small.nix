@@ -5,6 +5,9 @@ pack._merge (self:
 
       #BUILD_COMMAND ./makenemo -a BENCH -m X64_hpcw -j ${NEMO_BUILD_PARALLEL_LEVEL}
       package.nemo.variants.cfg = "BENCH";
+      # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
+      package.openjpeg.version = "2.3";
+      package.openjpeg.depends.compiler = final.corePacks.pkgs.compiler;
       #error: xios dependency boost: package boost@1.72.0~atomic~chrono~clanglibcpp~container~context~contract
       #~coroutine~date_time~debug~exception~fiber~filesystem~graph~graph_parallel~icu~iostreams~json~locale~log
       # ~math~mpi+multithreaded~nowide~numpy~pic~program_options~python~random~regex~serialization+shared~signals
@@ -37,16 +40,18 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake libxml2 cdo";
         };
       mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
+        libxml2
         xios
         cmake
         nemo
+        cdo
         pkgconf # for hdf5?
       ];
     })

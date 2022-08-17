@@ -5,6 +5,9 @@ pack._merge (self:
 
       #BUILD_COMMAND ./makenemo -m X64_hpcw -n MY_ORCA25 -r ORCA2_ICE_PISCES  -j ${NEMO_BUILD_PARALLEL_LEVEL} del_key "key_top" add_key "key_si3  key_iomput key_mpp_mpi key_mpi2"
       package.nemo.variants.cfg = "ORCA2_ICE_PISCES";
+      # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
+      package.openjpeg.version = "2.3";
+      package.openjpeg.depends.compiler = final.corePacks.pkgs.compiler;
 
       #error: xios dependency boost: package boost@1.72.0~atomic~chrono~clanglibcpp~container~context~contract
       #~coroutine~date_time~debug~exception~fiber~filesystem~graph~graph_parallel~icu~iostreams~json~locale~log
@@ -38,15 +41,18 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} xios cmake";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake libxml2 cdo";
         };
-      mods = with final.pkgs;
-        mkModules corePacks (with self.pack.pkgs; [
-          compiler
-          mpi
-          xios
-          cmake
-          nemo
-          pkgconf # for hdf5?
-        ]);
+      mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
+
+      mod_pkgs = with self.pack.pkgs; [
+        compiler
+        mpi
+        libxml2
+        xios
+        cmake
+        nemo
+        cdo
+        pkgconf # for hdf5?
+      ];
     })

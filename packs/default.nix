@@ -86,6 +86,7 @@ default_pack._merge (self:
             hl = true;
             fortran = true;
             szip = true;
+            threadsafe = true;
           };
           depends.szip = packs.default.pack.pkgs.szip;
         };
