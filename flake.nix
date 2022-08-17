@@ -429,6 +429,9 @@
               hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
               hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
               hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
+              hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
+              hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
+              #hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
             };
 
             nix = prev.nix.overrideAttrs (o: {

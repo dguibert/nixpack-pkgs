@@ -36,15 +36,17 @@ pack._merge (self:
       devShell = with final.pkgs;
         mkDevShell {
           name = label;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} xios cmake";
+          inherit mods;
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake";
         };
-      mods = with final.pkgs;
-        mkModules corePacks (with self.pack.pkgs; [
-          compiler
-          mpi
-          xios
-          cmake
-          nemo
-          pkgconf # for hdf5?
-        ]);
+      mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
+
+      mod_pkgs = with self.pack.pkgs; [
+        compiler
+        mpi
+        xios
+        cmake
+        nemo
+        pkgconf # for hdf5?
+      ];
     })
