@@ -114,6 +114,9 @@ default_pack._merge (self:
             verbs = true;
           };
         };
+        # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
+        openjpeg.version = "2.3";
+        openjpeg.depends.compiler = packs.default.pack.pkgs.compiler;
 
         minimap2.variants.js_engine.k8 = false;
         minimap2.variants.js_engine.node-js = true;

@@ -157,6 +157,7 @@
             hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
             hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
             hpcw_intel_nemo_small = pkgs.confPacks.hpcw_intel_nemo_small.mods;
+            hpcw_intel_impi_icon = pkgs.confPacks.hpcw_intel_icon.mods;
             hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
             hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
             hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
@@ -303,14 +304,13 @@
                           label = "hpcw_" + pack.label + "_ectrans_gpu";
                           package.ectrans.version = "gpu";
                           package.ectrans.variants.cuda = true;
-                          # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
-                          package.openjpeg.version = "2.3";
                         })
                       (pack:
                         (import ./confs/hpcw-ifs.nix final pack)._merge {
                           label = "hpcw_" + pack.label + "_ifs_nonemo";
                           package.ifs.variants.nemo = "no";
                         })
+                      (import ./confs/hpcw-icon.nix final)
                       (import ./confs/hpcw-ifs.nix final)
                       (import ./confs/hpcw-nemo-small.nix final)
                       (import ./confs/hpcw-nemo-medium.nix final)
