@@ -3,21 +3,24 @@ pack._merge (self:
     with self; {
       label = "hpcw_" + pack.label + "_ecrad";
 
-      devShell = with final.pkgs;
+      package.netcdf-c.variants.mpi = false;
+      package.hdf5.variants.mpi = false;
+
+      devShell = with final.pkgs; let
+        mod_name = mod: (builtins.parseDrvName mod.name).name;
+      in
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} fftw openblas cmake netcdf-c netcdf-fortran";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} cmake netcdf-c netcdf-fortran";
         };
-      mods = with final.pkgs;
-        mkModules corePacks (with self.pack.pkgs; [
-          compiler
-          mpi
-          netcdf-c
-          netcdf-fortran
-          fftw
-          blas
-          cmake
-          ecrad
-        ]);
+      mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
+
+      mod_pkgs = with self.pack.pkgs; [
+        compiler
+        netcdf-c
+        netcdf-fortran
+        cmake
+        ecrad
+      ];
     })

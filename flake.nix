@@ -157,6 +157,7 @@
             hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
             hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
             hpcw_intel_nemo_small = pkgs.confPacks.hpcw_intel_nemo_small.mods;
+            hpcw_intel_impi_ecrad = pkgs.confPacks.hpcw_intel_ecrad.mods;
             hpcw_intel_impi_icon = pkgs.confPacks.hpcw_intel_icon.mods;
             hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
             hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
