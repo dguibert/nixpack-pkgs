@@ -17,11 +17,11 @@
     "hpcw": {
       "flake": false,
       "locked": {
-        "lastModified": 1660833920,
-        "narHash": "sha256-M4hkNPn40Zwo9P4DxHXPc5iyQ5kuNhaPXAA7L9jj1M4=",
+        "lastModified": 1660893644,
+        "narHash": "sha256-6jlN97rk42psZx2Wq12zLCmH60g7yhJeIKiy27QUWVM=",
         "ref": "refs/heads/dg/spack",
-        "rev": "076fd4ca541f7b098675d42343bf92b27eff6057",
-        "revCount": 1002,
+        "rev": "c02853fb8e06cc9d86384c47cb3f932d8b92e641",
+        "revCount": 1003,
         "type": "git",
         "url": "file:///home_nfs/bguibertd/tmp/hpcw-spack"
       },
