@@ -152,6 +152,7 @@
           // (inputs.flake-utils.lib.flattenTree {
             modules = pkgs.modules;
 
+            hpcw_intel_acraneb2 = pkgs.confPacks.hpcw_intel_acraneb2.mods;
             hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
             hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
             hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
