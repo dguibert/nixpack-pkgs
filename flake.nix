@@ -161,6 +161,7 @@
             hpcw_intel_impi_icon = pkgs.confPacks.hpcw_intel_icon.mods;
             hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
             hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
+            hpcw_intel_impi_ifs-fvm = pkgs.confPacks.hpcw_intel_impi_ifs-fvm.mods; # FIXME ifs-fvm requires to be built on 1 core only
             hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
             hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
           });
@@ -313,6 +314,7 @@
                         })
                       (import ./confs/hpcw-icon.nix final)
                       (import ./confs/hpcw-ifs.nix final)
+                      (import ./confs/hpcw-ifs-fvm.nix final)
                       (import ./confs/hpcw-nemo-small.nix final)
                       (import ./confs/hpcw-nemo-medium.nix final)
                       #(import ./confs/hpcw-nemo-big.nix final)
