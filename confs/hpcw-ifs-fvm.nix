@@ -7,7 +7,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} fftw ecbuild ${(builtins.parseDrvName self.pack.pkgs.blas.name).name} cmake netcdf-c netcdf-fortran";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} fftw ecbuild ${(builtins.parseDrvName self.pack.pkgs.blas.name).name} cmake netcdf-c netcdf-fortran cdo";
         };
       mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
 
@@ -21,6 +21,8 @@ pack._merge (self:
         netcdf-c
         netcdf-fortran
         pkgconf
+        perl
+        cdo
         ifs-fvm
       ];
     })
