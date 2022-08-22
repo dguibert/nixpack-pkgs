@@ -9,7 +9,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${mod_name self.pack.pkgs.mpi} fftw eccodes ${mod_name self.pack.pkgs.blas} cmake libxml2 ${mod_name self.pack.pkgs.szip} cdo zlib netcdf-c netcdf-fortran";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${mod_name self.pack.pkgs.mpi} fftw eccodes ${mod_name self.pack.pkgs.blas} cmake libxml2 ${mod_name self.pack.pkgs.szip} cdo zlib netcdf-c netcdf-fortran icon";
         };
       mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
 

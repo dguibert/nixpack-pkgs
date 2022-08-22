@@ -14,7 +14,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} fftw openblase cmake";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} fftw openblase cmake dwarf-p-cloudsc";
         };
       mods = with final.pkgs;
         mkModules corePacks (with self.pack.pkgs; [

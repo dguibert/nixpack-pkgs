@@ -37,7 +37,7 @@ pack._merge (self:
         mkDevShell {
           name = label;
           inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake libxml2 cdo";
+          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake libxml2 cdo nemo";
         };
       mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
 
