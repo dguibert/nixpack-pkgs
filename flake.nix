@@ -267,6 +267,69 @@
                     }
                   ])
                 ([]
+                  # openmpi RD configurations
+                  ++ (inputs.nixpkgs.lib.cartesianProductOfSets {
+                    packs = [
+                      packs.default
+                      packs.intel
+                      packs.aocc
+                    ];
+                    mpis = [
+                      (pack: pack)
+                      (pack:
+                        pack._merge (self: let
+                          prefix_ = pkgs.symlinkJoin {
+                            name = "openmpi-4.1.4.2";
+                            paths = (
+                              [
+                                "/software/atos_RD/openmpi-bull-4.1.4.2/opt/mpi/openmpi/4.1.4.2"
+                              ]
+                              ++ (inputs.nixpkgs.lib.optional (pack.label == "core") "/software/atos_RD/openmpi-bull-4.1.4.2/opt/mpi/openmpi/4.1.4.2/fortran-gnu")
+                              ++ (inputs.nixpkgs.lib.optional (pack.label == "intel") "/software/atos_RD/openmpi-bull-4.1.4.2/opt/mpi/openmpi/4.1.4.2/fortran-intel")
+                              ++ (inputs.nixpkgs.lib.optional (pack.label == "aocc") "/software/atos_RD/openmpi-bull-4.1.4.2/opt/mpi/openmpi/4.1.4.2/fortran-amd")
+                            );
+                          };
+                        in {
+                          label = "${pack.label}_bmpi";
+                          package.mpi = {name = "openmpi";};
+                          package.openmpi = {
+                            version = "4.1.4.2";
+                            #extern = "/software/atos_RD/openmpi-bull-4.1.4.2/opt/mpi/openmpi/4.1.4.2";
+                            modules = [
+                              # py-mpi4py>   ${prefix_}/bin/mpicc -Wno-unused-result -Wsign-compare -DNDEBUG -g -fwrapv -O3 -Wall -fPIC -fPIC -I/home_nfs/bguibertd/nix/store/5awgfdjfnzbgwxx52994sbwgjnlv52lf-python-3.9.13/include/python3.9 -c _configtest.c -o _configtest.o
+                              #py-mpi4py>   Cannot open configuration file /opt/mpi/openmpi/4.1.4.2/share/openmpi/mpicc-wrapper-data.txt
+                              # py-mpi4py>   Error parsing data file mpicc: Not found
+                              #"/software/atos_RD/openmpi-bull-4.1.4.2/usr/share/Modules/modulefiles/openmpi/gnu/4.1.4.2"
+                              (writeTextFile {
+                                name = "module-openmpi-bull-4.1.4.2";
+                                text = ''
+                                  #%Module
+                                  # MPI_ROOT
+                                  setenv MPI_ROOT ${prefix_}
+                                  prepend-path PATH ${prefix_}/bin/
+                                  prepend-path LD_LIBRARY_PATH ${prefix_}/lib
+                                  prepend-path MANPATH ${prefix_}/share/man
+
+                                  # FLAGS
+                                  ##setenv OMPI_CC "gcc"
+                                  ##setenv OMPI_CXX "g++"
+                                  ##setenv OMPI_FC "gfortran"
+                                  setenv OMPI_CFLAGS "-g -m64"
+                                  setenv OMPI_CXXFLAGS "-g -m64"
+                                  setenv OMPI_FCFLAGS "-I${prefix_}/lib -g -m64"
+                                  setenv OMPI_CPPFLAGS "-I${prefix_}/include"
+                                  setenv OMPI_LDFLAGS "-L/usr/lib64 -L/lib64 -L${prefix_}/lib"
+
+                                  setenv OPAL_PREFIX ${prefix_}
+                                '';
+                              })
+                            ];
+                            extern = prefix_;
+                          };
+                        }))
+                    ];
+                    variants = [(pack: pack)];
+                  })
                   # hpcw configurations
                   ++ (inputs.nixpkgs.lib.cartesianProductOfSets {
                     packs = [
