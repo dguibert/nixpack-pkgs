@@ -241,6 +241,29 @@
                 repos = [];
                 repoPatch = {};
                 package = {};
+
+                devShell = with final.pkgs;
+                  mkDevShell {
+                    name = label;
+                    inherit mods;
+                    autoloads = lib.concatMapStrings (x: let
+                      pkg = x.pkg or x;
+                      name =
+                        if x ? projection
+                        then "${builtins.head (builtins.split "/(.*)" x.projection)} "
+                        else "${(builtins.parseDrvName (pack.getPackage pkg).spec.compiler_spec).name} ";
+                    in
+                      if x ? autoload
+                      then
+                        if x.autoload
+                        then name
+                        else ""
+                      else name)
+                    mod_pkgs;
+                  };
+                mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
+
+                mod_pkgs = [];
               });
 
             packs' = self.lib.loadPacks prev ./packs;

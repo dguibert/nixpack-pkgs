@@ -10,20 +10,13 @@ pack._merge (self:
       package.dwarf-p-cloudsc.variants.cloudsc-c = false; # require serialbox?
       package.serialbox.version = "2.5.4-patched"; # require private url (TODO implement curl -n)
 
-      devShell = with final.pkgs;
-        mkDevShell {
-          name = label;
-          inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName mpi.name).name} fftw openblase cmake dwarf-p-cloudsc";
-        };
-      mods = with final.pkgs;
-        mkModules corePacks (with self.pack.pkgs; [
-          compiler
-          mpi
-          fftw
-          blas
-          fiat
-          cmake
-          dwarf-p-cloudsc
-        ]);
+      mod_pkgs = with self.pack.pkgs; [
+        compiler
+        mpi
+        fftw
+        blas
+        fiat
+        cmake
+        dwarf-p-cloudsc
+      ];
     })

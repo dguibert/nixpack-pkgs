@@ -33,14 +33,6 @@ pack._merge (self:
         wave = true;
       };
 
-      devShell = with final.pkgs;
-        mkDevShell {
-          name = label;
-          inherit mods;
-          autoloads = "${(self.pack.getPackage package.compiler).spec.compiler_spec} ${(builtins.parseDrvName self.pack.pkgs.mpi.name).name} xios cmake libxml2 cdo nemo";
-        };
-      mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
-
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
