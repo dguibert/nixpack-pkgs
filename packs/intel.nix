@@ -23,6 +23,12 @@ packs.default._merge (self:
             // {
               compiler = null;
             };
+          build = {
+            post = ''
+              # remove installer cache/packagemanager and broken links to pythonpackages
+              shutil.rmtree(f"{spec.prefix}/intel", ignore_errors=True)
+            '';
+          };
         };
       };
       package = {

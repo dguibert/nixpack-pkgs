@@ -43,4 +43,10 @@ pack._merge (self:
         cdo
         pkgconf # for hdf5?
       ];
+
+      img_pkgs = with self.pack.pkgs; [
+        mpi
+        nemo
+        cdo
+      ];
     })

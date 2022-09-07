@@ -264,29 +264,41 @@
                 mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
 
                 mod_pkgs = [];
-                img_pkgs =
-                  map (
-                    x: let
-                      pkg = x.pkg or x;
-                    in
-                      if pkg ? spec && pkg.spec.extern == null
-                      then pkg
-                      else builtins.trace "WARNING: external package ${pkg.name}" []
-                    /*
-                     FIXME might be a problem to rely on an external package inside the image
-                     */
-                  )
-                  mod_pkgs;
+                img_pkgs = mod_pkgs;
 
                 sifImg = final.pkgs.singularity-tools.buildImage {
                   name = label;
-                  diskSize = 4096;
-                  contents = img_pkgs;
+                  diskSize = 16384;
+                  contents =
+                    map (
+                      x: let
+                        pkg = x.pkg or x;
+                      in
+                        if pkg ? spec && pkg.spec.extern == null
+                        then pkg
+                        else builtins.trace "WARNING: external package ${pkg.name}" []
+                      /*
+                       FIXME might be a problem to rely on an external package inside the image
+                       */
+                    )
+                    img_pkgs;
                 };
 
                 dockerImg = final.pkgs.dockerTools.buildImage {
                   name = label;
-                  contents = img_pkgs;
+                  contents =
+                    map (
+                      x: let
+                        pkg = x.pkg or x;
+                      in
+                        if pkg ? spec && pkg.spec.extern == null
+                        then pkg
+                        else builtins.trace "WARNING: external package ${pkg.name}" []
+                      /*
+                       FIXME might be a problem to rely on an external package inside the image
+                       */
+                    )
+                    img_pkgs;
                 };
               });
 

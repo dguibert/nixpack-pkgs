@@ -43,6 +43,14 @@ default_pack._merge (self:
             '';
           };
         };
+        intel-oneapi-compilers = spec: old: {
+          build = {
+            post = ''
+              # remove installer cache/packagemanager and broken links to pythonpackages
+              shutil.rmtree(f"{spec.prefix}/intel", ignore_errors=True)
+            '';
+          };
+        };
       };
 
       package = {
