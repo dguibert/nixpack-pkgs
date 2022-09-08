@@ -78,11 +78,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1661412096,
-        "narHash": "sha256-Ug7jP2JrrHUVuOulEqkmDvy5C2alus/NTsXZFyrgjNo=",
-        "ref": "refs/heads/pu",
-        "rev": "d49e21271fd6ce5293862b4abc030bb157be41c6",
-        "revCount": 455,
+        "lastModified": 1661866488,
+        "narHash": "sha256-Qzex94pP9y1gURNJ2F5oszJ1anwh5q14JKpZ/5PiEI0=",
         "type": "git",
         "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
       },
@@ -187,12 +184,9 @@
       "flake": false,
       "locked": {
         "lastModified": 1660656520,
-        "narHash": "sha256-Suww8eOaKD10QAR8Pzn5dn0kvix70Hqoqf04tqs+y3g=",
-        "ref": "develop",
-        "rev": "a6be440685ffca1b635b3f06a5f5ef293ce69fd5",
-        "revCount": 27047,
+        "narHash": "sha256-/bAq+dCv76nWp/w7VwzqjmY+geXd1wpG7tEBTuOp/tg=",
         "type": "git",
-        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
       },
       "original": {
         "id": "spack",

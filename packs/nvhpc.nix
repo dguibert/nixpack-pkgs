@@ -12,6 +12,8 @@ packs.default._merge (self:
         nvhpc.variants.blas = false;
         nvhpc.variants.lapack = false;
         nvhpc.depends.compiler = packs.default.pack.pkgs.compiler;
+
+        eckit.depends.compiler = packs.default.pack.pkgs.compiler;
       };
 
       repoPatch = {

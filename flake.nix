@@ -164,6 +164,8 @@
             hpcw_intel_impi_ifs-fvm = pkgs.confPacks.hpcw_intel_impi_ifs-fvm.mods; # FIXME ifs-fvm requires to be built on 1 core only
             hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
             hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
+
+            hpcw_nvhpc_cloudsc = pkgs.confPacks.hpcw_nvhpc_cloudsc.mods;
           });
       }))
     // {
@@ -439,10 +441,17 @@
                       (pack:
                         pack._merge {
                           label = pack.label + "_ompi_cuda";
-                          enable = builtins.trace "ompi-cuda cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
+                          enable = false; # TODO fix ucx duplicate #builtins.trace "ompi-cuda cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
 
                           package.openmpi.variants.cuda = true;
                           package.ucx.variants = {
+                            extern =
+                              if
+                                (pack.package.ucx.variants.cuda
+                                  != true)
+                                || (pack.package.ucx.variants.gdrcopy != true)
+                              then null
+                              else pack.package.ucx.extern;
                             cuda = true;
                             gdrcopy = true;
                             rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
