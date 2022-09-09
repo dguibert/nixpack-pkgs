@@ -120,5 +120,7 @@ in
               # TODO rocm = true;
             };
           };
+
+        jube.variants.resource_manager = "slurm";
       };
     })

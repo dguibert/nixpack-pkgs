@@ -352,6 +352,7 @@
                           }))
                     ];
                     variants = [
+                      (import ./confs/jube.nix final)
                       (import ./confs/hpcw.nix final)
                       (import ./confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
                       (import ./confs/hpcw-dwarf-p-cloudsc.nix final)
