@@ -7,6 +7,17 @@ pack._merge (self:
 
       mod_pkgs = with self.pack.pkgs; [
         py-pyaml
-        jube
+        {
+          pkg = jube;
+          environment = {
+            prepend_path = {
+              JUBE_INCLUDE_PATH = "${jube.out}/share/jube/platform/slurm";
+            };
+          };
+        }
+
+        # for some basic tests
+        mpi
+        ior
       ];
     })
