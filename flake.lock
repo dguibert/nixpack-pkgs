@@ -183,8 +183,8 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1660656520,
-        "narHash": "sha256-/bAq+dCv76nWp/w7VwzqjmY+geXd1wpG7tEBTuOp/tg=",
+        "lastModified": 1663827433,
+        "narHash": "sha256-jDwfzvAQTHNlMWmxCJl5emiZ9WbxzwmoKLDMzF0XCds=",
         "type": "git",
         "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
       },
