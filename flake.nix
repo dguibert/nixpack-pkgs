@@ -118,13 +118,6 @@
             mods = modules.osu;
           };
 
-        devShells.hip = with pkgs;
-          mkDevShell {
-            name = "slash-hip";
-            mods = modules.hip;
-            autoloads = "gcc hip openmpi cmake";
-          };
-
         checks =
           {
             pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
@@ -352,6 +345,7 @@
                           }))
                     ];
                     variants = [
+                      (import ./confs/hip.nix final)
                       (import ./confs/jube.nix final)
                       (import ./confs/hpcw.nix final)
                       (import ./confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
