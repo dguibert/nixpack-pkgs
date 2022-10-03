@@ -262,9 +262,11 @@
                         else ""
                       else name)
                     mod_pkgs;
+                    buildInputs = builtin_pkgs;
                   };
                 mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
 
+                builtin_pkgs = [];
                 mod_pkgs = [];
                 img_pkgs = mod_pkgs;
 
@@ -333,6 +335,7 @@
                     packs = [
                       packs.default
                       packs.intel
+                      packs.oneapi
                       packs.nvhpc
                     ];
                     mpis = [

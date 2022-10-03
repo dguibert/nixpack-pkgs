@@ -14,6 +14,15 @@ packs.default._merge (self:
         nvhpc.depends.compiler = packs.default.pack.pkgs.compiler;
 
         eckit.depends.compiler = packs.default.pack.pkgs.compiler;
+
+        #libbsd: has conflicts: @0.11.4: %nvhpc
+        libbsd.depends.compiler = packs.default.pack.pkgs.compiler;
+
+        # rvdv.f:187: undefined reference to `pgf90_auto_dealloc_i8'
+        cdo.depends.compiler = packs.default.pack.pkgs.compiler;
+
+        icon.variants.cuda = true;
+        icon.variants.gpu = true;
       };
 
       repoPatch = {

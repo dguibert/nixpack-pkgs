@@ -14,8 +14,9 @@ pack._merge (self:
         netcdf-c
         netcdf-fortran
         szip
-        cdo
+        #cdo
         pkgconf
-        icon
+        #        icon
       ];
+      builtin_pkgs = with self.pack.pkgs; [cdo];
     })

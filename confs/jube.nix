@@ -16,8 +16,8 @@ pack._merge (self:
           };
         }
 
-        # for some basic tests
-        mpi
-        ior
+        ## for some basic tests
+        #mpi
+        #ior
       ];
     })
