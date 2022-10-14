@@ -44,7 +44,7 @@ in
         bzip2 = rpmExtern "bzip2";
         curl = rpmExtern "curl";
         diffutils = rpmExtern "diffutils";
-        libtool = rpmExtern "libtool";
+        #libtool = rpmExtern "libtool";
         m4 = rpmExtern "m4";
         openssh = rpmExtern "openssh";
         openssl = rpmExtern "openssl";
