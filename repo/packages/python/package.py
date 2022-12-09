@@ -1,4 +1,9 @@
 import spack.pkg.builtin.python as builtin
+import os
+import sys
+
+is_windows = sys.platform == "win32"
+
 
 class Python(builtin.Python):
     version(
@@ -56,6 +61,12 @@ class Python(builtin.Python):
             filename += ".py"
 
         return join_path(libdest, filename)
+
+    @when("@:2.99")
+    @run_after("install")
+    def symlink(self):
+        # python2 -> python already
+        pass
 
 
 

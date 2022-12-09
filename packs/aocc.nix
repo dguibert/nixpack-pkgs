@@ -28,7 +28,8 @@ packs.default._merge (self:
           depends =
             old.depends
             // {
-              compiler = null;
+              #compiler = null;
+              compiler = packs.default.pack.pkgs.compiler;
             };
         };
       };

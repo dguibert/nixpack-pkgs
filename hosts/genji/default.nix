@@ -31,8 +31,9 @@ in
       spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
       spackEnv.PROXYCHAINS_CONF_FILE = "/dev/shm/proxychains.conf";
       spackEnv.LD_PRELOAD = "/dev/shm/libproxychains4.so";
+      spackEnv.HPCW_URL = "/home_nfs/bguibertd/work/hpcw";
       spackEnv.HPCW_DOWNLOAD_URL = "/home_nfs/bguibertd/work/hpcw/downloads";
-      spackEnv.__contentAddressed = true;
+      #spackEnv.__contentAddressed = true;
       ## only fixedCA drvs allow impureEnvVars
       #spackEnv.impureEnvVars = [
       #  "http_proxy" "https_proxy"
@@ -67,6 +68,9 @@ in
             name = "gcc";
           }
           // rpmExtern "gcc";
+
+        gcc.version = "8.4.0"; # rpmVersion "gcc";
+        gcc.variants.binutils = true;
 
         ncurses = {
           version = rpmVersion "ncurses";

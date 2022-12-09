@@ -4,6 +4,7 @@ pack._merge (self:
       label = "hpcw_" + pack.label + "_ifs";
 
       package.python.version = "2";
+      package.python.variants.pythoncmd = false;
       package.python.depends.compiler = final.corePacks.pkgs.compiler;
 
       mod_pkgs = with self.pack.pkgs; [
