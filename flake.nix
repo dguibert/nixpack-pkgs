@@ -345,6 +345,7 @@
                           }))
                     ];
                     variants = [
+                      (import ./confs/ai4sim.nix final)
                       (import ./confs/hip.nix final)
                       (import ./confs/jube.nix final)
                       (import ./confs/hpcw.nix final)
