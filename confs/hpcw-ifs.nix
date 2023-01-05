@@ -19,5 +19,17 @@ pack._merge (self:
         szip
         pkgconf
         ifs
+
+        # support python 2?
+        #py-pyaml
+        #{
+        #  pkg = jube;
+        #  environment = {
+        #    prepend_path = {
+        #      JUBE_INCLUDE_PATH = "${jube.out}/share/jube/platform/slurm";
+        #    };
+        #  };
+        #}
+
       ];
     })
