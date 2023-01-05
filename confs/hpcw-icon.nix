@@ -17,6 +17,10 @@ pack._merge (self:
         #cdo
         pkgconf
         #        icon
-      ];
+      ]
+      ++ final.lib.optionals (self.package.icon.variants.gpu) [
+        cuda
+      ]
+      ;
       builtin_pkgs = with self.pack.pkgs; [cdo];
     })
