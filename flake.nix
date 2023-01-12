@@ -1,17 +1,15 @@
 {
   description = "A flake for building packages on /software-like structure";
 
-  inputs.nixpkgs.url = "github:dguibert/nixpkgs/pu-nixpack";
-  inputs.nix.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nur_dguibert.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nur_dguibert.inputs.nix.follows = "nix";
-  inputs.nur_dguibert.inputs.flake-utils.follows = "flake-utils";
+  inputs.nixpkgs.url = "github:dguibert/nixpkgs/pu";
 
+  inputs.nixpack.url = "github:dguibert/nixpack/pu";
   inputs.nixpack.inputs.spack.follows = "spack";
   inputs.nixpack.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.spack.url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop";
   inputs.spack.flake = false;
   inputs.hpcw = {
-    url = "git+file:///home_nfs/bguibertd/work/hpcw?ref=refs%2fheads%2fdg%2fspack";
+    url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw"; #?ref=dg%2fspack";
     flake = false;
   };
 
@@ -22,9 +20,7 @@
   outputs = {
     self,
     nixpkgs,
-    nix,
     flake-utils,
-    nur_dguibert,
     nixpack,
     spack,
     hpcw,
@@ -33,26 +29,9 @@
     host = "genji";
     #host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
-    nixpkgsFor = system:
-      import nixpkgs {
-        localSystem = {
-          inherit system;
-          # gcc = { arch = "x86-64" /*target*/; };
-        };
-        overlays =
-          [
-            inputs.nix.overlays.default
-            (import "${inputs.nixpack}/nixpkgs/overlay.nix")
-            self.overlay
-          ]
-          ++ nixpkgs.lib.optionals (host != "nixos") [
-            (import "${inputs.nur_dguibert}/hosts/${host}/overlay.nix")
-          ];
-        config = {
-          replaceStdenv = import "${inputs.nixpack}/nixpkgs/stdenv.nix";
-          allowUnfree = true;
-        };
-      };
+    nixpkgsFor = system: inputs.nixpkgs.legacyPackages.${system}.appendOverlays [
+      self.overlay
+    ];
 
     modulesConfig = {
       config = {
@@ -510,13 +489,6 @@
               hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
               #hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
             };
-
-            nix = prev.nix.overrideAttrs (o: {
-              patches = [
-                "${inputs.nur_dguibert}/pkgs/nix-unshare.patch"
-                #"${inputs.nur_dguibert}/pkgs/nix-sqlite-unix-dotfiles-for-nfs.patch"
-              ];
-            });
 
             viridianSImg = prev.singularity-tools.buildImage {
               name = "viridian";
