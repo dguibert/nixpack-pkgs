@@ -30,7 +30,7 @@
     #host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
     nixpkgsFor = system: inputs.nixpkgs.legacyPackages.${system}.appendOverlays [
-      self.overlay
+      self.overlays.default
     ];
 
     modulesConfig = {
@@ -146,7 +146,7 @@
         nixpack_lib = inputs.nixpack.lib;
       };
 
-      overlay =
+      overlays.default =
         final: prev: let
           system = prev.system;
           nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};
