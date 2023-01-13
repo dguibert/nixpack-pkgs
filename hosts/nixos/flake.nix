@@ -1,15 +1,41 @@
 {
-  packs',
-  rpmExtern,
-  python3,
-  pkgs,
-}: let
-  gccWithFortran = pkgs.wrapCC (pkgs.gcc.cc.override {
-    langFortran = true;
-  });
-in
-  packs'.default._merge (self:
-    with self; {
+  description = "A flake for building my NIXPACK packagesi on GENJI";
+
+  inputs.upstream.url = "path:../..";
+  inputs.nixpkgs.follows = "upstream/nixpkgs";
+  inputs.flake-utils.follows = "upstream/flake-utils";
+
+  outputs = { self, nixpkgs, flake-utils, upstream, ... }: let
+    nixpkgsFor = system:
+      import upstream.inputs.nixpkgs.inputs.nixpkgs {
+        inherit system;
+        overlays =  upstream.legacyPackages.${system}.overlays ++ [
+          self.overlays.default
+        ];
+        config = upstream.legacyPackages.${system}.config;
+    };
+  in (flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: {
+    legacyPackages = nixpkgsFor system;
+  })) // {
+    lib = nixpkgs.lib;
+
+    overlays.default = final: prev: with prev;
+      let
+        ucx_detect = feature: let
+          info = capture [feature] {
+            name = "ucx_detect.sh";
+            builder = ./ucx_detect.sh;
+          };
+        in
+          builtins.trace info
+            (
+              if info == "true"
+              then true
+              else false
+            );
+      in {
+        host_packs'.default = packs'.default._merge (self:
+          with self; {
       os = "nixos22";
       spackConfig.config.source_cache = "/tmp/spack/mirror";
       spackPython = "${pkgs.python3}/bin/python3";
@@ -96,4 +122,7 @@ in
           };
         };
       };
-    })
+          });
+    };
+  };
+}

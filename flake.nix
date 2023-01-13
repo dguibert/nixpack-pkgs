@@ -26,8 +26,6 @@
     hpcw,
     ...
   } @ inputs: let
-    host = "genji";
-    #host = "nixos";
     # Memoize nixpkgs for different platforms for efficiency.
     nixpkgsFor = system: inputs.nixpkgs.legacyPackages.${system}.appendOverlays [
       self.overlays.default
@@ -277,7 +275,7 @@
               });
 
             packs' = self.lib.loadPacks prev ./packs;
-            host_packs' = self.lib.loadPacks prev ./hosts/${host};
+            host_packs' = {}; # entry point for overriding packs'
             packs =
               (packs' // host_packs')
               // {
