@@ -1,8 +1,13 @@
 {
   description = "A flake for building my NIXPACK packages on GENJI";
 
-  inputs.upstream.url = "path:../..";
-  inputs.nixpkgs.follows = "upstream/nixpkgs";
+  ## local
+  #inputs.upstream.url = "path:../..";
+  #inputs.nixpkgs.follows = "upstream/nixpkgs";
+  ## default
+  inputs.upstream.url = "github:dguibert/nixpack-pkgs/main";
+  inputs.upstream.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.nixpkgs.url = "github:dguibert/nur-packages?dir=nixpkgs/spartan";
   inputs.flake-utils.follows = "upstream/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils, upstream, ... }: let
