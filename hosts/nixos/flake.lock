@@ -1,5 +1,39 @@
 {
   "nodes": {
+    "dwl-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1672646419,
+        "narHash": "sha256-Qp0ltJMCSXmslJ1FsLqnKIaRka9aQROYMyFWetvtj60=",
+        "owner": "dguibert",
+        "repo": "dwl",
+        "rev": "936d6ac4d0556833ddb3656b2d81e0d98789f7a4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "pu",
+        "repo": "dwl",
+        "type": "github"
+      }
+    },
+    "dwm-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1649608053,
+        "narHash": "sha256-+v2wof46XG/n85zVY82GIuKgzr0K9s1apPfaDSyuqos=",
+        "owner": "dguibert",
+        "repo": "dwm",
+        "rev": "306e1790145849abd30ef6c81051755a6813ff30",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "pu",
+        "repo": "dwm",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -20,6 +54,21 @@
       "locked": {
         "lastModified": 1667395993,
         "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
         "path": "/nix/store/sk4ga2wy0b02k7pnzakwq4r3jdknda4g-source",
         "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
         "type": "path"
@@ -27,21 +76,6 @@
       "original": {
         "id": "flake-utils",
         "type": "indirect"
-      }
-    },
-    "flake-utils_2": {
-      "locked": {
-        "lastModified": 1667395993,
-        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
       }
     },
     "gitignore": {
@@ -98,11 +132,27 @@
         "type": "github"
       }
     },
+    "mako-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1666359044,
+        "narHash": "sha256-YRCS+6or/Z6KJ0wRfZDkvwbjAH2FwL5muQfVoFtq/lI=",
+        "owner": "emersion",
+        "repo": "mako",
+        "rev": "5eca7d58bf9eb658ece1b32da586627118f00642",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emersion",
+        "ref": "master",
+        "repo": "mako",
+        "type": "github"
+      }
+    },
     "nix": {
       "inputs": {
         "lowdown-src": "lowdown-src",
         "nixpkgs": [
-          "upstream",
           "nixpkgs",
           "upstream",
           "nixpkgs"
@@ -110,11 +160,11 @@
         "nixpkgs-regression": "nixpkgs-regression"
       },
       "locked": {
-        "lastModified": 1668422642,
-        "narHash": "sha256-CpXhHs0szsA2IL6K46l8Zvwivyxsceru4GNDYfVKzaE=",
+        "lastModified": 1671696784,
+        "narHash": "sha256-nZ8foWVEOEGbihQSx0qKy/h7sKx1kEPNTqjJkzDzISY=",
         "owner": "dguibert",
         "repo": "nix",
-        "rev": "ef633be6453f2ba4fb4fd35f9a6d9aeec8ffa071",
+        "rev": "f582a4354d48d499fdfc52607c7b6b7260adbac4",
         "type": "github"
       },
       "original": {
@@ -153,36 +203,35 @@
     "nixpkgs": {
       "inputs": {
         "flake-utils": [
-          "upstream",
           "nixpkgs",
           "upstream",
           "flake-utils"
         ],
         "nix": [
-          "upstream",
           "nixpkgs",
           "upstream",
           "nix"
         ],
         "nixpkgs": [
-          "upstream",
           "nixpkgs",
           "upstream",
           "nixpkgs"
         ],
-        "upstream": "upstream_2"
+        "upstream": "upstream"
       },
       "locked": {
-        "dir": "nixpkgs/spartan",
-        "lastModified": 1673517734,
-        "narHash": "sha256-vVgpeSPWB4Jc9Xvt3Zo4CZVGKCpUB68ymEU7eLcNKWw=",
-        "type": "git",
-        "url": "file:///home/dguibert/nur-packages?dir=nixpkgs%2fspartan"
+        "dir": "nixpkgs/default",
+        "lastModified": 1675702655,
+        "narHash": "sha256-Pqv2p2dEG8Hh3IcoEPOOAWjGxN+/uPwx9anxYRWh1EI=",
+        "owner": "dguibert",
+        "repo": "nur-packages",
+        "rev": "3602d5221bfa6398d49a8b712baa8de74a452564",
+        "type": "github"
       },
       "original": {
+        "dir": "nixpkgs/default",
         "owner": "dguibert",
-        "ref": "pu",
-        "repo": "nixpkgs",
+        "repo": "nur-packages",
         "type": "github"
       }
     },
@@ -220,11 +269,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1669730914,
-        "narHash": "sha256-RIYz7ygMwf8So85Ef/kD92URW5DmXKV4LsU1sFR5pIA=",
+        "lastModified": 1675592619,
+        "narHash": "sha256-e1vpahqpl+aJdW/6AKns61OBlJnAH7gn8AJwKuZRL7s=",
         "owner": "dguibert",
         "repo": "nixpkgs",
-        "rev": "1bbccdb537be9265d8867108b97e70ce11c7d8c8",
+        "rev": "131e809b806aff8dee3982eab60ae6ff44b05cf6",
         "type": "github"
       },
       "original": {
@@ -268,11 +317,8 @@
           "upstream",
           "flake-utils"
         ],
-        "nixpkgs": [
-          "upstream",
-          "nixpkgs"
-        ],
-        "upstream": "upstream"
+        "nixpkgs": "nixpkgs",
+        "upstream": "upstream_2"
       }
     },
     "spack": {
@@ -292,41 +338,72 @@
         "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       }
     },
-    "upstream": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "hpcw": "hpcw",
-        "nixpack": "nixpack",
-        "nixpkgs": "nixpkgs",
-        "pre-commit-hooks": "pre-commit-hooks",
-        "spack": "spack"
-      },
+    "st-src": {
+      "flake": false,
       "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-aGjW0yENw1hqZPhY77SnxeFhw8muYxB4e6lHq1/3vCE=",
-        "path": "../..",
-        "type": "path"
+        "lastModified": 1619005886,
+        "narHash": "sha256-PGD1oVKzaFARUJnn+IhgcDwqx8xuvnouLhUjaGwsMto=",
+        "owner": "dguibert",
+        "repo": "st",
+        "rev": "d7faa1e059e1cdb7ba0d2383c1f0fc81d6d00e15",
+        "type": "github"
       },
       "original": {
-        "path": "../..",
-        "type": "path"
+        "owner": "dguibert",
+        "ref": "pu",
+        "repo": "st",
+        "type": "github"
+      }
+    },
+    "upstream": {
+      "inputs": {
+        "dwl-src": "dwl-src",
+        "dwm-src": "dwm-src",
+        "flake-utils": "flake-utils",
+        "mako-src": "mako-src",
+        "nix": "nix",
+        "nixpkgs": "nixpkgs_2",
+        "st-src": "st-src"
+      },
+      "locked": {
+        "lastModified": 1675593798,
+        "narHash": "sha256-yi8f56U/xQA/mnp4gdF0jzhZrMB5f0DDt7Jd1uFA5Ds=",
+        "owner": "dguibert",
+        "repo": "nur-packages",
+        "rev": "f47731d223cac03e9a9e1f831571c95f78c1f3ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "master",
+        "repo": "nur-packages",
+        "type": "github"
       }
     },
     "upstream_2": {
       "inputs": {
         "flake-utils": "flake-utils_2",
-        "nix": "nix",
-        "nixpkgs": "nixpkgs_2"
+        "hpcw": "hpcw",
+        "nixpack": "nixpack",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": "pre-commit-hooks",
+        "spack": "spack"
       },
       "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-WgIBce4zoFlgetQtifeKO1wXpndoyx4lEr8lS+LJBBM=",
-        "path": "../..",
-        "type": "path"
+        "lastModified": 1673545777,
+        "narHash": "sha256-Xc+sNB6R1aiVZMp80ZhXNt1D2gQkh6gKizvL1wZe9E4=",
+        "owner": "dguibert",
+        "repo": "nixpack-pkgs",
+        "rev": "299db0bdcc259dc03508b1b60eb54daae6164a7f",
+        "type": "github"
       },
       "original": {
-        "path": "../..",
-        "type": "path"
+        "owner": "dguibert",
+        "ref": "main",
+        "repo": "nixpack-pkgs",
+        "type": "github"
       }
     }
   },
