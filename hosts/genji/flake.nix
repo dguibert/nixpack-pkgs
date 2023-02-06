@@ -10,7 +10,7 @@
   inputs.nixpkgs.url = "github:dguibert/nur-packages?dir=nixpkgs/spartan";
   inputs.flake-utils.follows = "upstream/flake-utils";
 
-  outputs = { self, nixpkgs, flake-utils, upstream, ... }: let
+  outputs = { self, nixpkgs, flake-utils, upstream, ... }@inputs: let
     nixpkgsFor = system:
       import upstream.inputs.nixpkgs.inputs.nixpkgs {
         inherit system;
@@ -19,8 +19,30 @@
         ];
         config = upstream.legacyPackages.${system}.config;
     };
-  in (flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: {
-    legacyPackages = nixpkgsFor system;
+  in (flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: let
+    pkgs = nixpkgsFor system; in {
+    legacyPackages = pkgs;
+    checks =
+      {
+      }
+      // (inputs.flake-utils.lib.flattenTree {
+        modules = pkgs.modules;
+
+        hpcw_intel_acraneb2 = pkgs.confPacks.hpcw_intel_acraneb2.mods;
+        hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
+        hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
+        hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
+        hpcw_intel_nemo_small = pkgs.confPacks.hpcw_intel_nemo_small.mods;
+        hpcw_intel_impi_ecrad = pkgs.confPacks.hpcw_intel_ecrad.mods;
+        hpcw_intel_impi_icon = pkgs.confPacks.hpcw_intel_icon.mods;
+        hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
+        hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
+        hpcw_intel_impi_ifs-fvm = pkgs.confPacks.hpcw_intel_impi_ifs-fvm.mods; # FIXME ifs-fvm requires to be built on 1 core only
+        hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
+        hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
+
+        hpcw_nvhpc_cloudsc = pkgs.confPacks.hpcw_nvhpc_cloudsc.mods;
+      });
   })) // {
     lib = nixpkgs.lib;
 
