@@ -199,7 +199,7 @@
               with self; {
                 name = label;
                 pack = packsFun {
-                  inherit os system label global spackConfig repos repoPatch package spackPython spackEnv;
+                  inherit os system label global spackConfig repos repoPatch package spackPython spackEnv spackShell;
                 };
                 inherit system;
 

@@ -71,7 +71,6 @@ default_pack._merge (self:
               none = false;
               slurm = true;
             };
-            pmi = false; # when @1.5.5.:4 schedulers=slurm
             pmix = true;
             romio = true;
             vt = true;
