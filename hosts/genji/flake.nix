@@ -7,7 +7,7 @@
   ## default
   inputs.upstream.url = "github:dguibert/nixpack-pkgs/main";
   inputs.upstream.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:dguibert/nur-packages?dir=nixpkgs/spartan";
+  inputs.nixpkgs.url = "github:dguibert/nur-packages?ref=host/spartan&dir=nixpkgs/spartan";
   inputs.flake-utils.follows = "upstream/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils, upstream, ... }@inputs: let
