@@ -1,0 +1,182 @@
+{
+  "nodes": {
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673956053,
+        "narHash": "sha256-4gtG9iQuiKITOjNQQeQIpoIB6b16fm+504Ch3sNKLd8=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "35bb57c0c8d8b62bbfd284272c928ceb64ddbde9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1676283394,
+        "narHash": "sha256-XX2f9c3iySLCw54rJ/CZs+ZK6IQy7GXNY4nSOyu2QG4=",
+        "path": "/nix/store/fy3x5qk811q1kjilcv1416p311pfh1a5-source",
+        "rev": "3db36a8b464d0c4532ba1c7dda728f4576d6d073",
+        "type": "path"
+      },
+      "original": {
+        "id": "flake-utils",
+        "type": "indirect"
+      }
+    },
+    "gitignore": {
+      "inputs": {
+        "nixpkgs": [
+          "pre-commit-hooks",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1660459072,
+        "narHash": "sha256-8DFJjXG8zqoONA1vXtgeKXy68KdJL5UaXR8NtVMUbx8=",
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "rev": "a20de23b925fd8264fd7fad6454652e142fd7f73",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "type": "github"
+      }
+    },
+    "hpcw": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1677185676,
+        "narHash": "sha256-F1n0EdgzU51WAG9TK8R8QQc/3IhEZj39F+HQcThONcY=",
+        "ref": "dg/spack",
+        "rev": "78894a435fb3c4784ae3f5aa23e810d7645692da",
+        "revCount": 1188,
+        "type": "git",
+        "url": "ssh://spartan/home_nfs/bguibertd/work/hpcw"
+      },
+      "original": {
+        "ref": "dg/spack",
+        "type": "git",
+        "url": "ssh://spartan/home_nfs/bguibertd/work/hpcw"
+      }
+    },
+    "nixpack": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "spack": [
+          "spack"
+        ]
+      },
+      "locked": {
+        "lastModified": 1669321435,
+        "narHash": "sha256-KeDDeg2TKeTxh+opMYHaqBqURcaXJo80MR5JmK1cEus=",
+        "owner": "dguibert",
+        "repo": "nixpack",
+        "rev": "fa8efb33d2fb060d4b6310051caf448f699f72c7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "pu",
+        "repo": "nixpack",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1677422216,
+        "narHash": "sha256-or7npSx5k/xgsGCoNQ4ZuVNac+sIpUR8LTkGiL9kk1w=",
+        "owner": "dguibert",
+        "repo": "nixpkgs",
+        "rev": "b46f0fca43bf6511a17304bc33d4475bd1a670fe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "pu",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-stable": {
+      "locked": {
+        "lastModified": 1673800717,
+        "narHash": "sha256-SFHraUqLSu5cC6IxTprex/nTsI81ZQAtDvlBvGDWfnA=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "2f9fd351ec37f5d479556cd48be4ca340da59b8f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-22.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "pre-commit-hooks": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "gitignore": "gitignore",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-stable": "nixpkgs-stable"
+      },
+      "locked": {
+        "lastModified": 1677160285,
+        "narHash": "sha256-tBzpCjMP+P3Y3nKLYvdBkXBg3KvTMo3gvi8tLQaqXVY=",
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "rev": "2bd861ab81469428d9c823ef72c4bb08372dd2c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cachix",
+        "repo": "pre-commit-hooks.nix",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "hpcw": "hpcw",
+        "nixpack": "nixpack",
+        "nixpkgs": "nixpkgs",
+        "pre-commit-hooks": "pre-commit-hooks",
+        "spack": "spack"
+      }
+    },
+    "spack": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1663934778,
+        "narHash": "sha256-GK0AvGk5NvahAygOjObCd7t2g4dIarNstv9QnOGm04Q=",
+        "ref": "develop",
+        "rev": "9f86af36e930396cbfe803230a3e697a91c1ca94",
+        "revCount": 27583,
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+      },
+      "original": {
+        "ref": "develop",
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
