@@ -53,11 +53,11 @@
     "hpcw": {
       "flake": false,
       "locked": {
-        "lastModified": 1677185676,
-        "narHash": "sha256-F1n0EdgzU51WAG9TK8R8QQc/3IhEZj39F+HQcThONcY=",
+        "lastModified": 1677666669,
+        "narHash": "sha256-VIi/qLc3SCYKdfKhro2T8zSrHeI3QvCVKLDi5lfhvCU=",
         "ref": "dg/spack",
-        "rev": "78894a435fb3c4784ae3f5aa23e810d7645692da",
-        "revCount": 1188,
+        "rev": "d2a179ed94da2616b0a7a8c85f68d3410b279a78",
+        "revCount": 1189,
         "type": "git",
         "url": "ssh://spartan/home_nfs/bguibertd/work/hpcw"
       },
