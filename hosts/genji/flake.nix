@@ -26,7 +26,7 @@
       {
       }
       // (inputs.flake-utils.lib.flattenTree {
-        modules = pkgs.modules;
+        #modules = pkgs.modules;
 
         hpcw_intel_acraneb2 = pkgs.confPacks.hpcw_intel_acraneb2.mods;
         hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
@@ -64,9 +64,9 @@
         packs.default = prev.packs'.default._merge (self:
           with self; {
             os = "rhel8";
-            spackConfig.config.source_cache = "/software/spack/mirror";
-            #spackConfig.config.source_cache="/dev/shm/spack/mirror";
-            spackConfig.mirrors.software = "/software/spack/mirror";
+            #spackConfig.config.source_cache = "/software/spack/mirror";
+            spackConfig.config.source_cache="/dev/shm/spack/mirror";
+            #spackConfig.mirrors.software = "/software/spack/mirror";
             spackPython = "${python3}/bin/python3";
             #spackPython = if system == "x86_64-linux"  then "/home_nfs/bguibertd/.home-x86_64/.nix-profile/bin/python3"
             #         else if system == "aarch64-linux" then "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3"

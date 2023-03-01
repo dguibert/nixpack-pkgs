@@ -9,7 +9,7 @@
   inputs.spack.url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop";
   inputs.spack.flake = false;
   inputs.hpcw = {
-    url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw"; #?ref=dg%2fspack";
+    url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
     flake = false;
   };
 
@@ -202,6 +202,7 @@
                   inherit os system label global spackConfig repos repoPatch package spackPython spackEnv spackShell;
                 };
                 inherit system;
+                spackShell = "/bin/bash";
 
                 global = {
                   verbose = true;
