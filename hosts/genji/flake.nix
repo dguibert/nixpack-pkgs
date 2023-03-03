@@ -75,6 +75,7 @@
             spackEnv.PROXYCHAINS_CONF_FILE = "/dev/shm/proxychains.conf";
             spackEnv.LD_PRELOAD = "/dev/shm/libproxychains4.so";
             spackEnv.HPCW_DOWNLOAD_URL = "/home_nfs/bguibertd/work/hpcw/downloads";
+            spackEnv.HPCW_URL = "/home_nfs/bguibertd/work/hpcw";
             spackEnv.__contentAddressed = true;
             ## only fixedCA drvs allow impureEnvVars
             #spackEnv.impureEnvVars = [

@@ -395,8 +395,8 @@
         "spack": "spack"
       },
       "locked": {
-        "lastModified": 1677668532,
-        "narHash": "sha256-tYmjkAbx81H7ebGlEbxcmit9vL2s3wGaa7FSO5E8dWY=",
+        "lastModified": 1677704517,
+        "narHash": "sha256-vf+5qY4YlSKsf7PhzJ0XnN9k6eWeEpMRQi3JhZ2Aqhw=",
         "path": "../..",
         "type": "path"
       },

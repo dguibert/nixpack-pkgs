@@ -3,6 +3,8 @@ pack._merge (self:
     with self; {
       label = "hpcw_" + pack.label + "_ifs-fvm";
 
+      package.eccodes.variants.fortran = true;
+
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
