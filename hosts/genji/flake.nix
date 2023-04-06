@@ -7,7 +7,8 @@
   ## default
   inputs.upstream.url = "github:dguibert/nixpack-pkgs/main";
   inputs.upstream.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixpkgs.url = "github:dguibert/nur-packages?ref=host/spartan&dir=nixpkgs/spartan";
+  inputs.nixpkgs.url = "github:dguibert/nur-packages?ref=host/default&dir=nixpkgs/default";
+  #inputs.nixpkgs.url = "github:dguibert/nur-packages?ref=host/spartan&dir=nixpkgs/spartan";
   inputs.flake-utils.follows = "upstream/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils, upstream, ... }@inputs: let
@@ -61,6 +62,16 @@
               else false
             );
       in {
+        dbus = prev.dbus.overrideAttrs (o: {
+          doCheck = false;
+          doInstallCheck = false;
+        });
+
+        p11-kit = prev.p11-kit.overrideAttrs (o: {
+          doCheck = false;
+          doInstallCheck = false;
+        });
+
         packs.default = prev.packs'.default._merge (self:
           with self; {
             os = "rhel8";
@@ -72,16 +83,11 @@
             #         else if system == "aarch64-linux" then "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3"
             #         else throw "python not already installed for system: ${system}";
             spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
-            spackEnv.PROXYCHAINS_CONF_FILE = "/dev/shm/proxychains.conf";
-            spackEnv.LD_PRELOAD = "/dev/shm/libproxychains4.so";
+            #spackEnv.PROXYCHAINS_CONF_FILE = "/dev/shm/proxychains.conf";
+            #spackEnv.LD_PRELOAD = "/dev/shm/libproxychains4.so";
             spackEnv.HPCW_DOWNLOAD_URL = "/home_nfs/bguibertd/work/hpcw/downloads";
             spackEnv.HPCW_URL = "/home_nfs/bguibertd/work/hpcw";
-            spackEnv.__contentAddressed = true;
-            ## only fixedCA drvs allow impureEnvVars
-            #spackEnv.impureEnvVars = [
-            #  "http_proxy" "https_proxy"
-            #  "PROXYCHAINS_CONF_FILE" "LD_PRELOAD"
-            #];
+            #spackEnv.__contentAddressed = true;
             package = {
               autoconf = rpmExtern "autoconf";
               automake = rpmExtern "automake";
@@ -167,6 +173,10 @@
 
               jube.variants.resource_manager = "slurm";
             };
+          });
+
+          spack_yaml = builtins.toJSON (final.packs.default.pack.prefs.package // {
+            package.compiler = null;
           });
     };
   };

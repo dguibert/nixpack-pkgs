@@ -9,7 +9,8 @@
   inputs.spack.url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop";
   inputs.spack.flake = false;
   inputs.hpcw = {
-    url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
+    #url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
+    url = "git+file:///home_nfs/bguibertd/work/hpcw?ref=dg/spack";
     flake = false;
   };
 
@@ -283,7 +284,8 @@
                 gcc10 = packs.default._merge (self:
                   with self; {
                     label = "gcc10";
-                    package.compiler = packs.default.pack.pkgs.gcc;
+                    package.compiler = packs.default.pack.pkgs.gcc.withPrefs {version = "10";};
+                    #compiler = corePacks.pkgs.gcc.withPrefs { version = "10"; };
                     package.gcc.version = "10";
                   });
               };
@@ -394,12 +396,12 @@
                   )
                   (inputs.nixpkgs.lib.cartesianProductOfSets {
                     packs = [
-                      packs.aocc
+                      # packs.aocc # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
                       packs.default
-                      packs.gcc10
+                      # packs.gcc10# fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
                       packs.intel
                       packs.nvhpc
-                      packs.oneapi
+                      # packs.oneapi # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
                     ];
                     mpis = [
                       (pack: pack._merge {label = pack.label + "_default";})
