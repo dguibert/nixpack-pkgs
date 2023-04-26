@@ -7,7 +7,7 @@
         (final: prev: import ../../overlays/default final (prev // { inherit inputs; }))
         (final: prev: let
         ucx_detect = feature: let
-          info = prev.lib.capture [feature] {
+          info = prev.capture [feature] {
             name = "ucx_detect.sh";
             builder = ../../ucx_detect.sh;
           };
