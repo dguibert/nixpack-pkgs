@@ -4,7 +4,8 @@
 }: let
   virtual_lib = import ./virtual.nix {inherit lib;};
 in
-  nixpack_lib
+  lib
+  // nixpack_lib
   // virtual_lib
   // rec {
     loadPacks =

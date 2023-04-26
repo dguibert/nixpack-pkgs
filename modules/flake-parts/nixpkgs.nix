@@ -1,58 +1,15 @@
-{
-  description = "A flake for building my NIXPACK packages on GENJI";
-
-  ## local
-  #inputs.upstream.url = "path:../..";
-  #inputs.nixpkgs.follows = "upstream/nixpkgs";
-  ## default
-  inputs.upstream.url = "github:dguibert/nixpack-pkgs/main";
-  inputs.upstream.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.nixpkgs.url = "github:dguibert/nur-packages?ref=host/default&dir=nixpkgs/default";
-  inputs.nixpkgs.url = "github:dguibert/nur-packages?ref=host/spartan";
-  inputs.flake-utils.follows = "upstream/flake-utils";
-
-  outputs = { self, nixpkgs, flake-utils, upstream, ... }@inputs: let
+{ inputs, perSystem, ...}: let
     nixpkgsFor = system:
-      import upstream.inputs.nixpkgs.inputs.nixpkgs {
-        inherit system;
-        overlays =  upstream.legacyPackages.${system}.overlays ++ [
-          self.overlays.default
-        ];
-        config = upstream.legacyPackages.${system}.config;
-    };
-  in (flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: let
-    pkgs = nixpkgsFor system; in {
-    legacyPackages = pkgs;
-    checks =
-      {
-      }
-      // (inputs.flake-utils.lib.flattenTree {
-        #modules = pkgs.modules;
-
-        hpcw_intel_acraneb2 = pkgs.confPacks.hpcw_intel_acraneb2.mods;
-        hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
-        hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
-        hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
-        hpcw_intel_nemo_small = pkgs.confPacks.hpcw_intel_nemo_small.mods;
-        hpcw_intel_impi_ecrad = pkgs.confPacks.hpcw_intel_ecrad.mods;
-        hpcw_intel_impi_icon = pkgs.confPacks.hpcw_intel_icon.mods;
-        hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
-        hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
-        hpcw_intel_impi_ifs-fvm = pkgs.confPacks.hpcw_intel_impi_ifs-fvm.mods; # FIXME ifs-fvm requires to be built on 1 core only
-        hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
-        hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
-
-        hpcw_nvhpc_cloudsc = pkgs.confPacks.hpcw_nvhpc_cloudsc.mods;
-      });
-  })) // {
-    lib = nixpkgs.lib;
-
-    overlays.default = final: prev: with prev;
-      let
+    import inputs.nixpkgs.inputs.nixpkgs {
+      inherit system;
+      overlays = inputs.nixpkgs.legacyPackages.${system}.overlays
+        ++ [
+        (final: prev: import ../../overlays/default final (prev // { inherit inputs; }))
+        (final: prev: let
         ucx_detect = feature: let
-          info = capture [feature] {
+          info = prev.lib.capture [feature] {
             name = "ucx_detect.sh";
-            builder = ./ucx_detect.sh;
+            builder = ../../ucx_detect.sh;
           };
         in
           builtins.trace info
@@ -61,17 +18,7 @@
               then true
               else false
             );
-      in {
-        dbus = prev.dbus.overrideAttrs (o: {
-          doCheck = false;
-          doInstallCheck = false;
-        });
-
-        p11-kit = prev.p11-kit.overrideAttrs (o: {
-          doCheck = false;
-          doInstallCheck = false;
-        });
-
+        in with prev; {
         packs.default = prev.packs'.default._merge (self:
           with self; {
             os = "rhel8";
@@ -176,10 +123,16 @@
               jube.variants.resource_manager = "slurm";
             };
           });
-
-          spack_yaml = builtins.toJSON (final.packs.default.pack.prefs.package // {
-            package.compiler = null;
-          });
+        })
+      ];
+      config = { allowUnfree = true; } // inputs.nixpkgs.legacyPackages.${system}.config;
+      #config.contentAddressedByDefault = true;
     };
+in
+{
+  perSystem = {config, self', inputs', pkgs, system, ...}: {
+    _module.args.pkgs = nixpkgsFor system;
+
+    legacyPackages = nixpkgsFor system;
   };
 }
