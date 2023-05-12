@@ -16,9 +16,18 @@
 
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
-  inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs/nixpkgs";
 
-  outputs = inputs@{ self, flake-utils, flake-parts, nixpkgs, nixpack, spack, hpcw,... }: let
+  outputs = inputs @ {
+    self,
+    flake-utils,
+    flake-parts,
+    nixpkgs,
+    nixpack,
+    spack,
+    hpcw,
+    ...
+  }: let
     inherit (self) outputs;
 
     modulesConfig = {
@@ -59,64 +68,39 @@
         };
       };
     };
-  in flake-parts.lib.mkFlake { inherit inputs; } {
-    systems = [
-      "x86_64-linux"
-      "aarch64-linux"
-    ];
-    imports = [
-      ./modules/all-modules.nix
-      #./lib
-      #./apps
-      ./checks
-      ./shells
-    ];
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      imports = [
+        ./modules/all-modules.nix
+        #./lib
+        #./apps
+        ./checks
+        ./shells
+      ];
 
-    perSystem = {config, self', inputs', pkgs, system, ...}: {
+      perSystem = {
+        config,
+        self',
+        inputs',
+        pkgs,
+        system,
+        ...
+      }: {
+      };
+      flake = {
+      };
     };
-    flake = {
-    };
-  };
 }
-#        devShells.default = with pkgs;
-#          mkDevShell {
-#            name = "pkgs";
-#            mods = [];
-#            shellHook = ''
-#              ${inputs.self.checks.${system}.pre-commit-check.shellHook}
-#            '';
-#          };
-#
 #        devShells.software = with pkgs;
 #          mkDevShell {
 #            name = "slash-software";
 #            mods = modules.osu;
 #          };
 #
-#        checks =
-#          {
-#            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-#              src = ./.;
-#              hooks = {
-#                #nixpkgs-fmt.enable = true;
-#                alejandra.enable = true; # https://github.com/kamadorueda/alejandra/blob/main/integrations/pre-commit-hooks-nix/README.md
-#                prettier.enable = true;
-#                trailing-whitespace = {
-#                  enable = true;
-#                  name = "trim trailing whitespace";
-#                  entry = "${pkgs.python3.pkgs.pre-commit-hooks}/bin/trailing-whitespace-fixer";
-#                  types = ["text"];
-#                  stages = ["commit" "push" "manual"];
-#                };
-#                check-merge-conflict = {
-#                  enable = true;
-#                  name = "check for merge conflicts";
-#                  entry = "${pkgs.python3.pkgs.pre-commit-hooks}/bin/check-merge-conflict";
-#                  types = ["text"];
-#                };
-#              };
-#            };
-#          }
 #          // (inputs.flake-utils.lib.flattenTree {
 #            modules = pkgs.modules;
 #
@@ -144,3 +128,4 @@
 #
 #      overlays.default =
 #}
+
