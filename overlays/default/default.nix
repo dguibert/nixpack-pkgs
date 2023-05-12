@@ -109,8 +109,8 @@ final: prev: let
                 then pkg
                 else builtins.trace "WARNING: external package ${pkg.name}" []
               /*
-               FIXME might be a problem to rely on an external package inside the image
-               */
+              FIXME might be a problem to rely on an external package inside the image
+              */
             )
             img_pkgs;
         };
@@ -126,8 +126,8 @@ final: prev: let
                 then pkg
                 else builtins.trace "WARNING: external package ${pkg.name}" []
               /*
-               FIXME might be a problem to rely on an external package inside the image
-               */
+              FIXME might be a problem to rely on an external package inside the image
+              */
             )
             img_pkgs;
         };
@@ -546,3 +546,4 @@ in
       ];
     })))
 # end of cartesians products
+

@@ -17,16 +17,16 @@ in
           out = attrNames filtered;
         in
           /*
-           if pathExists dir then
-           */
+          if pathExists dir then
+          */
           listToAttrs (map (n: {
               name = replaceStrings [".nix"] [""] n;
               value = removeAttrs (prev.callPackage (dir + "/${n}") {}) ["override"];
             })
             out)
       /*
-       else {}
-       */
+      else {}
+      */
       ;
 
     packsFun = nixpack_lib.packs;
@@ -52,8 +52,8 @@ in
             then {pkg = x;}
             else
               /*
-               builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
-               */
+              builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
+              */
               {
                 pkg = x;
                 projection = "${x.spec.name}/${x.spec.version}";
@@ -68,8 +68,8 @@ in
             filter
             (p:
               /*
-               builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
-               */
+              builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
+              */
                 p
                 != null
                 && ! (any (x: pkgOrSpec x == pkgOrSpec p) s)
