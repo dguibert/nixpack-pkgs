@@ -216,12 +216,12 @@
         "rev": "1313c930f98536cbec4bed7193017eb4746c7857",
         "revCount": 1319,
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/work/hpcw"
+        "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       },
       "original": {
         "ref": "dg/spack",
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/work/hpcw"
+        "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       }
     },
     "lowdown-src": {

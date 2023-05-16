@@ -10,7 +10,8 @@
   inputs.spack.flake = false;
   inputs.hpcw = {
     #url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
-    url = "git+file:///home_nfs/bguibertd/work/hpcw?ref=dg/spack";
+    url = "git+https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw?ref=dg/spack";
+    #url = "git@gitlab.dkrz.de:esiwace/hpcw.git";
     flake = false;
   };
 
