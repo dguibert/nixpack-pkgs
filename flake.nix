@@ -1,7 +1,7 @@
 {
   description = "A flake for building packages on /software-like structure";
 
-  inputs.nixpkgs.url = "github:dguibert/nur-packages/host/spartan";
+  inputs.nixpkgs.url = "flake:nixpkgs"; # use registry nixpkgs, could be "github:dguibert/nur-packages";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs/nixpkgs";
   inputs.flake-utils.follows = "nixpkgs/flake-utils";
 
