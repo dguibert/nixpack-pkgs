@@ -292,10 +292,12 @@
         ]
       },
       "locked": {
-        "lastModified": 1682092027,
-        "narHash": "sha256-aGMD97BH2O70fvgRdC/dozRHYr54TMH/Iyygc/W4QeQ=",
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "lastModified": 1678092096,
+        "narHash": "sha256-+7NsvJyPQBcQj2rmf2K7u4CSXbHawx638AeE2iONrdA=",
+        "owner": "dguibert",
+        "repo": "nixpack",
+        "rev": "9e0f9dea9b76d2a291da579ada7814520d46dcd7",
+        "type": "github"
       },
       "original": {
         "owner": "dguibert",
