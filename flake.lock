@@ -36,7 +36,7 @@
     },
     "emacs-overlay": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs",
           "nixpkgs"
@@ -142,19 +142,6 @@
     },
     "flake-utils": {
       "locked": {
-        "lastModified": 1676283394,
-        "narHash": "sha256-XX2f9c3iySLCw54rJ/CZs+ZK6IQy7GXNY4nSOyu2QG4=",
-        "path": "/home_nfs/bguibertd/nix/store/lnxbfg693h0zihx38qwdbi7qz8mdzgsg-source",
-        "rev": "3db36a8b464d0c4532ba1c7dda728f4576d6d073",
-        "type": "path"
-      },
-      "original": {
-        "id": "flake-utils",
-        "type": "indirect"
-      }
-    },
-    "flake-utils_2": {
-      "locked": {
         "lastModified": 1667395993,
         "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
         "owner": "numtide",
@@ -168,7 +155,7 @@
         "type": "github"
       }
     },
-    "flake-utils_3": {
+    "flake-utils_2": {
       "inputs": {
         "systems": "systems"
       },
@@ -313,7 +300,7 @@
         "emacs-overlay": "emacs-overlay",
         "emacs-src": "emacs-src",
         "flake-parts": "flake-parts_2",
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_2",
         "mako-src": "mako-src",
         "nix": "nix",
         "nixpkgs": "nixpkgs_2",
@@ -448,7 +435,10 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "flake-utils": "flake-utils",
+        "flake-utils": [
+          "nixpkgs",
+          "flake-utils"
+        ],
         "hpcw": "hpcw",
         "nixpack": "nixpack",
         "nixpkgs": "nixpkgs",

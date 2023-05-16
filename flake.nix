@@ -18,6 +18,7 @@
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs/nixpkgs";
+  inputs.flake-utils.follows = "nixpkgs/flake-utils";
 
   outputs = inputs @ {
     self,
