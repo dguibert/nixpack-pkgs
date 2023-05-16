@@ -7,6 +7,45 @@ final: prev: let
     nixpack_lib = prev.inputs.nixpack.lib;
   };
 
+  modulesConfig = {
+    config = {
+      hierarchy = ["mpi"];
+      hash_length = 0;
+      prefix_inspections = {
+        "lib" = ["LIBRARY_PATH"];
+        "lib64" = ["LIBRARY_PATH"];
+        "lib/intel64" = ["LIBRARY_PATH"]; # for intel
+        "include" = ["C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"];
+        "" = ["{name}_DIR"];
+      };
+      all = {
+        autoload = "direct";
+        prerequisites = "direct";
+        suffixes = {
+          "^mpi" = "mpi";
+          "^cuda" = "cuda";
+        };
+        filter = {
+          environment_blacklist = ["CC" "FC" "CXX" "F77"];
+        };
+      };
+      openmpi = {
+        environment = {
+          set = {
+            OPENMPI_VERSION = "{version}";
+          };
+        };
+      };
+      intel = {
+        environment = {
+          set = {
+            ONEAPI_ROOT = "{prefix}";
+          };
+        };
+      };
+    };
+  };
+
   overlaySelf = with overlaySelf;
   with prev; {
     inherit (lib) isLDep isRDep isRLDep;

@@ -29,17 +29,15 @@
                 with self; {
                   os = "rhel8";
                   spackConfig.config.source_cache = "/software/spack/mirror";
-                  #spackConfig.config.source_cache="/dev/shm/spack/mirror";
+                  #spackConfig.config.source_cache = "/dev/shm/spack/mirror";
                   spackConfig.mirrors.software = "/software/spack/mirror";
                   spackPython = "${python3}/bin/python3";
-                  #spackPython = if system == "x86_64-linux"  then "/home_nfs/bguibertd/.home-x86_64/.nix-profile/bin/python3"
-                  #         else if system == "aarch64-linux" then "/home_nfs/bguibertd/.home-aarch64/.nix-profile/bin/python3"
-                  #         else throw "python not already installed for system: ${system}";
                   spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
                   #spackEnv.PROXYCHAINS_CONF_FILE = "/dev/shm/proxychains.conf";
                   #spackEnv.LD_PRELOAD = "/dev/shm/libproxychains4.so";
-                  #spackEnv.LD_PRELOAD = "${proxychains-ng}/lib/libproxychains4.so";
-                  spackEnv.all_proxy = "socks4a://127.0.0.1:33129";
+                  #spackEnv.all_proxy = "socks4a://127.0.0.1:33129";
+                  spackEnv.http_proxy = "http://10.11.0.1:33000";
+                  spackEnv.https_proxy = "http://10.11.0.1:33000";
                   spackEnv.HPCW_DOWNLOAD_URL = "/home_nfs/bguibertd/work/hpcw/downloads";
                   spackEnv.HPCW_URL = "/home_nfs/bguibertd/work/hpcw";
                   #spackEnv.__contentAddressed = true;
@@ -49,12 +47,13 @@
                     bzip2 = rpmExtern "bzip2";
                     curl = rpmExtern "curl";
                     diffutils = rpmExtern "diffutils";
+                    libssh = rpmExtern "libssh";
                     libtool = rpmExtern "libtool";
                     m4 = rpmExtern "m4";
                     openssh = rpmExtern "openssh";
                     openssl = rpmExtern "openssl";
-                    pkgconf = rpmExtern "pkgconf";
                     pkgconfig = rpmExtern "pkgconf";
+                    pkgconf = rpmExtern "pkgconf";
                     #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
                     slurm =
                       rpmExtern "slurm"
