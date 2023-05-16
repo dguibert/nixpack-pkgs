@@ -2,6 +2,8 @@
   description = "A flake for building packages on /software-like structure";
 
   inputs.nixpkgs.url = "github:dguibert/nur-packages/host/spartan";
+  inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs/nixpkgs";
+  inputs.flake-utils.follows = "nixpkgs/flake-utils";
 
   inputs.nixpack.url = "github:dguibert/nixpack/pu";
   inputs.nixpack.inputs.spack.follows = "spack";
@@ -17,8 +19,6 @@
 
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
-  inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs/nixpkgs";
-  inputs.flake-utils.follows = "nixpkgs/flake-utils";
 
   outputs = inputs @ {
     self,

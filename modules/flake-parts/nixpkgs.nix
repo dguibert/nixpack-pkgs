@@ -4,7 +4,7 @@
   ...
 }: let
   nixpkgsFor = system:
-    import inputs.nixpkgs.inputs.nixpkgs {
+    import (inputs.nixpkgs.inputs.nixpkgs or inputs.nixpkgs) {
       inherit system;
       overlays =
         inputs.nixpkgs.legacyPackages.${system}.overlays

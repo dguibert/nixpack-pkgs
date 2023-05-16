@@ -3,7 +3,7 @@ final: prev: let
   nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};
 
   lib = import ../../lib {
-    lib = prev.inputs.nixpkgs.inputs.nixpkgs.lib;
+    lib = (prev.inputs.nixpkgs.inputs.nixpkgs or prev.inputs.nixpkgs).lib;
     nixpack_lib = prev.inputs.nixpack.lib;
   };
 
