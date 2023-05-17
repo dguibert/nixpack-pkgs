@@ -9,6 +9,12 @@ os=$( . /etc/os-release ; echo $ID${VERSION_ID%.[0-9]*} )
 arch=$(uname -m)
 #nixargs="$cur --argstr gitrev ${gitrev:-unknown} --argstr os $os"
 nixargs="--option sandbox false --impure -L"
+
+nom_cmd=echo
+if command -v nom &>/dev/null; then
+	nixargs+=" --log-format internal-json -v"
+	nom_cmd="nom --json"
+fi
 site=spartan
 #lmodbase=/mnt/sw/lmod/$arch/$os
 
@@ -27,7 +33,7 @@ case "$cmd" in
 		#if [[ "$*" != *" -A "* ]] ; then
 		#	set -- "$@" -A mods
 		#fi
-		exec nix build --show-trace $nixargs "$@"
+		exec nix build --show-trace $nixargs $@ |& $nom_cmd
 		;;
 	(spec)
 		if [[ $# -eq 0 ]] ; then
@@ -74,10 +80,10 @@ case "$cmd" in
 			profile=$NIX_STATE_DIR/profiles/${prefix:=$arch/$os/}$prof
 			mkdir -p $(dirname $profile)
 			if test -e $profile; then
-				nix profile upgrade --profile $profile $nixargs $attrs
+				nix profile upgrade --profile $profile $nixargs '.*' |& $nom_cmd
 			else
 				# FIXME how to do the same as nix-env -i -r ...
-				nix profile install --profile $profile $nixargs '.*'
+				nix profile install --profile $profile $nixargs $attrs |& $nom_cmd
 			fi
 			l=$(readlink $profile)
 			git tag $site/$prefix${l%-link} HEAD || true

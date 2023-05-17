@@ -20,6 +20,9 @@
       mkDevShell {
         name = "pkgs";
         mods = [];
+        buildInputs = [
+          nix-output-monitor
+        ];
         shellHook = ''
           ${config.pre-commit.devShell.shellHook}
         '';
