@@ -64,6 +64,15 @@ final: prev: let
     inherit (lib) packsFun loadPacks virtual;
     inherit (lib) capture;
 
+    hpcw_repo = builtins.path {
+      name = "hpcw-repo";
+      path = "${inputs.hpcw}/spack/hpcw";
+    };
+    cbm_repo = builtins.path {
+      name = "cbm2";
+      path = inputs.cbm-spack;
+    };
+
     mkDevShell = {
       name,
       mods,
@@ -297,6 +306,7 @@ final: prev: let
                   }))
             ];
             variants = [
+              (import ../../confs/cbm2.nix final)
               (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
               (import ../../confs/hpcw.nix final)
@@ -340,11 +350,6 @@ final: prev: let
           })))
       # end of configurations
     );
-
-    hpcw_repo = builtins.path {
-      name = "hpcw-repo";
-      path = "${inputs.hpcw}/spack/hpcw";
-    };
 
     corePacks = final.packs.default.pack;
     intelPacks = final.packs.intel.pack;

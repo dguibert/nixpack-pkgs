@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "cbm-spack": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1684244066,
+        "narHash": "sha256-NzuLKYwxyRJypCsKCBbP9TbnX4/zAwbJi4TfquP+Wtk=",
+        "owner": "compbiomedeu",
+        "repo": "compbiomed-spack",
+        "rev": "a72f3509d423884f724c9600c3ad91825b3dcda9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "compbiomedeu",
+        "repo": "compbiomed-spack",
+        "type": "github"
+      }
+    },
     "dwl-src": {
       "flake": false,
       "locked": {
@@ -432,6 +448,7 @@
     },
     "root": {
       "inputs": {
+        "cbm-spack": "cbm-spack",
         "flake-parts": "flake-parts",
         "flake-utils": [
           "nixpkgs",

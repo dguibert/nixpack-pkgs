@@ -1,13 +1,14 @@
 {
   default_pack,
   hpcw_repo,
+  cbm_repo,
   packsFun,
   isRLDep,
   packs,
 }:
 default_pack._merge (self:
     with self; {
-      label = "core";
+      label = "default";
       global = {
         resolver = deptype:
           if isRLDep deptype

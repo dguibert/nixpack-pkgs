@@ -17,6 +17,10 @@
     #url = "git@gitlab.dkrz.de:esiwace/hpcw.git";
     flake = false;
   };
+  inputs.cbm-spack = {
+    url = "github:compbiomedeu/compbiomed-spack";
+    flake = false;
+  };
 
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
