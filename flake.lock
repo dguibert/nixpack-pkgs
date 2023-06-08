@@ -447,13 +447,13 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1665400129,
-        "narHash": "sha256-AhyRzg4AECHDjwBDMYFoEEBewzXvgQ29+GsVyaeUrHw=",
-        "ref": "refs/heads/dg/mlflow",
-        "rev": "a5fd0abe947e6418b96675d006610201ae4660e6",
-        "revCount": 27585,
+        "lastModified": 1685105650,
+        "narHash": "sha256-ao8ueL7Jf9RM/AvlXifAda2lPxrougdENMMxt5J/vjE=",
+        "ref": "develop",
+        "rev": "7de0060694c1c3a32a5702d936069f323fa6b84d",
+        "revCount": 31369,
         "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
       },
       "original": {
         "ref": "develop",
