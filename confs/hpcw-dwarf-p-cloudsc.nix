@@ -9,6 +9,7 @@ pack._merge (self:
       #package.dwarf-p-cloudsc.variants.serialbox = true;
       package.dwarf-p-cloudsc.variants.cloudsc-c = false; # require serialbox?
       package.serialbox.version = "2.5.4-patched"; # require private url (TODO implement curl -n)
+      package.hdf5.version = "1.12";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
