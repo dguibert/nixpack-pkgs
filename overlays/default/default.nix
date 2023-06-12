@@ -274,118 +274,118 @@ final: prev: let
         name = "modules-${name}";
       });
 
-    modules = recurseIntoAttrs {
-      osu = final.mkModules "osu" final.corePacks (
-        [
-        ]
-        ++ (
-          builtins.concatMap
-          (
-            attr:
-              with attr; let
-                pack_ = pkgs (mpis packs);
-                enabled = pack_.enable or true;
-              in
-                if ! enabled
-                then []
-                else (pack_.pkgs or (p: []))
-          )
-          (lib.cartesianProductOfSets {
-            packs = [
-              # packs.aocc # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
-              packs.default
-              # packs.gcc10# fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
-              packs.intel
-              packs.nvhpc
-              # packs.oneapi # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
-            ];
-            mpis = [
-              (pack: pack._merge {label = pack.label + "_default";})
-              (pack:
-                pack._merge {
-                  label = pack.label + "_ompi410";
-                  enable = false; #builtins.trace "ompi410 cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
-
-                  package.openmpi.version = "4.1.0";
-                  package.openmpi.variants.pmix = false;
-                })
-              (pack:
-                pack._merge {
-                  label = pack.label + "_ompi_cuda";
-                  enable = false; # TODO fix ucx duplicate #builtins.trace "ompi-cuda cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
-
-                  package.openmpi.variants.cuda = true;
-                  package.ucx.variants = {
-                    extern =
-                      if
-                        (pack.package.ucx.variants.cuda
-                          != true)
-                        || (pack.package.ucx.variants.gdrcopy != true)
-                      then null
-                      else pack.package.ucx.extern;
-                    cuda = true;
-                    gdrcopy = true;
-                    rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
-                  };
-                  package.hwloc.variants.cuda = true;
-                })
-            ];
-            pkgs = [
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_osu";
-                  pkgs = with self.pack.pkgs; [
-                    mpi
-                    osu-micro-benchmarks
-                  ];
-                }))
-            ];
-          })
-        )
-      );
-
-      hip = final.mkModules "hip" final.corePacks (with (packs.default._merge {
-          package.mesa.variants.llvm = false;
-          package.ucx.variants = {
-            cuda = true;
-            gdrcopy = false;
-            rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
-          };
-
-          repoPatch = {
-            llvm-amdgpu = spec: old: {
-              provides =
-                old.provides
-                or {}
-                // {
-                  compiler = null;
-                };
-            };
-          };
-        })
-        .pack
-        .pkgs; [
-          compiler
-          mpi
-          hip
-          {
-            pkg = llvm-amdgpu;
-            context.provides = []; # not real compiler
-          }
-          #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
-          #hipfft
-          cmake
-          cuda
-        ]);
-      # hpcw modules
-      hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
-      hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
-      hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
-      hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
-      hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
-      hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
-      #hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
-    };
+    #    modules = recurseIntoAttrs {
+    #      osu = final.mkModules "osu" final.corePacks (
+    #        [
+    #        ]
+    #        ++ (
+    #          builtins.concatMap
+    #          (
+    #            attr:
+    #              with attr; let
+    #                pack_ = pkgs (mpis packs);
+    #                enabled = pack_.enable or true;
+    #              in
+    #                if ! enabled
+    #                then []
+    #                else (pack_.pkgs or (p: []))
+    #          )
+    #          (lib.cartesianProductOfSets {
+    #            packs = [
+    #              # packs.aocc # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
+    #              packs.default
+    #              # packs.gcc10# fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
+    #              packs.intel
+    #              packs.nvhpc
+    #              # packs.oneapi # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
+    #            ];
+    #            mpis = [
+    #              (pack: pack._merge {label = pack.label + "_default";})
+    #              (pack:
+    #                pack._merge {
+    #                  label = pack.label + "_ompi410";
+    #                  enable = false; #builtins.trace "ompi410 cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
+    #
+    #                  package.openmpi.version = "4.1.0";
+    #                  package.openmpi.variants.pmix = false;
+    #                })
+    #              (pack:
+    #                pack._merge {
+    #                  label = pack.label + "_ompi_cuda";
+    #                  enable = false; # TODO fix ucx duplicate #builtins.trace "ompi-cuda cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
+    #
+    #                  package.openmpi.variants.cuda = true;
+    #                  package.ucx.variants = {
+    #                    extern =
+    #                      if
+    #                        (pack.package.ucx.variants.cuda
+    #                          != true)
+    #                        || (pack.package.ucx.variants.gdrcopy != true)
+    #                      then null
+    #                      else pack.package.ucx.extern;
+    #                    cuda = true;
+    #                    gdrcopy = true;
+    #                    rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
+    #                  };
+    #                  package.hwloc.variants.cuda = true;
+    #                })
+    #            ];
+    #            pkgs = [
+    #              (pack:
+    #                pack._merge (self: {
+    #                  label = pack.label + "_osu";
+    #                  pkgs = with self.pack.pkgs; [
+    #                    mpi
+    #                    osu-micro-benchmarks
+    #                  ];
+    #                }))
+    #            ];
+    #          })
+    #        )
+    #      );
+    #
+    #      hip = final.mkModules "hip" final.corePacks (with (packs.default._merge {
+    #          package.mesa.variants.llvm = false;
+    #          package.ucx.variants = {
+    #            cuda = true;
+    #            gdrcopy = false;
+    #            rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
+    #          };
+    #
+    #          repoPatch = {
+    #            llvm-amdgpu = spec: old: {
+    #              provides =
+    #                old.provides
+    #                or {}
+    #                // {
+    #                  compiler = null;
+    #                };
+    #            };
+    #          };
+    #        })
+    #        .pack
+    #        .pkgs; [
+    #          compiler
+    #          mpi
+    #          hip
+    #          {
+    #            pkg = llvm-amdgpu;
+    #            context.provides = []; # not real compiler
+    #          }
+    #          #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
+    #          #hipfft
+    #          cmake
+    #          cuda
+    #        ]);
+    #      # hpcw modules
+    #      hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
+    #      hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
+    #      hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
+    #      hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
+    #      hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
+    #      hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
+    #      #hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
+    #    };
 
     viridianSImg = prev.singularity-tools.buildImage {
       name = "viridian";

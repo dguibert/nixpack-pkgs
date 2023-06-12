@@ -447,13 +447,12 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1685105650,
-        "narHash": "sha256-ao8ueL7Jf9RM/AvlXifAda2lPxrougdENMMxt5J/vjE=",
-        "ref": "develop",
-        "rev": "7de0060694c1c3a32a5702d936069f323fa6b84d",
-        "revCount": 31369,
-        "type": "git",
-        "url": "https://castle.frec.bull.fr:24443/bguibertd/spack.git"
+        "lastModified": 1686535956,
+        "narHash": "sha256-xF8lokNUMPQvo6j/UO7u2MnM8LAmQT1pIBM72bcEExQ=",
+        "owner": "spack",
+        "repo": "spack",
+        "rev": "7fa3c7f0fafc39ac7229b8c22b65862befd4ad1e",
+        "type": "github"
       },
       "original": {
         "ref": "develop",
