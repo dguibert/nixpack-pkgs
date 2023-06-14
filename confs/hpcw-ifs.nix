@@ -10,6 +10,9 @@ pack._merge (self:
       #package.python.variants.pythoncmd = false;
       #package.python.depends.compiler = final.corePacks.pkgs.compiler;
 
+      #satrad/module/rttov_hdf_mod.F90(48): error #7002: Error in opening the compiled module file.  Check INCLUDE paths.   [H5ES]
+      package.hdf5.version = "1.12";
+
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
