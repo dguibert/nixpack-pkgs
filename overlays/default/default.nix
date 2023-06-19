@@ -9,7 +9,9 @@ final: prev: let
 
   modulesConfig = {
     config = {
-      hierarchy = ["mpi"];
+      hierarchy = [
+        "mpi"
+      ];
       hash_length = 0;
       prefix_inspections = {
         "lib" = ["LIBRARY_PATH"];
@@ -28,6 +30,15 @@ final: prev: let
         filter = {
           environment_blacklist = ["CC" "FC" "CXX" "F77"];
         };
+      };
+      projections = {
+        "ifs nemo=yes" = "{name}-nemo/{version}";
+        "ifs nemo=no" = "{name}-nonemo/{version}";
+        "cdo ^hdf5" = "{name}/{version}-{^hdf5.name}-{^hdf5.version}";
+        "netcdf-c ^hdf5" = "{name}/{version}-{^hdf5.name}-{^hdf5.version}";
+        "netcdf-fortran ^hdf5" = "{name}/{version}-{^hdf5.name}-{^hdf5.version}";
+        "nemo cfg=ORCA2_ICE_PISCES" = "{name}-orca2_ice_pisces/{version}";
+        "nemo cfg=BENCH" = "{name}-bench/{version}";
       };
       openmpi = {
         environment = {
@@ -65,6 +76,10 @@ final: prev: let
             ENVRC = name;
             nativeBuildInputs = [bashInteractive];
             shellHook = ''
+              # remove existing module vars/functions
+              unset MODULEPATH MODULEPATH_modshare MODULES_CMD MODULESHOME MODULES_RUN_QUARANTINE
+              unset -f module module_raw ml
+
               echo_cmd() {
                 echo "+ $@"
                 $@
@@ -131,7 +146,11 @@ final: prev: let
               else name)
             mod_pkgs;
           };
-        mods = final.mkModules label final.pkgs.corePacks mod_pkgs;
+        mods = final.mkModules {
+          name = label;
+          pack = final.pkgs.corePacks;
+          pkgs = mod_pkgs;
+        };
 
         mod_pkgs = [];
         img_pkgs = mod_pkgs;
@@ -265,15 +284,45 @@ final: prev: let
     intelOneApiPacks = final.packs.oneapi.pack;
     aoccPacks = final.packs.aocc.pack;
 
-    mkModules = name: pack: pkgs:
+    mkModules = {
+      name,
+      pack,
+      pkgs,
+      withDeps ? true,
+    }:
       pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
         coreCompilers = [
           pack.pkgs.compiler
         ];
-        pkgs = lib.findModDeps pkgs;
+        pkgs =
+          if withDeps
+          then lib.findModDeps pkgs
+          else pkgs;
         name = "modules-${name}";
       });
 
+    modules = final.mkModules {
+      name = "modules";
+      pack = final.packs.default.pack;
+      withDeps = false;
+      # unique does not remove duplicate pkgconf
+      pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
+        []
+        # hpcw modules
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_acraneb2.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_ectrans.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs_nonemo.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_nemo_small.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_ecrad.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_icon.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs_nonemo.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs-fvm.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_small.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_medium.mod_pkgs)
+      ));
+    };
     #    modules = recurseIntoAttrs {
     #      osu = final.mkModules "osu" final.corePacks (
     #        [
@@ -377,14 +426,6 @@ final: prev: let
     #          cmake
     #          cuda
     #        ]);
-    #      # hpcw modules
-    #      hpcw_intel_ectrans = pkgs.confPacks.hpcw_intel_ectrans.mods;
-    #      hpcw_intel_ifs = pkgs.confPacks.hpcw_intel_ifs.mods;
-    #      hpcw_intel_ifs_nonemo = pkgs.confPacks.hpcw_intel_ifs_nonemo.mods;
-    #      hpcw_intel_impi_ifs_nonemo = pkgs.confPacks.hpcw_intel_impi_ifs_nonemo.mods;
-    #      hpcw_intel_impi_ifs = pkgs.confPacks.hpcw_intel_impi_ifs.mods;
-    #      hpcw_intel_impi_nemo_small = pkgs.confPacks.hpcw_intel_impi_nemo_small.mods;
-    #      #hpcw_intel_impi_nemo_medium = pkgs.confPacks.hpcw_intel_impi_nemo_medium.mods;
     #    };
 
     viridianSImg = prev.singularity-tools.buildImage {

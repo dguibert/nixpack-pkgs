@@ -33,13 +33,19 @@ pack._merge (self:
         wave = true;
       };
 
+      # not required here but to be compliant with ifs-fvm
+      package.eccodes.variants.fortran = true;
+
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
         libxml2
         xios
         cmake
-        nemo
+        {
+          pkg = nemo;
+          projection = "nemo-bench/{version}";
+        }
         cdo
         pkgconf # for hdf5?
       ];

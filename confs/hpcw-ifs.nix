@@ -13,6 +13,9 @@ pack._merge (self:
       #satrad/module/rttov_hdf_mod.F90(48): error #7002: Error in opening the compiled module file.  Check INCLUDE paths.   [H5ES]
       package.hdf5.version = "1.12";
 
+      # not required here but to be compliant with ifs-fvm
+      package.eccodes.variants.fortran = true;
+
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
