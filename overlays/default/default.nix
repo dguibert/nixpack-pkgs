@@ -309,6 +309,8 @@ final: prev: let
       # unique does not remove duplicate pkgconf
       pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
         []
+        # emopass modules
+        ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
         # hpcw modules
         ++ (lib.findModDeps final.confPacks.hpcw_intel_acraneb2.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.hpcw_intel_ectrans.mod_pkgs)

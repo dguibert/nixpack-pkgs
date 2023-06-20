@@ -195,6 +195,9 @@ default_pack._merge (self:
         papi.depends.compiler = packs.default.pack.pkgs.compiler;
         elfutils.depends.compiler = packs.default.pack.pkgs.compiler;
         sqlite.depends.compiler = packs.default.pack.pkgs.compiler;
+        libmd.depends.compiler = packs.default.pack.pkgs.compiler;
+        expat.depends.compiler = packs.default.pack.pkgs.compiler;
+        udunits.depends.compiler = packs.default.pack.pkgs.compiler;
 
         # timemory@=3.2.3%nvhpc@=23.5~allinea_map~caliper+compiler~cuda~cupti~dyninst+ert~examples+extra_optimizations~gotcha~gperftools+install_config+install_headers~ipo~kokkos_build_config~kokkos_tools~likwid~likwid_nvmon~lto~mpi~mpip_library~nccl~ompt~ompt_library~papi+pic~python~python_deps~python_hatchet~python_line_profiler+require_packages+shared~static+statistics~tau+tools+unity_build~upcxx~use_arch~vtune build_system=cmake build_type=Release cpu_target=auto cuda_arch=auto cudastd=14 cxxstd=14 generator=make tls_model=global-dynamic arch=linux-rhel8-x86_64_v3 /5pv8nsrcidqz52njkrqpbcg5nd3ah2vy
         timemory.depends.compiler = packs.default.pack.pkgs.compiler;
