@@ -187,5 +187,27 @@ default_pack._merge (self:
 
         #tar dependency zstd: package zstd@1.5.2~programs compression= libs=+shared,+static does not match dependency constraints {"variants":{"programs":true}}
         zstd.variants.programs = true;
+        zstd.depends.compiler = packs.default.pack.pkgs.compiler;
+        libbsd.depends.compiler = packs.default.pack.pkgs.compiler;
+        libxcrypt.depends.compiler = packs.default.pack.pkgs.compiler;
+        libffi.depends.compiler = packs.default.pack.pkgs.compiler;
+        libunwind.depends.compiler = packs.default.pack.pkgs.compiler;
+        papi.depends.compiler = packs.default.pack.pkgs.compiler;
+        elfutils.depends.compiler = packs.default.pack.pkgs.compiler;
+        sqlite.depends.compiler = packs.default.pack.pkgs.compiler;
+
+        # timemory@=3.2.3%nvhpc@=23.5~allinea_map~caliper+compiler~cuda~cupti~dyninst+ert~examples+extra_optimizations~gotcha~gperftools+install_config+install_headers~ipo~kokkos_build_config~kokkos_tools~likwid~likwid_nvmon~lto~mpi~mpip_library~nccl~ompt~ompt_library~papi+pic~python~python_deps~python_hatchet~python_line_profiler+require_packages+shared~static+statistics~tau+tools+unity_build~upcxx~use_arch~vtune build_system=cmake build_type=Release cpu_target=auto cuda_arch=auto cudastd=14 cxxstd=14 generator=make tls_model=global-dynamic arch=linux-rhel8-x86_64_v3 /5pv8nsrcidqz52njkrqpbcg5nd3ah2vy
+        timemory.depends.compiler = packs.default.pack.pkgs.compiler;
+        timemory.variants = {
+          caliper = true;
+          gotcha = true;
+          mpi = true;
+          ompt = true;
+          ompt_library = true;
+          papi = true;
+          python = true;
+          python_hatchet = true;
+          python_line_profiler = true;
+        };
       };
     })

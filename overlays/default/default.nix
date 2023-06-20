@@ -240,9 +240,10 @@ final: prev: let
                   }))
             ];
             variants = [
+              (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
-              (import ../../confs/jube.nix final)
               (import ../../confs/hpcw.nix final)
+              (import ../../confs/jube.nix final)
               (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
               (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
               (import ../../confs/hpcw-ecrad.nix final)
