@@ -9,7 +9,7 @@ pack._merge (self:
       package.mkl.version = "2022.2.1";
       package.intel-oneapi-mpi.version = "2021.7.1";
       package.fftw.version = "3.3.10";
-      package.hdf5.version = "1.13.2";
+      package.hdf5.version = "1.12.2";
       package.netcdf-c.version = "4.9.0";
       package.netcdf-fortran.version = "4.6.0";
 
