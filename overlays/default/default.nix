@@ -219,7 +219,7 @@ final: prev: let
           # hpcw configurations
           ++ (lib.cartesianProductOfSets {
             packs = [
-              packs.default
+              final.packs.default
               packs.intel
               packs.nvhpc
             ];
@@ -270,6 +270,7 @@ final: prev: let
               (import ../../confs/hpcw-nemo-small.nix final)
               (import ../../confs/hpcw-nemo-medium.nix final)
               #(import ../../confs/hpcw-nemo-big.nix final)
+              (import ../../confs/reframe.nix final)
             ];
           })))
       # end of configurations
