@@ -228,6 +228,63 @@ final: prev: let
               (pack:
                 pack._merge (self:
                   with self; {
+                    label = "${pack.label}_bmpi";
+                    package.mpi = {name = "bull-openmpi";};
+                  }))
+              (pack:
+                pack._merge (self:
+                  with self; {
+                    label = "${pack.label}_ompi";
+                    package.mpi = {name = "openmpi";};
+
+                    package.openmpi.variants = {
+                      cxx = true;
+                      legacylaunchers = true;
+                      orterunprefix = true;
+                      lustre = true;
+                      memchecker = false;
+                      schedulers.slurm = true;
+                      fabrics = {
+                        ucx = true;
+                        hcoll = true;
+                        xpmem = true;
+                        cma = true;
+                        knem = true;
+                      };
+                      mca_no_build = {
+                        crs = true;
+                        snapc = true;
+                        pml-crcpw = true;
+                        pml-v = true;
+                        vprotocol = true;
+                        crcp = true;
+                        btl-usnic = true;
+                        btl-uct = true;
+                        btl-openib = true;
+                      };
+                    };
+                    package.ucx.variants = {
+                      cma = true;
+                      dc = true;
+                      dm = true;
+                      logging = false;
+                      ib_hw_tm = true;
+                      knem = true;
+                      mlx5_dv = true;
+                      openmp = true;
+                      optimizations = true;
+                      parameter_checking = false;
+                      rc = true;
+                      rdmacm = true;
+                      thread_multiple = true;
+                      ud = true;
+                      verbs = true;
+                      xpmem = true;
+                    };
+                  }))
+              (pack:
+                pack._merge (self:
+                  with self; {
                     label = "${pack.label}_impi";
                     package.mpi = {name = "intel-mpi";};
                     # for conditionally load all packages with +mpi%compiler
@@ -271,6 +328,14 @@ final: prev: let
               (import ../../confs/hpcw-nemo-medium.nix final)
               #(import ../../confs/hpcw-nemo-big.nix final)
               (import ../../confs/reframe.nix final)
+              (pack:
+                pack._merge (self: {
+                  label = pack.label + "_osu";
+                  mod_pkgs = with self.pack.pkgs; [
+                    mpi
+                    osu-micro-benchmarks
+                  ];
+                }))
             ];
           })))
       # end of configurations
