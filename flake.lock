@@ -279,11 +279,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1687260904,
-        "narHash": "sha256-QyqJUkxeRHnNNpEtneysbLZg/ZmlhmwEed9dz94aDes=",
+        "lastModified": 1688369565,
+        "narHash": "sha256-yFdy9PGSmMZ/biCNX6LGk5poQq24InjqMSxrGzasDNk=",
         "owner": "dguibert",
         "repo": "nixpack",
-        "rev": "93aecd61d5f4d62df14e0ef589f3fee1b6c0c710",
+        "rev": "a624811dc874b446df61af105456e3d494c84ea2",
         "type": "github"
       },
       "original": {
