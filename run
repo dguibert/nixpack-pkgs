@@ -63,15 +63,9 @@ case "$cmd" in
 				(lmod)
 					attrs=".#packs.default.pack.pkgs.lmod"
 					;;
-#				(jupyter)
-#					attrs="jupyter"
-#					;;
-#				(shell)
-#					attrs="pkgs.zsh pkgs.tmux pkgs.git"
-#					;;
-#				(viswall)
-#					attrs="nixpkgs.xscreensaver nixpkgs.mpv"
-#					;;
+				(modules)
+					attrs=".#modules"
+					;;
 				(*)
 					echo "Unknown profile"
 					exit 1
@@ -142,12 +136,8 @@ Commands:
 	       along with the total number of unique packages.
   gc           Cleanup any unreferenced nix stores (nix-store --gc).
   profile      Update a nix profile for...
-    jupyter    jupyterhub server environment
     nix        nix build environment
     lmod       lua modules environment
-    shell      zsh and other shell tools
-    viswall    viswall movie display environment
-    all        all of the above
     modules    nixpack lmod modules (for testing only)
   modules NAME release nixpack lmod modules to modules/NAME
   cache        Update lmod cache files
