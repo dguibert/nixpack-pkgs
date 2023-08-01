@@ -28,6 +28,13 @@ pack._merge (self:
         netcdf-fortran
         szip
         pkgconf
-        ifs
+        {
+          pkg = ifs;
+          projection = "ifs-${
+            if (package.ifs.variants.nemo or false)
+            then "no"
+            else ""
+          }nemo/{version}";
+        }
       ];
     })
