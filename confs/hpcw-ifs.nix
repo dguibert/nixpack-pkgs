@@ -31,7 +31,7 @@ pack._merge (self:
         {
           pkg = ifs;
           projection = "ifs-${
-            if (package.ifs.variants.nemo or false)
+            if (package ? ifs && package.ifs.variants.nemo == "no")
             then "no"
             else ""
           }nemo/{version}";
