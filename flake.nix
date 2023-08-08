@@ -8,8 +8,7 @@
   inputs.nixpack.url = "github:dguibert/nixpack/pu";
   inputs.nixpack.inputs.spack.follows = "spack";
   inputs.nixpack.inputs.nixpkgs.follows = "nixpkgs";
-  #inputs.spack.url = "git+https://castle.frec.bull.fr:24443/bguibertd/spack.git?ref=develop";
-  inputs.spack.url = "github:spack/spack/develop";
+  inputs.spack.url = "github:dguibert/spack/develop";
   inputs.spack.flake = false;
   inputs.hpcw = {
     #url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";

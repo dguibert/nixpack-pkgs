@@ -218,10 +218,27 @@ final: prev: let
         ([]
           # hpcw configurations
           ++ (lib.cartesianProductOfSets {
-            packs = [
+            packs = let
+              append_pack = suffix: pack: args:
+                pack._merge (self:
+                  with self;
+                    {
+                      label = "${pack.label}${suffix}";
+                    }
+                    // args);
+            in [
               final.packs.default
+              (append_pack "10" packs.gcc {package.gcc.version = "10";})
+              (append_pack "11" packs.gcc {package.gcc.version = "11";})
+              (append_pack "12" packs.gcc {package.gcc.version = "12";})
+              (append_pack "13" packs.gcc {package.gcc.version = "13";})
+              packs.aocc
+              #(append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
+              (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
+              (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
               packs.intel
               packs.nvhpc
+              packs.oneapi
             ];
             mpis = [
               (pack: pack)
@@ -297,6 +314,13 @@ final: prev: let
                   }))
             ];
             variants = [
+              (pack:
+                pack._merge (self: {
+                  label = pack.label + "_compiler";
+                  mod_pkgs = with self.pack.pkgs; [
+                    compiler
+                  ];
+                }))
               (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
               (import ../../confs/hpcw.nix final)
@@ -375,6 +399,14 @@ final: prev: let
       # unique does not remove duplicate pkgconf
       pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
         []
+        # compilers
+        ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
         # emopass modules
         ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
         # hpcw modules
