@@ -83,11 +83,13 @@ default_pack._merge (self:
         pmix.version = "4.1.1";
         boost.version = "1.72.0";
         # gcc dependency binutils: package binutils@2.38~gas+gold~headers~interwork+ld~libiberty~lto+nls+plugins libs=+shared,+static build_system=autotools does not match dependency constraints {"variants":{"gas":true,"ld":true,"libiberty":false,"plugins":true}}
+        # llvm dependency binutils: package binutils@2.40+gas+gold~gprofng~headers~interwork+ld~libiberty~lto~nls~pgo+plugins libs=+shared,+static build_system=autotools compress_debug_sections=zlib does not match dependency constraints {"variants":{"gold":true,"headers":true,"ld":true,"plugins":true}}
         binutils = {
           variants = {
             gas = true;
             gold = true;
             ld = true;
+            headers = true;
           };
         };
         szip = {name = "libszip";};
@@ -148,6 +150,8 @@ default_pack._merge (self:
         patchelf.version = "0.17";
 
         # no need to be recompiled for each compiler
+        binutils.depends.compiler = packs.default.pack.pkgs.compiler;
+        libedit.depends.compiler = packs.default.pack.pkgs.compiler;
         patchelf.depends.compiler = packs.default.pack.pkgs.compiler;
         cmake.depends.compiler = packs.default.pack.pkgs.compiler;
         #eckit.depends.compiler = packs.default.pack.pkgs.compiler;

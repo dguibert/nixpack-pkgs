@@ -237,6 +237,8 @@ final: prev: let
               (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
               (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
               packs.intel
+              packs.llvm
+              (append_pack "16" packs.llvm {package.llvm.version = "16";})
               packs.nvhpc
               packs.oneapi
             ];
@@ -400,13 +402,14 @@ final: prev: let
       pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
         []
         # compilers
+        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
         # emopass modules
         ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
         # hpcw modules
