@@ -28,6 +28,7 @@
               packs.default = prev.packs'.default._merge (self:
                 with self; {
                   os = "rhel8";
+                  spackConfig.config.database_root = "$tempdir"; # for database_directory
                   spackConfig.config.source_cache = "/software/spack/mirror";
                   #spackConfig.config.source_cache = "/dev/shm/spack/mirror";
                   spackConfig.mirrors.software = "/software/spack/mirror";
