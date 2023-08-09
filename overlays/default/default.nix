@@ -233,7 +233,7 @@ final: prev: let
               (append_pack "12" packs.gcc {package.gcc.version = "12";})
               (append_pack "13" packs.gcc {package.gcc.version = "13";})
               packs.aocc
-              #(append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
+              (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
               (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
               (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
               packs.intel

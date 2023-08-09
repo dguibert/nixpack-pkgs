@@ -188,6 +188,8 @@ default_pack._merge (self:
 
         #tar dependency zstd: package zstd@1.5.2~programs compression= libs=+shared,+static does not match dependency constraints {"variants":{"programs":true}}
         zstd.variants.programs = true;
+        tar.depends.compiler = packs.default.pack.pkgs.compiler;
+        pigz.depends.compiler = packs.default.pack.pkgs.compiler;
         zstd.depends.compiler = packs.default.pack.pkgs.compiler;
         libbsd.depends.compiler = packs.default.pack.pkgs.compiler;
         libxcrypt.depends.compiler = packs.default.pack.pkgs.compiler;
