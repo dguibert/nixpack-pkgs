@@ -41,7 +41,7 @@
         ./modules/all-modules.nix
         #./lib
         #./apps
-        ./checks
+        ./envs
         ./shells
       ];
 
