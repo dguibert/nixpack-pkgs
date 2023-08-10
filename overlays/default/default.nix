@@ -300,6 +300,12 @@ final: prev: let
                       verbs = true;
                       xpmem = true;
                     };
+                    mod_pkgs = with self.pack.pkgs; [
+                      {
+                        pkg = mpi;
+                        projection = "openmpi-opt/{version}";
+                      }
+                    ];
                   }))
               (pack:
                 pack._merge (self:
@@ -358,7 +364,6 @@ final: prev: let
                 pack._merge (self: {
                   label = pack.label + "_osu";
                   mod_pkgs = with self.pack.pkgs; [
-                    mpi
                     osu-micro-benchmarks
                   ];
                 }))
@@ -410,6 +415,11 @@ final: prev: let
         ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
         ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
+        # osu
+        ++ (lib.findModDeps final.confPacks.gcc13_osu.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc13_ompi_osu.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.intel_ompi_osu.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.intel_impi_osu.mod_pkgs)
         # emopass modules
         ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
         # hpcw modules

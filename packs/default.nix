@@ -56,7 +56,6 @@ default_pack._merge (self:
       package = {
         # openmpi@4.1.1+atomics~cuda+cxx~cxx_exceptions+gpfs~internal-hwloc~java~legacylaunchers+lustre~memchecker+pmi+pmix+romio~singularity~sqlite3~static+thread_multiple+vt~wrapper-rpath fabrics=cma,hcoll,knem,ucx schedulers=slurm
         openmpi = {
-          version = "4.1.3";
           variants = {
             fabrics = {
               none = false;
@@ -112,20 +111,25 @@ default_pack._merge (self:
             fabrics = ["udp" "rxd" "shm" "sockets" "tcp" "rxm" "verbs" "mlx"];
           };
         };
-        ucx = {
-          variants = {
-            thread_multiple = true;
-            cma = true;
-            rc = true;
-            dc = true;
-            ud = true;
-            mlx5-dv = true;
-            ib-hw-tm = true;
-            knem = false;
-            rocm = true;
-            verbs = true;
-          };
+        ucx.variants = {
+          cma = true;
+          dc = true;
+          dm = true;
+          logging = false;
+          ib_hw_tm = true;
+          knem = true;
+          mlx5_dv = true;
+          openmp = true;
+          optimizations = true;
+          parameter_checking = false;
+          rc = true;
+          rdmacm = true;
+          thread_multiple = true;
+          ud = true;
+          verbs = true;
+          xpmem = true;
         };
+
         # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
         openjpeg.version = "2.3";
         openjpeg.depends.compiler = packs.default.pack.pkgs.compiler;
