@@ -25,6 +25,7 @@
       hpcw_intel_impi_nemo_medium.pack = pkgs.confPacks.hpcw_intel_impi_nemo_medium;
 
       hpcw_nvhpc_cloudsc.pack = pkgs.confPacks.hpcw_nvhpc_cloudsc;
+      # target=x86_64_v3 cmake conflicts with arch=x86_64
       hpcw_nvhpc_cloudsc.in-modules-all = false;
     };
   };

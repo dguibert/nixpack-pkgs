@@ -19,6 +19,7 @@
       aocc40_compiler.pack = pkgs.confPacks.aocc40_compiler;
       aocc32_compiler.pack = pkgs.confPacks.aocc32_compiler;
       llvm16_compiler.pack = pkgs.confPacks.llvm16_compiler;
+      nvhpc_compiler.pack = pkgs.confPacks.nvhpc_compiler;
 
       gcc13_osu.pack = pkgs.confPacks.gcc13_osu;
       gcc13_ompi_osu.pack = pkgs.confPacks.gcc13_ompi_osu;
