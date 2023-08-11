@@ -63,6 +63,7 @@ final: prev: let
     inherit (lib) rpmVersion rpmExtern;
     inherit (lib) packsFun loadPacks virtual;
     inherit (lib) capture;
+    inherit (lib) findModDeps;
 
     mkDevShell = {
       name,
