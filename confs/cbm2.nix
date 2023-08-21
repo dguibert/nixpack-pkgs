@@ -22,6 +22,12 @@ pack._merge (self:
         compiler
         mpi
         cmake
-        hemepure
+        #hemepure
+        tinyxml
+        parmetis
+        boost
+        ctemplate
+        slms-loadbalancing
+        libtirpc
       ];
     })
