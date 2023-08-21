@@ -3,20 +3,15 @@ shopt -s nullglob
 set -x
 
 cur=`dirname $0`
-#. $cur/env
+. $cur/env
 gitrev=$(git describe --always)
 os=$( . /etc/os-release ; echo $ID${VERSION_ID%.[0-9]*} )
 arch=$(uname -m)
 #nixargs="$cur --argstr gitrev ${gitrev:-unknown} --argstr os $os"
 nixargs="--option sandbox false --impure -L"
 
-nom_cmd=echo
-if command -v nom &>/dev/null; then
-	nixargs+=" --log-format internal-json -v"
-	nom_cmd="nom --json"
-fi
 site=spartan
-#lmodbase=/mnt/sw/lmod/$arch/$os
+lmodbase=/home_nfs/bguibertd/lmod/$arch/$os
 
 traceSpecs() {
 	nix eval $nixargs "$1" |& sed 's/^trace: //'
@@ -33,7 +28,7 @@ case "$cmd" in
 		#if [[ "$*" != *" -A "* ]] ; then
 		#	set -- "$@" -A mods
 		#fi
-		exec nix build --show-trace $nixargs $@ |& $nom_cmd
+		exec nix build --show-trace $nixargs $@
 		;;
 	(spec)
 		if [[ $# -eq 0 ]] ; then
@@ -63,15 +58,9 @@ case "$cmd" in
 				(lmod)
 					attrs=".#packs.default.pack.pkgs.lmod"
 					;;
-#				(jupyter)
-#					attrs="jupyter"
-#					;;
-#				(shell)
-#					attrs="pkgs.zsh pkgs.tmux pkgs.git"
-#					;;
-#				(viswall)
-#					attrs="nixpkgs.xscreensaver nixpkgs.mpv"
-#					;;
+				(modules)
+					attrs=".#modules"
+					;;
 				(*)
 					echo "Unknown profile"
 					exit 1
@@ -80,48 +69,48 @@ case "$cmd" in
 			profile=$NIX_STATE_DIR/profiles/${prefix:=$arch/$os/}$prof
 			mkdir -p $(dirname $profile)
 			if test -e $profile; then
-				nix profile upgrade --profile $profile $nixargs '.*' |& $nom_cmd
+				nix profile upgrade --profile $profile $nixargs '.*'
 			else
 				# FIXME how to do the same as nix-env -i -r ...
-				nix profile install --profile $profile $nixargs $attrs |& $nom_cmd
+				nix profile install --profile $profile $nixargs $attrs
 			fi
 			l=$(readlink $profile)
 			git tag $site/$prefix${l%-link} HEAD || true
 		done
 		;;
-#	(modules)
-#		if [[ $1 == -f ]] ; then
-#			shift
-#		elif ! git diff-index --quiet HEAD -- ; then
-#			echo "Local modifications: refusing to relase (without -f)"
-#			exit 1
-#		fi
-#		if [[ $# -ne 1 ]] ; then
-#			echo "Usage: modules NAME"
-#			exit 1
-#		fi
-#		path=$1
-#		if [[ $path != */* ]] ; then
-#			tag=$path
-#			path=$lmodbase/modules/modules/$path
-#		fi
-#		if [[ $path != *.lua ]] ; then
-#			path=$path.lua
-#		fi
-#		# fixups
-#		nix-build -o singularity -A pkgs.singularity $nixargs
-#		for fix in singularity/bin/spack_perms_fix.sh ; do
-#			sudo $fix || echo "YOU MUST RUN: sudo `realpath $fix`"
-#		done
-#		# release
-#		nix-build -o $path -A modsMod $nixargs
-#		if [[ -n $tag ]] ; then
-#			git tag $site/$arch/$os/$tag HEAD
-#		fi
+	(modules)
+		if [[ $1 == -f ]] ; then
+			shift
+		elif ! git diff-index --quiet HEAD -- ; then
+			echo "Local modifications: refusing to relase (without -f)"
+			exit 1
+		fi
+		if [[ $# -ne 1 ]] ; then
+			echo "Usage: modules NAME"
+			exit 1
+		fi
+		path=$1
+		if [[ $path != */* ]] ; then
+			tag=$path
+			path=$lmodbase/modules/modules/$path
+		fi
+		if [[ $path != *.lua ]] ; then
+			path=$path.lua
+		fi
+		## fixups
+		#nix-build -o singularity -A pkgs.singularity $nixargs
+		#for fix in singularity/bin/spack_perms_fix.sh ; do
+		#	sudo $fix || echo "YOU MUST RUN: sudo `realpath $fix`"
+		#done
+		# release
+		nix build -o $path .#modsMod $nixargs
+		if [[ -n $tag ]] ; then
+			git tag $site/$arch/$os/$tag HEAD
+		fi
 #		;& # fall-thru
 #	(cache)
 #		$lmodbase/lmod/lmod/libexec/update_lmod_system_cache_files -d $lmodbase/cacheDir -t $lmodbase/cacheTS.txt $lmodbase/modules:$(realpath $lmodbase/lmod/lmod/modulefiles/Core)
-#		;;
+		;;
 	(spack)
 		nix build -L -o spackBin $nixargs ".#packs.default.pack.spackBin"
 		exec ./spackBin "$@"
@@ -142,12 +131,8 @@ Commands:
 	       along with the total number of unique packages.
   gc           Cleanup any unreferenced nix stores (nix-store --gc).
   profile      Update a nix profile for...
-    jupyter    jupyterhub server environment
     nix        nix build environment
     lmod       lua modules environment
-    shell      zsh and other shell tools
-    viswall    viswall movie display environment
-    all        all of the above
     modules    nixpack lmod modules (for testing only)
   modules NAME release nixpack lmod modules to modules/NAME
   cache        Update lmod cache files

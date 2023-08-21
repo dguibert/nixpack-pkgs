@@ -57,7 +57,6 @@ default_pack._merge (self:
       package = {
         # openmpi@4.1.1+atomics~cuda+cxx~cxx_exceptions+gpfs~internal-hwloc~java~legacylaunchers+lustre~memchecker+pmi+pmix+romio~singularity~sqlite3~static+thread_multiple+vt~wrapper-rpath fabrics=cma,hcoll,knem,ucx schedulers=slurm
         openmpi = {
-          version = "4.1.3";
           variants = {
             fabrics = {
               none = false;
@@ -80,14 +79,17 @@ default_pack._merge (self:
           };
         };
         gcc.version = "10";
+        gcc.variants.binutils = true;
         pmix.version = "4.1.1";
         boost.version = "1.72.0";
         # gcc dependency binutils: package binutils@2.38~gas+gold~headers~interwork+ld~libiberty~lto+nls+plugins libs=+shared,+static build_system=autotools does not match dependency constraints {"variants":{"gas":true,"ld":true,"libiberty":false,"plugins":true}}
+        # llvm dependency binutils: package binutils@2.40+gas+gold~gprofng~headers~interwork+ld~libiberty~lto~nls~pgo+plugins libs=+shared,+static build_system=autotools compress_debug_sections=zlib does not match dependency constraints {"variants":{"gold":true,"headers":true,"ld":true,"plugins":true}}
         binutils = {
           variants = {
             gas = true;
             gold = true;
             ld = true;
+            headers = true;
           };
         };
         szip = {name = "libszip";};
@@ -110,20 +112,25 @@ default_pack._merge (self:
             fabrics = ["udp" "rxd" "shm" "sockets" "tcp" "rxm" "verbs" "mlx"];
           };
         };
-        ucx = {
-          variants = {
-            thread_multiple = true;
-            cma = true;
-            rc = true;
-            dc = true;
-            ud = true;
-            mlx5-dv = true;
-            ib-hw-tm = true;
-            knem = false;
-            rocm = true;
-            verbs = true;
-          };
+        ucx.variants = {
+          cma = true;
+          dc = true;
+          dm = true;
+          logging = false;
+          ib_hw_tm = true;
+          knem = true;
+          mlx5_dv = true;
+          openmp = true;
+          optimizations = true;
+          parameter_checking = false;
+          rc = true;
+          rdmacm = true;
+          thread_multiple = true;
+          ud = true;
+          verbs = true;
+          xpmem = true;
         };
+
         # eccodes dependency openjpeg: package openjpeg@2.4.0~codec~ipo build_type=RelWithDebInfo does not match dependency constraints {"version":"1.5.0:1.5,2.1.0:2.3"}
         openjpeg.version = "2.3";
         openjpeg.depends.compiler = packs.default.pack.pkgs.compiler;
@@ -144,7 +151,12 @@ default_pack._merge (self:
         py-pythran.version = "0.9.12"; # for py-scpiy
         py-setuptools.version = "57.4.0"; # for py-scpiy
 
+        # intel-oneapi-compilers dependency patchelf: package patchelf@0.18.0 build_system=autotools does not match dependency constraints {"version":":0.17"}
+        patchelf.version = "0.17";
+
         # no need to be recompiled for each compiler
+        binutils.depends.compiler = packs.default.pack.pkgs.compiler;
+        libedit.depends.compiler = packs.default.pack.pkgs.compiler;
         patchelf.depends.compiler = packs.default.pack.pkgs.compiler;
         cmake.depends.compiler = packs.default.pack.pkgs.compiler;
         #eckit.depends.compiler = packs.default.pack.pkgs.compiler;
@@ -188,6 +200,8 @@ default_pack._merge (self:
 
         #tar dependency zstd: package zstd@1.5.2~programs compression= libs=+shared,+static does not match dependency constraints {"variants":{"programs":true}}
         zstd.variants.programs = true;
+        tar.depends.compiler = packs.default.pack.pkgs.compiler;
+        pigz.depends.compiler = packs.default.pack.pkgs.compiler;
         zstd.depends.compiler = packs.default.pack.pkgs.compiler;
         libbsd.depends.compiler = packs.default.pack.pkgs.compiler;
         libxcrypt.depends.compiler = packs.default.pack.pkgs.compiler;

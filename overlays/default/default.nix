@@ -227,10 +227,29 @@ final: prev: let
         ([]
           # hpcw configurations
           ++ (lib.cartesianProductOfSets {
-            packs = [
+            packs = let
+              append_pack = suffix: pack: args:
+                pack._merge (self:
+                  with self;
+                    {
+                      label = "${pack.label}${suffix}";
+                    }
+                    // args);
+            in [
               final.packs.default
+              (append_pack "10" packs.gcc {package.gcc.version = "10";})
+              (append_pack "11" packs.gcc {package.gcc.version = "11";})
+              (append_pack "12" packs.gcc {package.gcc.version = "12";})
+              (append_pack "13" packs.gcc {package.gcc.version = "13";})
+              packs.aocc
+              (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
+              (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
+              (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
               packs.intel
+              packs.llvm
+              (append_pack "16" packs.llvm {package.llvm.version = "16";})
               packs.nvhpc
+              packs.oneapi
             ];
             mpis = [
               (pack: pack)
@@ -290,6 +309,12 @@ final: prev: let
                       verbs = true;
                       xpmem = true;
                     };
+                    mod_pkgs = with self.pack.pkgs; [
+                      {
+                        pkg = mpi;
+                        projection = "openmpi-opt/{version}";
+                      }
+                    ];
                   }))
               (pack:
                 pack._merge (self:
@@ -307,6 +332,13 @@ final: prev: let
             ];
             variants = [
               (import ../../confs/cbm2.nix final)
+              (pack:
+                pack._merge (self: {
+                  label = pack.label + "_compiler";
+                  mod_pkgs = with self.pack.pkgs; [
+                    compiler
+                  ];
+                }))
               (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
               (import ../../confs/hpcw.nix final)
@@ -342,7 +374,6 @@ final: prev: let
                 pack._merge (self: {
                   label = pack.label + "_osu";
                   mod_pkgs = with self.pack.pkgs; [
-                    mpi
                     osu-micro-benchmarks
                   ];
                 }))
@@ -380,6 +411,20 @@ final: prev: let
       # unique does not remove duplicate pkgconf
       pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
         []
+        # compilers
+        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
+        # osu
+        ++ (lib.findModDeps final.confPacks.gcc13_osu.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.gcc13_ompi_osu.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.intel_ompi_osu.mod_pkgs)
+        ++ (lib.findModDeps final.confPacks.intel_impi_osu.mod_pkgs)
         # emopass modules
         ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
         # hpcw modules
@@ -397,110 +442,10 @@ final: prev: let
         ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_medium.mod_pkgs)
       ));
     };
-    #    modules = recurseIntoAttrs {
-    #      osu = final.mkModules "osu" final.corePacks (
-    #        [
-    #        ]
-    #        ++ (
-    #          builtins.concatMap
-    #          (
-    #            attr:
-    #              with attr; let
-    #                pack_ = pkgs (mpis packs);
-    #                enabled = pack_.enable or true;
-    #              in
-    #                if ! enabled
-    #                then []
-    #                else (pack_.pkgs or (p: []))
-    #          )
-    #          (lib.cartesianProductOfSets {
-    #            packs = [
-    #              # packs.aocc # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
-    #              packs.default
-    #              # packs.gcc10# fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
-    #              packs.intel
-    #              packs.nvhpc
-    #              # packs.oneapi # fails spack-src/c/mpi/pt2pt/../../../c/util/osu_util_papi.h:25: multiple definition of `omb_papi_output_filename'
-    #            ];
-    #            mpis = [
-    #              (pack: pack._merge {label = pack.label + "_default";})
-    #              (pack:
-    #                pack._merge {
-    #                  label = pack.label + "_ompi410";
-    #                  enable = false; #builtins.trace "ompi410 cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
-    #
-    #                  package.openmpi.version = "4.1.0";
-    #                  package.openmpi.variants.pmix = false;
-    #                })
-    #              (pack:
-    #                pack._merge {
-    #                  label = pack.label + "_ompi_cuda";
-    #                  enable = false; # TODO fix ucx duplicate #builtins.trace "ompi-cuda cond: ${pack.name} ${toString (pack.name == "core")}" pack.name == "core";
-    #
-    #                  package.openmpi.variants.cuda = true;
-    #                  package.ucx.variants = {
-    #                    extern =
-    #                      if
-    #                        (pack.package.ucx.variants.cuda
-    #                          != true)
-    #                        || (pack.package.ucx.variants.gdrcopy != true)
-    #                      then null
-    #                      else pack.package.ucx.extern;
-    #                    cuda = true;
-    #                    gdrcopy = true;
-    #                    rocm = false; # +rocm gdrcopy > 2.0 does not support rocm
-    #                  };
-    #                  package.hwloc.variants.cuda = true;
-    #                })
-    #            ];
-    #            pkgs = [
-    #              (pack:
-    #                pack._merge (self: {
-    #                  label = pack.label + "_osu";
-    #                  pkgs = with self.pack.pkgs; [
-    #                    mpi
-    #                    osu-micro-benchmarks
-    #                  ];
-    #                }))
-    #            ];
-    #          })
-    #        )
-    #      );
-    #
-    #      hip = final.mkModules "hip" final.corePacks (with (packs.default._merge {
-    #          package.mesa.variants.llvm = false;
-    #          package.ucx.variants = {
-    #            cuda = true;
-    #            gdrcopy = false;
-    #            rocm = true; # +rocm gdrcopy > 2.0 does not support rocm
-    #          };
-    #
-    #          repoPatch = {
-    #            llvm-amdgpu = spec: old: {
-    #              provides =
-    #                old.provides
-    #                or {}
-    #                // {
-    #                  compiler = null;
-    #                };
-    #            };
-    #          };
-    #        })
-    #        .pack
-    #        .pkgs; [
-    #          compiler
-    #          mpi
-    #          hip
-    #          {
-    #            pkg = llvm-amdgpu;
-    #            context.provides = []; # not real compiler
-    #          }
-    #          #(hip.withPrefs { package.mesa.variants.llvm = false; }) # https://github.com/spack/spack/issues/30611
-    #          #hipfft
-    #          cmake
-    #          cuda
-    #        ]);
-    #    };
+
+    gitrev = "${lib.substring 0 8 (prev.inputs.self.lastModifiedDate or prev.inputs.self.lastModified or "19700101")}.${prev.inputs.self.shortRev or prev.inputs.self.dirtyShortRev}";
+
+    modsMod = import lmod/modules.nix gitrev final.packs.default.pack modules;
 
     viridianSImg = prev.singularity-tools.buildImage {
       name = "viridian";

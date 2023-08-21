@@ -6,7 +6,7 @@ packs.default._merge (self:
         compiler = {
           name = "aocc";
           extern = null;
-          version = null;
+          version = package.aocc.version or null;
         };
         aocc.variants.license-agreed = true;
       };
