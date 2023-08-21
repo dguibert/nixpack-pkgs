@@ -139,7 +139,7 @@ final: prev: let
         devShell = with final.pkgs;
           mkDevShell {
             name = label;
-            inherit mods;
+            mods = self.mods;
             autoloads = lib.concatMapStrings (x: let
               pkg = x.pkg or x;
               name =
@@ -157,7 +157,7 @@ final: prev: let
           };
         mods = final.mkModules {
           name = label;
-          pack = final.pkgs.corePacks;
+          pack = self.pack;
           pkgs = mod_pkgs;
         };
 
@@ -395,7 +395,7 @@ final: prev: let
     }:
       pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
         coreCompilers = [
-          pack.pkgs.compiler
+          final.packs.default.pack.pkgs.compiler
         ];
         pkgs =
           if withDeps
