@@ -18,11 +18,13 @@ pack._merge (self:
       package.parmetis.variants.shared = false;
       package.metis.version = "5.1.0";
 
+      package.hemepure.version = "git.15c93cf350424dcd0f2bdc0b6f4ba6876e339b5b=master";
+
       mod_pkgs = with self.pack.pkgs; [
         compiler
         mpi
         cmake
-        #hemepure
+        hemepure
         tinyxml
         parmetis
         boost
