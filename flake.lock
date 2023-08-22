@@ -3,15 +3,16 @@
     "cbm-spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1684244066,
-        "narHash": "sha256-NzuLKYwxyRJypCsKCBbP9TbnX4/zAwbJi4TfquP+Wtk=",
-        "owner": "compbiomedeu",
+        "lastModified": 1692707811,
+        "narHash": "sha256-OCwS4V3DneyKbTmFUg/PB651x4go4tV/AWTgLy9k0lE=",
+        "owner": "dguibert",
         "repo": "compbiomed-spack",
-        "rev": "a72f3509d423884f724c9600c3ad91825b3dcda9",
+        "rev": "6e1d8b7575978b9b19189049bdb0fcf2cdfa6b6c",
         "type": "github"
       },
       "original": {
-        "owner": "compbiomedeu",
+        "owner": "dguibert",
+        "ref": "dg/hemepure",
         "repo": "compbiomed-spack",
         "type": "github"
       }

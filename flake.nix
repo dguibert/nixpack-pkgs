@@ -17,7 +17,7 @@
     flake = false;
   };
   inputs.cbm-spack = {
-    url = "github:compbiomedeu/compbiomed-spack";
+    url = "github:dguibert/compbiomed-spack?ref=dg/hemepure";
     flake = false;
   };
 
