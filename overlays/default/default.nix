@@ -343,9 +343,8 @@ final: prev: let
               (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
               (import ../../confs/hpcw.nix final)
-              (import ../../confs/jube.nix final)
-              (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
               (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
+              (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
               (import ../../confs/hpcw-ecrad.nix final)
               (import ../../confs/hpcw-ectrans.nix final)
               (pack:
@@ -370,6 +369,7 @@ final: prev: let
               (import ../../confs/hpcw-nemo-small.nix final)
               (import ../../confs/hpcw-nemo-medium.nix final)
               #(import ../../confs/hpcw-nemo-big.nix final)
+              (import ../../confs/jube.nix final)
               (import ../../confs/reframe.nix final)
               (pack:
                 pack._merge (self: {
