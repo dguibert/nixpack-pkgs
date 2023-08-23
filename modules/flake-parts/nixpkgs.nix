@@ -46,7 +46,6 @@
                     autoconf = rpmExtern "autoconf";
                     automake = rpmExtern "automake";
                     bzip2 = rpmExtern "bzip2";
-                    zlib = rpmExtern "zlib";
                     curl = rpmExtern "curl";
                     diffutils = rpmExtern "diffutils";
                     libssh = rpmExtern "libssh";
