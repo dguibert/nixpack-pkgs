@@ -460,7 +460,8 @@
         "nixpack": "nixpack",
         "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks",
-        "spack": "spack"
+        "spack": "spack",
+        "spack-configs": "spack-configs"
       }
     },
     "spack": {
@@ -478,6 +479,22 @@
         "ref": "develop",
         "repo": "spack",
         "type": "github"
+      }
+    },
+    "spack-configs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1687271503,
+        "narHash": "sha256-FoNjJDov3xN/WiPCHjUR4JASVVbgAKgkn4p49jqu/Fg=",
+        "ref": "refs/heads/main",
+        "rev": "d3f67bb775ef67a6ac41f1b6e973cb38031209cf",
+        "revCount": 56,
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git"
       }
     },
     "st-src": {

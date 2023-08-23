@@ -1,6 +1,7 @@
 {
   default_pack,
   hpcw_repo,
+  spack_configs_repo,
   packsFun,
   isRLDep,
   packs,
@@ -17,6 +18,7 @@ default_pack._merge (self:
       repos = [
         ../repo
         hpcw_repo
+        spack_configs_repo
       ];
       repoPatch = let
         nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};

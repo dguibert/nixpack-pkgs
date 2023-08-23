@@ -65,6 +65,15 @@ final: prev: let
     inherit (lib) capture;
     inherit (lib) findModDeps;
 
+    hpcw_repo = builtins.path {
+      name = "hpcw-repo";
+      path = "${inputs.hpcw}/spack/hpcw";
+    };
+    spack_configs_repo = builtins.path {
+      name = "spack-configs-repo";
+      path = "${inputs.spack-configs}/repos/bench";
+    };
+
     mkDevShell = {
       name,
       mods,
@@ -272,6 +281,7 @@ final: prev: let
                         knem = true;
                       };
                       mca_no_build = {
+                        none = false;
                         crs = true;
                         snapc = true;
                         pml-crcpw = true;
@@ -372,11 +382,6 @@ final: prev: let
           })))
       # end of configurations
     );
-
-    hpcw_repo = builtins.path {
-      name = "hpcw-repo";
-      path = "${inputs.hpcw}/spack/hpcw";
-    };
 
     corePacks = final.packs.default.pack;
     intelPacks = final.packs.intel.pack;
