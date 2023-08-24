@@ -150,7 +150,7 @@ default_pack._merge (self:
         };
         py-pybind11.version = "2.7.1"; # for py-scpiy
         py-pythran.version = "0.9.12"; # for py-scpiy
-        py-setuptools.version = "57.4.0"; # for py-scpiy
+        #py-setuptools.version = "57.4.0"; # for py-scpiy
 
         # intel-oneapi-compilers dependency patchelf: package patchelf@0.18.0 build_system=autotools does not match dependency constraints {"version":":0.17"}
         patchelf.version = "0.17";

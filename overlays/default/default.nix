@@ -140,7 +140,7 @@ final: prev: let
         devShell = with final.pkgs;
           mkDevShell {
             name = label;
-            inherit mods;
+            mods = self.mods;
             autoloads = lib.concatMapStrings (x: let
               pkg = x.pkg or x;
               name =
@@ -312,6 +312,7 @@ final: prev: let
                       xpmem = true;
                     };
                     mod_pkgs = with self.pack.pkgs; [
+                      compiler
                       {
                         pkg = mpi;
                         projection = "openmpi-opt/{version}";
@@ -340,6 +341,7 @@ final: prev: let
                     compiler
                   ];
                 }))
+              (import ../../confs/ddfacet.nix final)
               (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
               (import ../../confs/hpcw.nix final)
