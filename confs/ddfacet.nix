@@ -75,6 +75,7 @@ pack._merge (self:
             old.depends
             // {
               py-cython.version = "0.29.34";
+              py-pyfftw.version = "0.13.1";
             };
         };
       };
