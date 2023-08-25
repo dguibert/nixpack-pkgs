@@ -26,6 +26,8 @@
       gcc13_ompi_osu.pack = pkgs.confPacks.gcc13_ompi_osu;
       intel_ompi_osu.pack = pkgs.confPacks.intel_ompi_osu;
       intel_impi_osu.pack = pkgs.confPacks.intel_impi_osu;
+
+      hip_core.pack = pkgs.confPacks.hip_core;
     };
   };
 }
