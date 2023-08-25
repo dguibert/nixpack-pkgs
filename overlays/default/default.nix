@@ -251,6 +251,7 @@ final: prev: let
               packs.llvm
               (append_pack "16" packs.llvm {package.llvm.version = "16";})
               packs.nvhpc
+              (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
               packs.oneapi
             ];
             mpis = [
