@@ -39,6 +39,7 @@ final: prev: let
         "netcdf-fortran ^hdf5" = "{name}/{version}-{^hdf5.name}-{^hdf5.version}";
         "nemo cfg=ORCA2_ICE_PISCES" = "{name}-orca2_ice_pisces/{version}";
         "nemo cfg=BENCH" = "{name}-bench/{version}";
+        "openmpi mca_no_build=btl-openib,btl-uct,btl-usnic,crcp,crs,pml-crcpw,pml-v,snapc,vprotocol" = "{name}-opt/{version}";
       };
       openmpi = {
         environment = {
