@@ -300,11 +300,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1688369565,
-        "narHash": "sha256-yFdy9PGSmMZ/biCNX6LGk5poQq24InjqMSxrGzasDNk=",
+        "lastModified": 1693235570,
+        "narHash": "sha256-th8k3Bb5cxzj45OeGLoL8GNZccSA9HFuPDOXamyGbTY=",
         "owner": "dguibert",
         "repo": "nixpack",
-        "rev": "a624811dc874b446df61af105456e3d494c84ea2",
+        "rev": "a423f494a1a8a57322fbdd30c79b40d32083158a",
         "type": "github"
       },
       "original": {
@@ -484,11 +484,11 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1691565226,
-        "narHash": "sha256-PnORAim+wJ8KvcLP8bvQY2RYzaE4EVYHjegpW19JDlE=",
+        "lastModified": 1693239553,
+        "narHash": "sha256-FqKKkZdIlFWKIuTD/Bg0mh64s0AYaAxgC3mpKpAQc3Y=",
         "owner": "dguibert",
         "repo": "spack",
-        "rev": "2a0975ff97c1b235d8f284cf3c22cc9890bc78a6",
+        "rev": "7c8626de977fcd7eba9098e5b9bfc28618bda32d",
         "type": "github"
       },
       "original": {
