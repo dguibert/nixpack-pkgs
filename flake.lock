@@ -285,11 +285,10 @@
       "locked": {
         "lastModified": 1693235570,
         "narHash": "sha256-th8k3Bb5cxzj45OeGLoL8GNZccSA9HFuPDOXamyGbTY=",
-        "ref": "refs/heads/pu",
+        "owner": "dguibert",
+        "repo": "nixpack",
         "rev": "a423f494a1a8a57322fbdd30c79b40d32083158a",
-        "revCount": 763,
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/nixpack"
+        "type": "github"
       },
       "original": {
         "owner": "dguibert",
@@ -470,11 +469,10 @@
       "locked": {
         "lastModified": 1693309009,
         "narHash": "sha256-VrMqWP92icBrEd51Yoi7+yzAHP7DKklIWSsCKP/OtYM=",
-        "ref": "refs/heads/develop",
+        "owner": "dguibert",
+        "repo": "spack",
         "rev": "612229a040fb14ff958bb177d5c27414012551f1",
-        "revCount": 32624,
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/software-cepp-spack/spack"
+        "type": "github"
       },
       "original": {
         "owner": "dguibert",
