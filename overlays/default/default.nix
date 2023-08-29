@@ -216,176 +216,180 @@ final: prev: let
           });
       };
 
-    confPacks = lib.listToAttrs (
-      lib.flatten (map (attr:
-          with attr; let
-            pack_ = variants (mpis packs);
-          in [
+    confPacks = let
+      append_pack = suffix: pack: args:
+        pack._merge (self:
+          with self;
             {
-              name = pack_.label;
-              value = pack_;
+              label = "${pack.label}${suffix}";
             }
-          ])
-        ([]
-          # hpcw configurations
-          ++ (lib.cartesianProductOfSets {
-            packs = let
-              append_pack = suffix: pack: args:
-                pack._merge (self:
-                  with self;
-                    {
-                      label = "${pack.label}${suffix}";
-                    }
-                    // args);
+            // args);
+    in
+      lib.listToAttrs (
+        lib.flatten (map (attr:
+            with attr; let
+              pack_ = variants (mpis packs);
             in [
-              final.packs.default
-              (append_pack "10" packs.gcc {package.gcc.version = "10";})
-              (append_pack "11" packs.gcc {package.gcc.version = "11";})
-              (append_pack "12" packs.gcc {package.gcc.version = "12";})
-              (append_pack "13" packs.gcc {package.gcc.version = "13";})
-              packs.aocc
-              (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
-              (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
-              (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
-              packs.intel
-              packs.llvm
-              (append_pack "16" packs.llvm {package.llvm.version = "16";})
-              packs.nvhpc
-              (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
-              packs.oneapi
-            ];
-            mpis = [
-              (pack: pack)
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_bmpi";
-                    package.mpi = {name = "bull-openmpi";};
-                  }))
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_ompi";
-                    package.mpi = {name = "openmpi";};
+              {
+                name = pack_.label;
+                value = pack_;
+              }
+            ])
+          ([]
+            # hpcw configurations
+            ++ (lib.cartesianProductOfSets {
+              packs = [
+                final.packs.default
+                (append_pack "10" packs.gcc {package.gcc.version = "10";})
+                (append_pack "11" packs.gcc {package.gcc.version = "11";})
+                (append_pack "12" packs.gcc {package.gcc.version = "12";})
+                (append_pack "13" packs.gcc {package.gcc.version = "13";})
+                packs.aocc
+                (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
+                (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
+                (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
+                packs.intel
+                packs.llvm
+                (append_pack "16" packs.llvm {package.llvm.version = "16";})
+                packs.nvhpc
+                (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
+                packs.oneapi
+              ];
+              mpis = [
+                (pack: pack)
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_bmpi";
+                      package.mpi = {name = "bull-openmpi";};
+                    }))
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_ompi";
+                      package.mpi = {name = "openmpi";};
 
-                    package.openmpi.variants = {
-                      cxx = true;
-                      legacylaunchers = true;
-                      orterunprefix = true;
-                      lustre = true;
-                      memchecker = false;
-                      schedulers.slurm = true;
-                      fabrics = {
-                        ucx = true;
-                        hcoll = true;
-                        xpmem = true;
+                      package.openmpi.variants = {
+                        cxx = true;
+                        legacylaunchers = true;
+                        orterunprefix = true;
+                        lustre = true;
+                        memchecker = false;
+                        schedulers.slurm = true;
+                        fabrics = {
+                          ucx = true;
+                          hcoll = true;
+                          xpmem = true;
+                          cma = true;
+                          knem = true;
+                        };
+                        mca_no_build = {
+                          none = false;
+                          crs = true;
+                          snapc = true;
+                          pml-crcpw = true;
+                          pml-v = true;
+                          vprotocol = true;
+                          crcp = true;
+                          btl-usnic = true;
+                          btl-uct = true;
+                          btl-openib = true;
+                        };
+                      };
+                      package.ucx.variants = {
                         cma = true;
+                        dc = true;
+                        dm = true;
+                        logging = false;
+                        ib_hw_tm = true;
                         knem = true;
+                        mlx5_dv = true;
+                        openmp = true;
+                        optimizations = true;
+                        parameter_checking = false;
+                        rc = true;
+                        rdmacm = true;
+                        thread_multiple = true;
+                        ud = true;
+                        verbs = true;
+                        xpmem = true;
                       };
-                      mca_no_build = {
-                        none = false;
-                        crs = true;
-                        snapc = true;
-                        pml-crcpw = true;
-                        pml-v = true;
-                        vprotocol = true;
-                        crcp = true;
-                        btl-usnic = true;
-                        btl-uct = true;
-                        btl-openib = true;
+                      mod_pkgs = with self.pack.pkgs; [
+                        compiler
+                        {
+                          pkg = mpi;
+                          projection = "openmpi-opt/{version}";
+                        }
+                      ];
+                    }))
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_impi";
+                      package.mpi = {name = "intel-mpi";};
+                      # for conditionally load all packages with +mpi%compiler
+                      package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
+                      repoPatch = {
+                        intel-mpi = spec: old: {
+                          depends = old.depends // {compiler.deptype = ["build"];};
+                        };
                       };
-                    };
-                    package.ucx.variants = {
-                      cma = true;
-                      dc = true;
-                      dm = true;
-                      logging = false;
-                      ib_hw_tm = true;
-                      knem = true;
-                      mlx5_dv = true;
-                      openmp = true;
-                      optimizations = true;
-                      parameter_checking = false;
-                      rc = true;
-                      rdmacm = true;
-                      thread_multiple = true;
-                      ud = true;
-                      verbs = true;
-                      xpmem = true;
-                    };
+                    }))
+              ];
+              variants = [
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_compiler";
                     mod_pkgs = with self.pack.pkgs; [
                       compiler
-                      {
-                        pkg = mpi;
-                        projection = "openmpi-opt/{version}";
-                      }
                     ];
                   }))
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_impi";
-                    package.mpi = {name = "intel-mpi";};
-                    # for conditionally load all packages with +mpi%compiler
-                    package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
-                    repoPatch = {
-                      intel-mpi = spec: old: {
-                        depends = old.depends // {compiler.deptype = ["build"];};
-                      };
-                    };
+                (import ../../confs/ddfacet.nix final)
+                (import ../../confs/emopass.nix final)
+                (import ../../confs/hip.nix final)
+                (pack: append_pack "54" (import ../../confs/hip.nix final pack) {package.hip.version = "5.4";})
+                (pack: append_pack "55" (import ../../confs/hip.nix final pack) {package.hip.version = "5.5.0";})
+                (pack: append_pack "56" (import ../../confs/hip.nix final pack) {package.hip.version = "5.6";})
+                (import ../../confs/hpcw.nix final)
+                (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
+                (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
+                (import ../../confs/hpcw-ecrad.nix final)
+                (import ../../confs/hpcw-ectrans.nix final)
+                (pack:
+                  (import ../../confs/hpcw-ectrans.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ectrans_mkl";
+                    package.ectrans.variants.mkl = true;
+                  })
+                (pack:
+                  (import ../../confs/hpcw-ectrans.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ectrans_gpu";
+                    package.ectrans.version = "gpu";
+                    package.ectrans.variants.cuda = true;
+                  })
+                (pack:
+                  (import ../../confs/hpcw-ifs.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ifs_nonemo";
+                    package.ifs.variants.nemo = "no";
+                  })
+                (import ../../confs/hpcw-icon.nix final)
+                (import ../../confs/hpcw-ifs.nix final)
+                (import ../../confs/hpcw-ifs-fvm.nix final)
+                (import ../../confs/hpcw-nemo-small.nix final)
+                (import ../../confs/hpcw-nemo-medium.nix final)
+                #(import ../../confs/hpcw-nemo-big.nix final)
+                (import ../../confs/jube.nix final)
+                (import ../../confs/reframe.nix final)
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_osu";
+                    mod_pkgs = with self.pack.pkgs; [
+                      osu-micro-benchmarks
+                    ];
                   }))
-            ];
-            variants = [
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_compiler";
-                  mod_pkgs = with self.pack.pkgs; [
-                    compiler
-                  ];
-                }))
-              (import ../../confs/ddfacet.nix final)
-              (import ../../confs/emopass.nix final)
-              (import ../../confs/hip.nix final)
-              (import ../../confs/hpcw.nix final)
-              (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
-              (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
-              (import ../../confs/hpcw-ecrad.nix final)
-              (import ../../confs/hpcw-ectrans.nix final)
-              (pack:
-                (import ../../confs/hpcw-ectrans.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ectrans_mkl";
-                  package.ectrans.variants.mkl = true;
-                })
-              (pack:
-                (import ../../confs/hpcw-ectrans.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ectrans_gpu";
-                  package.ectrans.version = "gpu";
-                  package.ectrans.variants.cuda = true;
-                })
-              (pack:
-                (import ../../confs/hpcw-ifs.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ifs_nonemo";
-                  package.ifs.variants.nemo = "no";
-                })
-              (import ../../confs/hpcw-icon.nix final)
-              (import ../../confs/hpcw-ifs.nix final)
-              (import ../../confs/hpcw-ifs-fvm.nix final)
-              (import ../../confs/hpcw-nemo-small.nix final)
-              (import ../../confs/hpcw-nemo-medium.nix final)
-              #(import ../../confs/hpcw-nemo-big.nix final)
-              (import ../../confs/jube.nix final)
-              (import ../../confs/reframe.nix final)
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_osu";
-                  mod_pkgs = with self.pack.pkgs; [
-                    osu-micro-benchmarks
-                  ];
-                }))
-            ];
-          })))
-      # end of configurations
-    );
+              ];
+            })))
+        # end of configurations
+      );
 
     corePacks = final.packs.default.pack;
     intelPacks = final.packs.intel.pack;
