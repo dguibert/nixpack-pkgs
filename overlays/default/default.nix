@@ -413,49 +413,6 @@ final: prev: let
         name = "modules-${name}";
       });
 
-    modules = final.mkModules {
-      name = "modules";
-      pack = final.packs.default.pack;
-      withDeps = false;
-      # unique does not remove duplicate pkgconf
-      pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
-        []
-        # compilers
-        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
-        # osu
-        ++ (lib.findModDeps final.confPacks.gcc13_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc13_ompi_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.intel_ompi_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.intel_impi_osu.mod_pkgs)
-        # emopass modules
-        ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
-        # hpcw modules
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_acraneb2.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ectrans.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs_nonemo.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_nemo_small.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ecrad.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_icon.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs_nonemo.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs-fvm.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_small.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_medium.mod_pkgs)
-      ));
-    };
-
-    gitrev = "${lib.substring 0 8 (prev.inputs.self.lastModifiedDate or prev.inputs.self.lastModified or "19700101")}.${prev.inputs.self.shortRev or prev.inputs.self.dirtyShortRev}";
-
-    modsMod = import lmod/modules.nix gitrev final.packs.default.pack modules;
-
     viridianSImg = prev.singularity-tools.buildImage {
       name = "viridian";
       diskSize = 4096;
