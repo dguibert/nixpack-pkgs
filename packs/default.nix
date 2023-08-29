@@ -186,6 +186,7 @@ default_pack._merge (self:
         texinfo.depends.compiler = packs.default.pack.pkgs.compiler;
         xz.depends.compiler = packs.default.pack.pkgs.compiler;
         zlib.depends.compiler = packs.default.pack.pkgs.compiler;
+        zlib-ng.depends.compiler = packs.default.pack.pkgs.compiler;
 
         # knem: has conflicts: %aocc Linux kernel module must be compiled with gcc
         knem.depends.compiler = packs.default.pack.pkgs.compiler;
