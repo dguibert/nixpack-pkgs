@@ -19,6 +19,10 @@ pack._merge (self:
       package.metis.version = "5.1.0";
 
       package.hemepure.version = "git.15c93cf350424dcd0f2bdc0b6f4ba6876e339b5b=master";
+      package.hemepure.variants.inlet_boundary = "NASHZEROTHORDERPRESSUREIOLET";
+      package.hemepure.variants.outlet_boundary = "NASHZEROTHORDERPRESSUREIOLET";
+      package.hemepure.variants.wall_inlet_boundary = "NASHZEROTHORDERPRESSURESBB";
+      package.hemepure.variants.wall_outlet_boundary = "NASHZEROTHORDERPRESSURESBB";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
