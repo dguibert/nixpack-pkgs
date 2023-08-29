@@ -6,6 +6,8 @@ pack._merge (self:
       package.netcdf-c.variants.mpi = false;
       package.hdf5.variants.mpi = false;
 
+      package.ecrad.build.enableParallelBuilding = false;
+
       mod_pkgs = with self.pack.pkgs; [
         compiler
         netcdf-c
