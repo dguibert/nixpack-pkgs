@@ -3,11 +3,11 @@
     "cbm-spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1692707811,
-        "narHash": "sha256-OCwS4V3DneyKbTmFUg/PB651x4go4tV/AWTgLy9k0lE=",
+        "lastModified": 1693379701,
+        "narHash": "sha256-TmqgzYLFUREKoIv0zTzzlvSfb1cFO+EdV44eMKKsA58=",
         "owner": "dguibert",
         "repo": "compbiomed-spack",
-        "rev": "6e1d8b7575978b9b19189049bdb0fcf2cdfa6b6c",
+        "rev": "c384d02ca693e83f82605225d59f72b545fd9baf",
         "type": "github"
       },
       "original": {
