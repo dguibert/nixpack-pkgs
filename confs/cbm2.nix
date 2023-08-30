@@ -21,9 +21,12 @@ pack._merge (self:
       package.hemepure.version = "git.15c93cf350424dcd0f2bdc0b6f4ba6876e339b5b=master";
       package.hemepure.variants.inlet_boundary = "NASHZEROTHORDERPRESSUREIOLET";
       package.hemepure.variants.outlet_boundary = "NASHZEROTHORDERPRESSUREIOLET";
-      package.hemepure.variants.wall_boundary = "SIMPLEBOUNCEBACK";
-      package.hemepure.variants.wall_inlet_boundary = "NASHZEROTHORDERPRESSURESBB";
-      package.hemepure.variants.wall_outlet_boundary = "NASHZEROTHORDERPRESSURESBB";
+      #package.hemepure.variants.wall_boundary = "SIMPLEBOUNCEBACK";
+      #package.hemepure.variants.wall_inlet_boundary = "NASHZEROTHORDERPRESSURESBB";
+      #package.hemepure.variants.wall_outlet_boundary = "NASHZEROTHORDERPRESSURESBB";
+      package.hemepure.variants.wall_boundary = "BFL";
+      package.hemepure.variants.wall_inlet_boundary = "NASHZEROTHORDERPRESSUREBFL";
+      package.hemepure.variants.wall_outlet_boundary = "NASHZEROTHORDERPRESSUREBFL";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
