@@ -26,6 +26,7 @@ final: prev: let
         suffixes = {
           "^mpi" = "mpi";
           "^cuda" = "cuda";
+          "^libllvm@15" = "libllvm15";
         };
         filter = {
           environment_blacklist = ["CC" "FC" "CXX" "F77"];

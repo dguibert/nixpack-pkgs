@@ -159,6 +159,7 @@ default_pack._merge (self:
         binutils.depends.compiler = packs.default.pack.pkgs.compiler;
         libedit.depends.compiler = packs.default.pack.pkgs.compiler;
         patchelf.depends.compiler = packs.default.pack.pkgs.compiler;
+        uuid.depends.compiler = packs.default.pack.pkgs.compiler;
         cmake.depends.compiler = packs.default.pack.pkgs.compiler;
         #eckit.depends.compiler = packs.default.pack.pkgs.compiler;
         #fckit.depends.compiler = packs.default.pack.pkgs.compiler;

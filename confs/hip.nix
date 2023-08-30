@@ -62,7 +62,6 @@ pack._merge (self:
       };
 
       mod_pkgs = with self.pack.pkgs; [
-        compiler
         hip
         {
           pkg = llvm-amdgpu;
