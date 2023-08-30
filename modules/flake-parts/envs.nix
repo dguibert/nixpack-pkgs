@@ -55,7 +55,7 @@ in {
         pack = pkgs.packs.default.pack;
         withDeps = false;
         # unique does not remove duplicate pkgconf
-        pkgs = builtins.filter (x: x.pkg != pkgs.packs.default.pack.pkgs.pkgconf) (l.unique mod_pkgs);
+        pkgs = builtins.filter (x: (x.pkg or x) != pkgs.packs.default.pack.pkgs.pkgconf) (l.unique mod_pkgs);
       };
   in {
     /**/

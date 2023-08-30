@@ -18,7 +18,7 @@ final: prev: let
         "lib64" = ["LIBRARY_PATH"];
         "lib/intel64" = ["LIBRARY_PATH"]; # for intel
         "include" = ["C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"];
-        "" = ["{name}_DIR"];
+        "" = ["{name}_ROOT"];
       };
       all = {
         autoload = "direct";
@@ -344,6 +344,26 @@ final: prev: let
                     mod_pkgs = with self.pack.pkgs; [
                       compiler
                     ];
+                  }))
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_tools";
+                    mod_pkgs = map (p: let
+                      drv_name = builtins.parseDrvName p.name;
+                    in
+                      drv_name
+                      // {
+                        prefix = p;
+                        context = {
+                          short_description = p.meta.description or null;
+                          long_description = p.meta.longDescription or null;
+                        };
+                        projection = "${drv_name.name}/{version}-nix";
+                      }
+                      // p.module or {}) (with final; [
+                      git
+                      tig
+                    ]);
                   }))
                 (import ../../confs/ddfacet.nix final)
                 (import ../../confs/emopass.nix final)

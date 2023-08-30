@@ -11,6 +11,8 @@
     ...
   }: {
     envs = {
+      core_tools.pack = pkgs.confPacks.core_tools;
+
       gcc10_compiler.pack = pkgs.confPacks.gcc10_compiler;
       gcc11_compiler.pack = pkgs.confPacks.gcc11_compiler;
       gcc12_compiler.pack = pkgs.confPacks.gcc12_compiler;
