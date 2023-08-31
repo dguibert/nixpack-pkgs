@@ -41,6 +41,14 @@ pack._merge (self:
         libtirpc
       ];
 
+      dockerImgArgs = {
+        config = {
+          WorkingDir = "/data";
+          Volumes = {
+            "/data" = {};
+          };
+        };
+      };
       img_pkgs = with final; with self.pack.pkgs; let
         # https://jarvice.readthedocs.io/en/latest/nae/
         appDef = {

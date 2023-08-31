@@ -179,10 +179,11 @@ final: prev: let
               FIXME might be a problem to rely on an external package inside the image
               */
             )
-              (self.img_pkgs or self.mod_pkgs)
+              (self.img_pkgs or self.mod_pkgs);
         };
 
-        dockerImg = final.pkgs.dockerTools.buildImage {
+        dockerImgArgs = {};
+        dockerImg = final.pkgs.dockerTools.buildImage ({
           name = label;
           contents =
             map (
@@ -196,8 +197,8 @@ final: prev: let
               FIXME might be a problem to rely on an external package inside the image
               */
             )
-            self.img_pkgs;
-        };
+              (self.img_pkgs or self.mod_pkgs);
+        } // dockerImgArgs);
       });
 
     packs' = lib.loadPacks prev ../../packs;
