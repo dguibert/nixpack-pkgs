@@ -162,7 +162,7 @@ final: prev: let
         };
 
         mod_pkgs = [];
-        img_pkgs = mod_pkgs;
+        #img_pkgs = self.mod_pkgs;
 
         sifImg = final.pkgs.singularity-tools.buildImage {
           name = label;
@@ -179,7 +179,7 @@ final: prev: let
               FIXME might be a problem to rely on an external package inside the image
               */
             )
-            img_pkgs;
+              (self.img_pkgs or self.mod_pkgs)
         };
 
         dockerImg = final.pkgs.dockerTools.buildImage {
@@ -190,13 +190,13 @@ final: prev: let
                 pkg = x.pkg or x;
               in
                 if pkg ? spec && pkg.spec.extern == null
-                then pkg
-                else builtins.trace "WARNING: external package ${pkg.name}" []
+                then builtins.trace "              add package ${pkg.name}" pkg
+                else builtins.trace "WARNING: external package ${pkg.name}" pkg
               /*
               FIXME might be a problem to rely on an external package inside the image
               */
             )
-            img_pkgs;
+            self.img_pkgs;
         };
       });
 
