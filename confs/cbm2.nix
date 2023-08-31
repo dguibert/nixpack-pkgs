@@ -151,7 +151,7 @@ pack._merge (self:
         bashInteractive
         final.coreutils
         fakeNss
-        (writeTextDir "NAE/AppDef.json" (builtins.toJSON appDef))
+        (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
         fakeRhel
       ];
     })
