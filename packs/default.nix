@@ -1,6 +1,7 @@
 {
   default_pack,
   hpcw_repo,
+  spack_configs_repo,
   packsFun,
   isRLDep,
   packs,
@@ -17,6 +18,7 @@ default_pack._merge (self:
       repos = [
         ../repo
         hpcw_repo
+        spack_configs_repo
       ];
       repoPatch = let
         nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};
@@ -148,7 +150,7 @@ default_pack._merge (self:
         };
         py-pybind11.version = "2.7.1"; # for py-scpiy
         py-pythran.version = "0.9.12"; # for py-scpiy
-        py-setuptools.version = "57.4.0"; # for py-scpiy
+        #py-setuptools.version = "57.4.0"; # for py-scpiy
 
         # intel-oneapi-compilers dependency patchelf: package patchelf@0.18.0 build_system=autotools does not match dependency constraints {"version":":0.17"}
         patchelf.version = "0.17";
@@ -157,6 +159,7 @@ default_pack._merge (self:
         binutils.depends.compiler = packs.default.pack.pkgs.compiler;
         libedit.depends.compiler = packs.default.pack.pkgs.compiler;
         patchelf.depends.compiler = packs.default.pack.pkgs.compiler;
+        uuid.depends.compiler = packs.default.pack.pkgs.compiler;
         cmake.depends.compiler = packs.default.pack.pkgs.compiler;
         #eckit.depends.compiler = packs.default.pack.pkgs.compiler;
         #fckit.depends.compiler = packs.default.pack.pkgs.compiler;
@@ -184,6 +187,7 @@ default_pack._merge (self:
         texinfo.depends.compiler = packs.default.pack.pkgs.compiler;
         xz.depends.compiler = packs.default.pack.pkgs.compiler;
         zlib.depends.compiler = packs.default.pack.pkgs.compiler;
+        zlib-ng.depends.compiler = packs.default.pack.pkgs.compiler;
 
         # knem: has conflicts: %aocc Linux kernel module must be compiled with gcc
         knem.depends.compiler = packs.default.pack.pkgs.compiler;

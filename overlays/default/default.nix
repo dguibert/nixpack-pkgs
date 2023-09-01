@@ -18,7 +18,7 @@ final: prev: let
         "lib64" = ["LIBRARY_PATH"];
         "lib/intel64" = ["LIBRARY_PATH"]; # for intel
         "include" = ["C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"];
-        "" = ["{name}_DIR"];
+        "" = ["{name}_ROOT"];
       };
       all = {
         autoload = "direct";
@@ -26,6 +26,7 @@ final: prev: let
         suffixes = {
           "^mpi" = "mpi";
           "^cuda" = "cuda";
+          "^libllvm@15" = "libllvm15";
         };
         filter = {
           environment_blacklist = ["CC" "FC" "CXX" "F77"];
@@ -39,6 +40,7 @@ final: prev: let
         "netcdf-fortran ^hdf5" = "{name}/{version}-{^hdf5.name}-{^hdf5.version}";
         "nemo cfg=ORCA2_ICE_PISCES" = "{name}-orca2_ice_pisces/{version}";
         "nemo cfg=BENCH" = "{name}-bench/{version}";
+        "openmpi mca_no_build=btl-openib,btl-uct,btl-usnic,crcp,crs,pml-crcpw,pml-v,snapc,vprotocol" = "{name}-opt/{version}";
       };
       openmpi = {
         environment = {
@@ -63,6 +65,16 @@ final: prev: let
     inherit (lib) rpmVersion rpmExtern;
     inherit (lib) packsFun loadPacks virtual;
     inherit (lib) capture;
+    inherit (lib) findModDeps;
+
+    hpcw_repo = builtins.path {
+      name = "hpcw-repo";
+      path = "${inputs.hpcw}/spack/hpcw";
+    };
+    spack_configs_repo = builtins.path {
+      name = "spack-configs-repo";
+      path = "${inputs.spack-configs}/repos/bench";
+    };
 
     mkDevShell = {
       name,
@@ -130,7 +142,7 @@ final: prev: let
         devShell = with final.pkgs;
           mkDevShell {
             name = label;
-            inherit mods;
+            mods = self.mods;
             autoloads = lib.concatMapStrings (x: let
               pkg = x.pkg or x;
               name =
@@ -205,195 +217,200 @@ final: prev: let
           });
       };
 
-    confPacks = lib.listToAttrs (
-      lib.flatten (map (attr:
-          with attr; let
-            pack_ = variants (mpis packs);
-          in [
+    confPacks = let
+      append_pack = suffix: pack: args:
+        pack._merge (self:
+          with self;
             {
-              name = pack_.label;
-              value = pack_;
+              label = "${pack.label}${suffix}";
             }
-          ])
-        ([]
-          # hpcw configurations
-          ++ (lib.cartesianProductOfSets {
-            packs = let
-              append_pack = suffix: pack: args:
-                pack._merge (self:
-                  with self;
-                    {
-                      label = "${pack.label}${suffix}";
-                    }
-                    // args);
+            // args);
+    in
+      lib.listToAttrs (
+        lib.flatten (map (attr:
+            with attr; let
+              pack_ = variants (mpis packs);
             in [
-              final.packs.default
-              (append_pack "10" packs.gcc {package.gcc.version = "10";})
-              (append_pack "11" packs.gcc {package.gcc.version = "11";})
-              (append_pack "12" packs.gcc {package.gcc.version = "12";})
-              (append_pack "13" packs.gcc {package.gcc.version = "13";})
-              packs.aocc
-              (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
-              (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
-              (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
-              packs.intel
-              packs.llvm
-              (append_pack "16" packs.llvm {package.llvm.version = "16";})
-              packs.nvhpc
-              packs.oneapi
-            ];
-            mpis = [
-              (pack: pack)
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_bmpi";
-                    package.mpi = {name = "bull-openmpi";};
-                  }))
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_ompi";
-                    package.mpi = {name = "openmpi";};
+              {
+                name = pack_.label;
+                value = pack_;
+              }
+            ])
+          ([]
+            # hpcw configurations
+            ++ (lib.cartesianProductOfSets {
+              packs = [
+                final.packs.default
+                (append_pack "10" packs.gcc {package.gcc.version = "10";})
+                (append_pack "11" packs.gcc {package.gcc.version = "11";})
+                (append_pack "12" packs.gcc {package.gcc.version = "12";})
+                (append_pack "13" packs.gcc {package.gcc.version = "13";})
+                packs.aocc
+                (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
+                (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
+                (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
+                packs.intel
+                packs.llvm
+                (append_pack "16" packs.llvm {package.llvm.version = "16";})
+                packs.nvhpc
+                (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
+                packs.oneapi
+              ];
+              mpis = [
+                (pack: pack)
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_bmpi";
+                      package.mpi = {name = "bull-openmpi";};
+                    }))
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_ompi";
+                      package.mpi = {name = "openmpi";};
 
-                    package.openmpi.variants = {
-                      cxx = true;
-                      legacylaunchers = true;
-                      orterunprefix = true;
-                      lustre = true;
-                      memchecker = false;
-                      schedulers.slurm = true;
-                      fabrics = {
-                        ucx = true;
-                        hcoll = true;
-                        xpmem = true;
+                      package.openmpi.variants = {
+                        cxx = true;
+                        legacylaunchers = true;
+                        orterunprefix = true;
+                        lustre = true;
+                        memchecker = false;
+                        schedulers.slurm = true;
+                        fabrics = {
+                          ucx = true;
+                          hcoll = true;
+                          xpmem = true;
+                          cma = true;
+                          knem = true;
+                        };
+                        mca_no_build = {
+                          none = false;
+                          crs = true;
+                          snapc = true;
+                          pml-crcpw = true;
+                          pml-v = true;
+                          vprotocol = true;
+                          crcp = true;
+                          btl-usnic = true;
+                          btl-uct = true;
+                          btl-openib = true;
+                        };
+                      };
+                      package.ucx.variants = {
                         cma = true;
+                        dc = true;
+                        dm = true;
+                        logging = false;
+                        ib_hw_tm = true;
                         knem = true;
+                        mlx5_dv = true;
+                        openmp = true;
+                        optimizations = true;
+                        parameter_checking = false;
+                        rc = true;
+                        rdmacm = true;
+                        thread_multiple = true;
+                        ud = true;
+                        verbs = true;
+                        xpmem = true;
                       };
-                      mca_no_build = {
-                        crs = true;
-                        snapc = true;
-                        pml-crcpw = true;
-                        pml-v = true;
-                        vprotocol = true;
-                        crcp = true;
-                        btl-usnic = true;
-                        btl-uct = true;
-                        btl-openib = true;
+                      mod_pkgs = with self.pack.pkgs; [
+                        compiler
+                        {
+                          pkg = mpi;
+                          projection = "openmpi-opt/{version}";
+                        }
+                      ];
+                    }))
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_impi";
+                      package.mpi = {name = "intel-mpi";};
+                      # for conditionally load all packages with +mpi%compiler
+                      package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
+                      repoPatch = {
+                        intel-mpi = spec: old: {
+                          depends = old.depends // {compiler.deptype = ["build"];};
+                        };
                       };
-                    };
-                    package.ucx.variants = {
-                      cma = true;
-                      dc = true;
-                      dm = true;
-                      logging = false;
-                      ib_hw_tm = true;
-                      knem = true;
-                      mlx5_dv = true;
-                      openmp = true;
-                      optimizations = true;
-                      parameter_checking = false;
-                      rc = true;
-                      rdmacm = true;
-                      thread_multiple = true;
-                      ud = true;
-                      verbs = true;
-                      xpmem = true;
-                    };
+                    }))
+              ];
+              variants = [
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_compiler";
                     mod_pkgs = with self.pack.pkgs; [
-                      {
-                        pkg = mpi;
-                        projection = "openmpi-opt/{version}";
-                      }
+                      compiler
                     ];
                   }))
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_impi";
-                    package.mpi = {name = "intel-mpi";};
-                    # for conditionally load all packages with +mpi%compiler
-                    package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
-                    repoPatch = {
-                      intel-mpi = spec: old: {
-                        depends = old.depends // {compiler.deptype = ["build"];};
-                      };
-                    };
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_tools";
+                    mod_pkgs = map (p: let
+                      drv_name = builtins.parseDrvName p.name;
+                    in
+                      drv_name
+                      // {
+                        prefix = p;
+                        context = {
+                          short_description = p.meta.description or null;
+                          long_description = p.meta.longDescription or null;
+                        };
+                        projection = "${drv_name.name}/{version}-nix";
+                      }
+                      // p.module or {}) (with final; [
+                      git
+                      tig
+                    ]);
                   }))
-            ];
-            variants = [
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_compiler";
-                  mod_pkgs = with self.pack.pkgs; [
-                    compiler
-                  ];
-                }))
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_tools";
-                  mod_pkgs = map (p:
-                    builtins.parseDrvName p.name
-                    // {
-                      prefix = p;
-                      context = {
-                        short_description = p.meta.description or null;
-                        long_description = p.meta.longDescription or null;
-                      };
-                      projection = "{name}/{version}-nix";
-                    }
-                    // p.module or {}) (with final; [
-                    git
-                    tig
-                  ]);
-                }))
-              (import ../../confs/emopass.nix final)
-              (import ../../confs/hip.nix final)
-              (import ../../confs/hpcw.nix final)
-              (import ../../confs/jube.nix final)
-              (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
-              (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
-              (import ../../confs/hpcw-ecrad.nix final)
-              (import ../../confs/hpcw-ectrans.nix final)
-              (pack:
-                (import ../../confs/hpcw-ectrans.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ectrans_mkl";
-                  package.ectrans.variants.mkl = true;
-                })
-              (pack:
-                (import ../../confs/hpcw-ectrans.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ectrans_gpu";
-                  package.ectrans.version = "gpu";
-                  package.ectrans.variants.cuda = true;
-                })
-              (pack:
-                (import ../../confs/hpcw-ifs.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ifs_nonemo";
-                  package.ifs.variants.nemo = "no";
-                })
-              (import ../../confs/hpcw-icon.nix final)
-              (import ../../confs/hpcw-ifs.nix final)
-              (import ../../confs/hpcw-ifs-fvm.nix final)
-              (import ../../confs/hpcw-nemo-small.nix final)
-              (import ../../confs/hpcw-nemo-medium.nix final)
-              #(import ../../confs/hpcw-nemo-big.nix final)
-              (import ../../confs/reframe.nix final)
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_osu";
-                  mod_pkgs = with self.pack.pkgs; [
-                    osu-micro-benchmarks
-                  ];
-                }))
-            ];
-          })))
-      # end of configurations
-    );
-
-    hpcw_repo = builtins.path {
-      name = "hpcw-repo";
-      path = "${inputs.hpcw}/spack/hpcw";
-    };
+                (import ../../confs/ddfacet.nix final)
+                (import ../../confs/emopass.nix final)
+                (import ../../confs/hip.nix final)
+                (pack: append_pack "54" (import ../../confs/hip.nix final pack) {package.hip.version = "5.4";})
+                (pack: append_pack "55" (import ../../confs/hip.nix final pack) {package.hip.version = "5.5.0";})
+                (pack: append_pack "56" (import ../../confs/hip.nix final pack) {package.hip.version = "5.6";})
+                (import ../../confs/hpcw.nix final)
+                (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
+                (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
+                (import ../../confs/hpcw-ecrad.nix final)
+                (import ../../confs/hpcw-ectrans.nix final)
+                (pack:
+                  (import ../../confs/hpcw-ectrans.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ectrans_mkl";
+                    package.ectrans.variants.mkl = true;
+                  })
+                (pack:
+                  (import ../../confs/hpcw-ectrans.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ectrans_gpu";
+                    package.ectrans.version = "gpu";
+                    package.ectrans.variants.cuda = true;
+                  })
+                (pack:
+                  (import ../../confs/hpcw-ifs.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ifs_nonemo";
+                    package.ifs.variants.nemo = "no";
+                  })
+                (import ../../confs/hpcw-icon.nix final)
+                (import ../../confs/hpcw-ifs.nix final)
+                (import ../../confs/hpcw-ifs-fvm.nix final)
+                (import ../../confs/hpcw-nemo-small.nix final)
+                (import ../../confs/hpcw-nemo-medium.nix final)
+                #(import ../../confs/hpcw-nemo-big.nix final)
+                (import ../../confs/jube.nix final)
+                (import ../../confs/reframe.nix final)
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_osu";
+                    mod_pkgs = with self.pack.pkgs; [
+                      osu-micro-benchmarks
+                    ];
+                  }))
+              ];
+            })))
+        # end of configurations
+      );
 
     corePacks = final.packs.default.pack;
     intelPacks = final.packs.intel.pack;
@@ -416,49 +433,6 @@ final: prev: let
           else pkgs;
         name = "modules-${name}";
       });
-
-    modules = final.mkModules {
-      name = "modules";
-      pack = final.packs.default.pack;
-      withDeps = false;
-      # unique does not remove duplicate pkgconf
-      pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
-        []
-        # compilers
-        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
-        # osu
-        ++ (lib.findModDeps final.confPacks.gcc13_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc13_ompi_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.intel_ompi_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.intel_impi_osu.mod_pkgs)
-        # emopass modules
-        ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
-        # hpcw modules
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_acraneb2.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ectrans.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs_nonemo.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_nemo_small.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ecrad.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_icon.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs_nonemo.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs-fvm.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_small.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_medium.mod_pkgs)
-      ));
-    };
-
-    gitrev = "${lib.substring 0 8 (prev.inputs.self.lastModifiedDate or prev.inputs.self.lastModified or "19700101")}.${prev.inputs.self.shortRev or prev.inputs.self.dirtyShortRev}";
-
-    modsMod = import lmod/modules.nix gitrev final.packs.default.pack modules;
 
     viridianSImg = prev.singularity-tools.buildImage {
       name = "viridian";

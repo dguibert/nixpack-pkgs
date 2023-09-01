@@ -16,6 +16,10 @@
     #url = "git@gitlab.dkrz.de:esiwace/hpcw.git";
     flake = false;
   };
+  inputs.spack-configs = {
+    url = "git+https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git";
+    flake = false;
+  };
 
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
@@ -41,7 +45,7 @@
         ./modules/all-modules.nix
         #./lib
         #./apps
-        ./checks
+        ./envs
         ./shells
       ];
 
