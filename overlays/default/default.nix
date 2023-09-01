@@ -329,6 +329,24 @@ final: prev: let
                     compiler
                   ];
                 }))
+              (pack:
+                pack._merge (self: {
+                  label = pack.label + "_tools";
+                  mod_pkgs = map (p:
+                    builtins.parseDrvName p.name
+                    // {
+                      prefix = p;
+                      context = {
+                        short_description = p.meta.description or null;
+                        long_description = p.meta.longDescription or null;
+                      };
+                      projection = "{name}/{version}-nix";
+                    }
+                    // p.module or {}) (with final; [
+                    git
+                    tig
+                  ]);
+                }))
               (import ../../confs/emopass.nix final)
               (import ../../confs/hip.nix final)
               (import ../../confs/hpcw.nix final)
