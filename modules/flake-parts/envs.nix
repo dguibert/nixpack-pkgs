@@ -6,6 +6,8 @@
 }: let
   l = lib // builtins;
   t = l.types;
+
+  gitrev = "${lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")}.${inputs.self.shortRev or inputs.self.dirtyShortRev}";
 in {
   options.perSystem = flake-parts-lib.mkPerSystemOption ({
     config,
@@ -72,7 +74,6 @@ in {
             then pkgs.findModDeps config.envs.${n}.pack.mod_pkgs
             else []) (l.attrNames config.envs)
         );
-        gitrev = "${lib.substring 0 8 (inputs.self.lastModifiedDate or inputs.self.lastModified or "19700101")}.${inputs.self.shortRev or inputs.self.dirtyShortRev}";
 
         modsMod = import ../../overlays/default/lmod/modules.nix gitrev pkgs.packs.default.pack modules-all;
       };
