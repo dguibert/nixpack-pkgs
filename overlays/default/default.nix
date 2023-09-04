@@ -41,6 +41,10 @@ final: prev: let
         "nemo cfg=ORCA2_ICE_PISCES" = "{name}-orca2_ice_pisces/{version}";
         "nemo cfg=BENCH" = "{name}-bench/{version}";
         "openmpi mca_no_build=btl-openib,btl-uct,btl-usnic,crcp,crs,pml-crcpw,pml-v,snapc,vprotocol" = "{name}-opt/{version}";
+        "glx ^llvm-amdgpu@5.5.0" = "{name}/{version}-hip55";
+        "mesa ^llvm-amdgpu@5.5.0" = "{name}/{version}-hip55";
+        "glx ^llvm-amdgpu@5.6.0" = "{name}/{version}-hip56";
+        "mesa ^llvm-amdgpu@5.6.0" = "{name}/{version}-hip56";
       };
       openmpi = {
         environment = {

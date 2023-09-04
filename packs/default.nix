@@ -103,6 +103,7 @@ default_pack._merge (self:
           };
           depends.szip = packs.default.pack.pkgs.szip;
         };
+        lua.version = "5.3"; # for llvm
         llvm.variants = {
           flang = true;
           mlir = true;
@@ -156,6 +157,9 @@ default_pack._merge (self:
         patchelf.version = "0.17";
 
         # no need to be recompiled for each compiler
+        unzip.depends.compiler = packs.default.pack.pkgs.compiler;
+        swig.depends.compiler = packs.default.pack.pkgs.compiler;
+        pcre2.depends.compiler = packs.default.pack.pkgs.compiler;
         binutils.depends.compiler = packs.default.pack.pkgs.compiler;
         libedit.depends.compiler = packs.default.pack.pkgs.compiler;
         patchelf.depends.compiler = packs.default.pack.pkgs.compiler;
