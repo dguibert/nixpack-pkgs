@@ -42,6 +42,7 @@
         #"aarch64-linux"
       ];
       imports = [
+        ./overlays/default.nix
         ./modules/all-modules.nix
         #./lib
         #./apps

@@ -1,10 +1,12 @@
 {
+  config,
   lib,
-  inputs ? null,
+  inputs,
   ...
 }:
 with lib;
-  mapAttrs'
+let
+  overlays = mapAttrs'
   (name: type: {
     name = removeSuffix ".nix" name;
     value = let
@@ -24,4 +26,8 @@ with lib;
         || (type == "regular" && hasSuffix ".nix" name && ! (name == "default.nix") && ! (name == "overlays.nix"))
         || (type == "symlink" && hasSuffix ".nix" name && ! (name == "default.nix") && ! (name == "overlays.nix"))
     )
-    (builtins.readDir ./.))
+    (builtins.readDir ./.));
+
+in {
+  config.flake.overlays.default = overlays;
+}

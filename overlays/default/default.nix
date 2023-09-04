@@ -57,7 +57,7 @@ final: prev: let
     };
   };
 
-  overlaySelf = with overlaySelf;
+  overlaySelf = final: prev: with overlaySelf final prev;
   with prev; {
     inherit (lib) isLDep isRDep isRLDep;
     inherit (lib) rpmVersion rpmExtern;
@@ -473,9 +473,11 @@ final: prev: let
     });
   };
 in
+  (lib.composeManyExtensions [
   overlaySelf
+  (import ./nimbix.nix)
   # blom configurations
-  // (lib.listToAttrs (map (attr:
+  (final: prev: (lib.listToAttrs (map (attr:
       with attr; {
         name = packs.name + variants.name + "Packs_" + grid + "_" + processors;
         value = packs.pack grid processors variants.v;
@@ -644,6 +646,7 @@ in
             };
         }
       ];
-    })))
+    }))))
+  ]) final prev
 # end of cartesians products
 
