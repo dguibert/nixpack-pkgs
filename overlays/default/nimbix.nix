@@ -18,6 +18,14 @@ with prev; let
     finalImageName = "ubi8";
   };
 
+  alpine_image = pkgs.dockerTools.pullImage {
+    imageName = "alpine"; #:8.8-854
+    imageDigest = "sha256:c5c5fda71656f28e49ac9c5416b3643eaa6a108a8093151d6d1afc9463be8e33";
+    sha256 = "sha256-3K73rB1MoF/co3J61jvGPacxClxswsNAdQ2wDvlZLIs=";
+    finalImageTag = "3.18.3";
+    finalImageName = "alpine";
+  };
+
   appDef = {
     name = "basic";
     description = "Basic image";
@@ -76,7 +84,7 @@ with prev; let
     #  mkdir -p ./home/nimbix/.ssh
     #  chown 505:505 ./home/nimbix
     #'';
-    fromImage = ubi8;
+    fromImage = ubi8_image;
     copyToRoot = [
       #dockerTools.binSh
       #dockerTools.usrBinEnv
@@ -141,23 +149,24 @@ with prev; let
       (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
     ];
   };
-  basic_image = pkgs.dockerTools.buildImage {
+  basic_image = pkgs.dockerTools.buildLayeredImage {
     name = "basic-image";
     tag = "latest";
-    #fakeRootCommands = ''
-    #  mkdir -p ./home/nimbix/.ssh
-    #  chown 505:505 -P ./home/nimbix/.ssh
-    #'';
-    copyToRoot = [
+    fromImage = alpine_image;
+    fakeRootCommands = ''
+      mkdir -p ./home/nimbix/.ssh
+      chown 505:505 -P ./home/nimbix/.ssh
+    '';
+    contents = [
       # should be last layer
       (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
-      dockerTools.binSh
-      dockerTools.usrBinEnv
-      bashInteractive
-      coreutils
-      sudo
-      pam
-      su
+      #dockerTools.binSh
+      #dockerTools.usrBinEnv
+      #bashInteractive
+      #coreutils
+      #sudo
+      #pam
+      #su
       strace
       (fakeNss.override {
         extraPasswdLines = [
@@ -171,50 +180,66 @@ with prev; let
         root:!:19094::::::
         nimbix:$y$j9T$HqIvPhkUMjaJIflbF/Ozp1$TuOSm8QQBXgQdEl0gGle5xB7WoB1mNBKXjmnW3OEc2D:1::::::
       '')
-      (writeTextDir "etc/pam.d/su" ''
-        # Account management.
-        account required pam_unix.so
+      #(writeTextDir "etc/pam.d/su" ''
+      #  # Account management.
+      #  account required pam_unix.so
 
-        # Authentication management.
-        auth sufficient pam_rootok.so
-        auth required pam_faillock.so
-        auth sufficient pam_unix.so   likeauth try_first_pass
-        auth required pam_deny.so
+      #  # Authentication management.
+      #  auth sufficient pam_rootok.so
+      #  auth required pam_faillock.so
+      #  auth sufficient pam_unix.so   likeauth try_first_pass
+      #  auth required pam_deny.so
 
-        # Password management.
-        password sufficient pam_unix.so nullok yescrypt
+      #  # Password management.
+      #  password sufficient pam_unix.so nullok yescrypt
 
-        # Session management.
-        session required pam_env.so conffile=/etc/pam/environment readenv=0
-        session required pam_unix.so
-      '')
-      (writeTextDir "etc/pam.d/sudo" ''
-        # Account management.
-        account required pam_unix.so
+      #  # Session management.
+      #  session required pam_env.so conffile=/etc/pam/environment readenv=0
+      #  session required pam_unix.so
+      #'')
+      #(writeTextDir "etc/pam.d/sudo" ''
+      #  # Account management.
+      #  account required pam_unix.so
 
-        # Authentication management.
-        auth sufficient pam_unix.so   likeauth try_first_pass
-        auth required pam_deny.so
+      #  # Authentication management.
+      #  auth sufficient pam_unix.so   likeauth try_first_pass
+      #  auth required pam_deny.so
 
-        # Password management.
-        password sufficient pam_unix.so nullok yescrypt
+      #  # Password management.
+      #  password sufficient pam_unix.so nullok yescrypt
 
-        # Session management.
-        session required pam_env.so conffile=/etc/pam/environment readenv=0
-        session required pam_unix.so
-      '')
-      (writeTextDir "etc/sudoers.d/nimbix.conf" ''
-        # "root" is allowed to do anything.
-        root        ALL=(ALL:ALL) SETENV: ALL
-        Defaults: nimbix !requiretty
-        Defaults: root !requiretty
-        nimbix ALL=(ALL) NOPASSWD: ALL
-      '')
-      shadow
+      #  # Session management.
+      #  session required pam_env.so conffile=/etc/pam/environment readenv=0
+      #  session required pam_unix.so
+      #'')
+      #(writeTextDir "etc/pam.d/passwd" ''
+      #  # Account management.
+      #  account required pam_unix.so
+      #
+      #  # Authentication management.
+      #  auth sufficient pam_unix.so   likeauth try_first_pass
+      #  auth required pam_deny.so
+      #
+      #  # Password management.
+      #  password sufficient pam_unix.so nullok yescrypt
+      #
+      #  # Session management.
+      #  session required pam_env.so conffile=/etc/pam/environment readenv=0
+      #  session required pam_unix.so
+      #'')
+      #(writeTextDir "etc/sudoers.d/nimbix.conf" ''
+      #  # "root" is allowed to do anything.
+      #  root        ALL=(ALL:ALL) SETENV: ALL
+      #  Defaults: nimbix !requiretty
+      #  Defaults: root !requiretty
+      #  nimbix ALL=(ALL) NOPASSWD: ALL
+      #'')
+      #shadow
     ];
   };
 in {
   inherit
+    alpine_image
     basic_image
     basic_ubi8_image
     jarvice_mpi_image
