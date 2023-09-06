@@ -74,6 +74,10 @@ final: prev: let
         path = inputs.cbm-spack;
       };
 
+      dockerTools = callPackage ./build-support-docker {
+        writePython3 = buildPackages.writers.writePython3;
+      };
+
       mkDevShell = {
         name,
         mods,

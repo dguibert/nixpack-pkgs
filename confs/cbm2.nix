@@ -147,14 +147,14 @@ pack._merge (self:
           mkdir -p $out/opt/mellanox
           cp -R /opt/mellanox/hcoll $out/opt/mellanox
 
-          #mkdir $out/bin
+          mkdir $out/bin
           #cp /usr/bin/ldd $out/bin/ldd
-          #cp /usr/bin/ssh $out/bin/ssh
+          cp /usr/bin/ssh $out/bin/ssh
         '';
       in [
         (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
-        #mpi
-        #hemepure
-        #fakeRhel
+        mpi
+        hemepure
+        fakeRhel
       ];
     })

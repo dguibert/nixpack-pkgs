@@ -188,28 +188,35 @@ with prev; let
   in
     pkgs.dockerTools.buildLayeredImage ({
         inherit name tag;
-        fakeRootCommands = ''
-          mkdir ./usr
-          ln -s /bin ./usr/bin
-          ln -s /sbin ./usr/sbin
+        fakeRootCommands =
+          ''
+            mkdir ./usr
+            ln -s /bin ./usr/bin
+            ln -s /sbin ./usr/sbin
 
-          # hack (?)
-          rm ./bin/passwd
-          cp -v ${shadow}/bin/passwd ./bin/
-          chmod +s ./bin/passwd
+            # hack (?)
+            rm ./bin/passwd
+            cp -v ${shadow}/bin/passwd ./bin/
+            chmod +s ./bin/passwd
 
-          mkdir -p ./etc
-          cat > ./etc/shadow <<EOF
-          root:!:19094::::::
-          nimbix:$y$j9T$HqIvPhkUMjaJIflbF/Ozp1$TuOSm8QQBXgQdEl0gGle5xB7WoB1mNBKXjmnW3OEc2D:1::::::
-          EOF
-          rm -f ./etc/passwd ./etc/group
-          cp -vL ${fakeNss}/etc/passwd ./etc/passwd
-          cp -vL ${fakeNss}/etc/group ./etc/group
+            # /bin/sudo must be owned by uid 0 and have the setuid bit set
+            rm ./bin/sudo
+            cp -v ${sudo}/bin/sudo ./bin/
+            chmod +s ./bin/sudo
 
-          mkdir -p ./home/nimbix/.ssh
-          chown 505:505 -P ./home/nimbix/.ssh
-        '';
+            mkdir -p ./etc
+            cat > ./etc/shadow <<EOF
+            root:!:19094::::::
+            nimbix:$y$j9T$HqIvPhkUMjaJIflbF/Ozp1$TuOSm8QQBXgQdEl0gGle5xB7WoB1mNBKXjmnW3OEc2D:1::::::
+            EOF
+            rm -f ./etc/passwd ./etc/group
+            cp -vL ${fakeNss}/etc/passwd ./etc/passwd
+            cp -vL ${fakeNss}/etc/group ./etc/group
+
+            mkdir -p ./home/nimbix/.ssh
+            chown 505:505 -P ./home/nimbix/.ssh
+          ''
+          + (args.fakeRootCommands or "");
         contents =
           [
             # should be last layer
@@ -263,7 +270,7 @@ with prev; let
           ]
           ++ args.contents;
       }
-      // (builtins.removeAttrs args ["name" "tag" "contents"]));
+      // (builtins.removeAttrs args ["name" "tag" "contents" "fakeRootCommands"]));
 
   basic_image = nimbixImage {
     name = "basic-image";
