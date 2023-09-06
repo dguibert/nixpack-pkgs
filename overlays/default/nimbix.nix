@@ -168,132 +168,110 @@ with prev; let
           "nimbix:!:505:"
         ];
       })
-      ];
-};
-
-  basic_image = let 
-    fakeNss = (final.fakeNss.override {
-        extraPasswdLines = [
-          "nimbix:x:505:505:Nimbix user:/home/nimbix:/bin/bash"
-        ];
-        extraGroupLines = [
-          "nimbix:!:505:"
-        ];
-      });
-in pkgs.dockerTools.buildLayeredImage {
-    name = "basic-image";
-    tag = "latest";
-    fakeRootCommands = ''
-      mkdir ./usr
-      ln -s /bin ./usr/bin
-      ln -s /sbin ./usr/sbin
-
-      # hack (?)
-      rm ./bin/passwd
-      cp -v ${shadow}/bin/passwd ./bin/
-      chmod +s ./bin/passwd
-
-      mkdir -p ./etc
-      cat > ./etc/shadow <<EOF
-      root:!:19094::::::
-      nimbix:$y$j9T$HqIvPhkUMjaJIflbF/Ozp1$TuOSm8QQBXgQdEl0gGle5xB7WoB1mNBKXjmnW3OEc2D:1::::::
-      EOF
-      rm -f ./etc/passwd ./etc/group
-      cp -vL ${fakeNss}/etc/passwd ./etc/passwd
-      cp -vL ${fakeNss}/etc/group ./etc/group
-
-      mkdir -p ./home/nimbix/.ssh
-      chown 505:505 -P ./home/nimbix/.ssh
-    '';
-    contents = [
-      # should be last layer
-      (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
-      dockerTools.binSh
-      #dockerTools.usrBinEnv
-      bashInteractive
-      coreutils
-      sudo
-      pam
-      su
-      strace
-        #(writeTextDir "etc/shadow" ''
-      #  root:!:19094::::::
-      #  nimbix:$y$j9T$HqIvPhkUMjaJIflbF/Ozp1$TuOSm8QQBXgQdEl0gGle5xB7WoB1mNBKXjmnW3OEc2D:1::::::
-      #'')
-      #(writeTextDir "etc/pam.d/su" ''
-      #  # Account management.
-      #  account required pam_unix.so
-
-      #  # Authentication management.
-      #  auth sufficient pam_rootok.so
-      #  auth required pam_faillock.so
-      #  auth sufficient pam_unix.so   likeauth try_first_pass
-      #  auth required pam_deny.so
-
-      #  # Password management.
-      #  password sufficient pam_unix.so nullok yescrypt
-
-      #  # Session management.
-      #  session required pam_env.so conffile=/etc/pam/environment readenv=0
-      #  session required pam_unix.so
-      #'')
-      (writeTextDir "etc/pam.d/sudo" ''
-        # Account management.
-        account required pam_unix.so
-
-        # Authentication management.
-        auth sufficient pam_unix.so   likeauth try_first_pass
-        auth required pam_deny.so
-
-        # Password management.
-        password sufficient pam_unix.so nullok yescrypt
-
-        # Session management.
-        session required pam_env.so conffile=/etc/pam/environment readenv=0
-        session required pam_unix.so
-      '')
-      #(writeTextDir "etc/pam.d/passwd" ''
-      #  # Account management.
-      #  account required pam_unix.so
-      #
-      #  # Authentication management.
-      #  auth sufficient pam_unix.so   likeauth try_first_pass
-      #  auth required pam_deny.so
-      #
-      #  # Password management.
-      #  password sufficient pam_unix.so nullok yescrypt
-      #
-      #  # Session management.
-      #  session required pam_env.so conffile=/etc/pam/environment readenv=0
-      #  session required pam_unix.so
-      #'')
-      (writeTextDir "etc/pam.d/system-auth" ''
-        # Account management.
-        account required pam_unix.so
-      
-        # Authentication management.
-        auth sufficient pam_unix.so   likeauth try_first_pass
-        auth required pam_deny.so
-      
-        # Password management.
-        password sufficient pam_unix.so nullok yescrypt
-      
-        # Session management.
-        session required pam_env.so conffile=/etc/pam/environment readenv=0
-        session required pam_unix.so
-      '')
-      (writeTextDir "etc/sudoers.d/nimbix.conf" ''
-        # "root" is allowed to do anything.
-        root        ALL=(ALL:ALL) SETENV: ALL
-        Defaults: nimbix !requiretty
-        Defaults: root !requiretty
-        nimbix ALL=(ALL) NOPASSWD: ALL
-      '')
-      shadow
     ];
+  };
+
+  nimbixImage = {
+    name ? "nimbix-image",
+    tag ? "latest",
+    contents ? [],
+    ...
+  } @ args: let
+    fakeNss = final.fakeNss.override {
+      extraPasswdLines = [
+        "nimbix:x:505:505:Nimbix user:/home/nimbix:/bin/bash"
+      ];
+      extraGroupLines = [
+        "nimbix:!:505:"
+      ];
+    };
+  in
+    pkgs.dockerTools.buildLayeredImage ({
+        inherit name tag;
+        fakeRootCommands = ''
+          mkdir ./usr
+          ln -s /bin ./usr/bin
+          ln -s /sbin ./usr/sbin
+
+          # hack (?)
+          rm ./bin/passwd
+          cp -v ${shadow}/bin/passwd ./bin/
+          chmod +s ./bin/passwd
+
+          mkdir -p ./etc
+          cat > ./etc/shadow <<EOF
+          root:!:19094::::::
+          nimbix:$y$j9T$HqIvPhkUMjaJIflbF/Ozp1$TuOSm8QQBXgQdEl0gGle5xB7WoB1mNBKXjmnW3OEc2D:1::::::
+          EOF
+          rm -f ./etc/passwd ./etc/group
+          cp -vL ${fakeNss}/etc/passwd ./etc/passwd
+          cp -vL ${fakeNss}/etc/group ./etc/group
+
+          mkdir -p ./home/nimbix/.ssh
+          chown 505:505 -P ./home/nimbix/.ssh
+        '';
+        contents =
+          [
+            # should be last layer
+            (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
+            dockerTools.binSh
+            #dockerTools.usrBinEnv
+            bashInteractive
+            coreutils
+            sudo
+            pam
+            su
+            strace
+            (writeTextDir "etc/pam.d/sudo" ''
+              # Account management.
+              account required pam_unix.so
+
+              # Authentication management.
+              auth sufficient pam_unix.so   likeauth try_first_pass
+              auth required pam_deny.so
+
+              # Password management.
+              password sufficient pam_unix.so nullok yescrypt
+
+              # Session management.
+              session required pam_env.so conffile=/etc/pam/environment readenv=0
+              session required pam_unix.so
+            '')
+            (writeTextDir "etc/pam.d/system-auth" ''
+              # Account management.
+              account required pam_unix.so
+
+              # Authentication management.
+              auth sufficient pam_unix.so   likeauth try_first_pass
+              auth required pam_deny.so
+
+              # Password management.
+              password sufficient pam_unix.so nullok yescrypt
+
+              # Session management.
+              session required pam_env.so conffile=/etc/pam/environment readenv=0
+              session required pam_unix.so
+            '')
+            (writeTextDir "etc/sudoers.d/nimbix.conf" ''
+              # "root" is allowed to do anything.
+              root        ALL=(ALL:ALL) SETENV: ALL
+              Defaults: nimbix !requiretty
+              Defaults: root !requiretty
+              nimbix ALL=(ALL) NOPASSWD: ALL
+            '')
+            shadow
+          ]
+          ++ args.contents;
+      }
+      // (builtins.removeAttrs args ["name" "tag" "contents"]));
+
+  basic_image = nimbixImage {
+    name = "basic-image";
+    contents = [];
   };
 in {
   inherit
+    nimbixImage
     alpine_image
     basic_image
     basic_alpine_image

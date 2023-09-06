@@ -42,7 +42,7 @@ pack._merge (self:
       ];
 
       dockerImgArgs = {
-        fromImage = final.ubi8_image;
+        #fromImage = final.ubi8_image;
         tag = "latest";
         config = {
           WorkingDir = "/data";
@@ -51,6 +51,9 @@ pack._merge (self:
           };
         };
       };
+
+      nimbixImgArgs = self.dockerImgArgs;
+
       img_pkgs = with final;
       with self.pack.pkgs; let
         # https://jarvice.readthedocs.io/en/latest/nae/
@@ -90,35 +93,35 @@ pack._merge (self:
         };
         fakeRhel = pkgs.runCommand "fake-rhel" {} ''
           mkdir -p $out/lib64
-          #cp /lib64/ld-2.28.so $out/lib64
-          #cp /lib64/ld-linux-x86-64.so.2 $out/lib64
-          #cp /lib64/libc-2.28.so $out/lib64
-          #cp /lib64/libc.so.6 $out/lib64
-          #cp /lib64/libdl-2.28.so $out/lib64
-          #cp /lib64/libdl.so.2 $out/lib64
-          #cp /lib64/libkeyutils.so.1 $out/lib64
-          #cp /lib64/libkeyutils.so.1.6 $out/lib64
-          #cp /lib64/libm-2.28.so $out/lib64
-          #cp /lib64/libm.so.6 $out/lib64
-          #cp /lib64/libpthread-2.28.so $out/lib64
-          #cp /lib64/libpthread.so.0 $out/lib64
-          #cp /lib64/libresolv-2.28.so $out/lib64
-          #cp /lib64/libresolv.so.2 $out/lib64
-          #cp /lib64/librt-2.28.so $out/lib64
-          #cp /lib64/librt.so.1 $out/lib64
-          #cp /lib64/libutil-2.28.so $out/lib64
-          #cp /lib64/libutil.so.1 $out/lib64
-          #cp /lib64/libcrypto.so.1.1 $out/lib64
-          #cp /lib64/libz.so.1 $out/lib64
-          #cp /lib64/libcrypt.so.1 $out/lib64
-          #cp /lib64/libselinux.so.1 $out/lib64
-          #cp /lib64/libgssapi_krb5.so.2 $out/lib64
-          #cp /lib64/libkrb5.so.3 $out/lib64
-          #cp /lib64/libk5crypto.so.3 $out/lib64
-          #cp /lib64/libcom_err.so.2 $out/lib64
-          #cp /lib64/libpcre2-8.so.0 $out/lib64
-          #cp /lib64/libkrb5support.so.0 $out/lib64
-          #cp /lib64/libkeyutils.so.1 $out/lib64
+          cp /lib64/ld-2.28.so $out/lib64
+          cp /lib64/ld-linux-x86-64.so.2 $out/lib64
+          cp /lib64/libc-2.28.so $out/lib64
+          cp /lib64/libc.so.6 $out/lib64
+          cp /lib64/libdl-2.28.so $out/lib64
+          cp /lib64/libdl.so.2 $out/lib64
+          cp /lib64/libkeyutils.so.1 $out/lib64
+          cp /lib64/libkeyutils.so.1.6 $out/lib64
+          cp /lib64/libm-2.28.so $out/lib64
+          cp /lib64/libm.so.6 $out/lib64
+          cp /lib64/libpthread-2.28.so $out/lib64
+          cp /lib64/libpthread.so.0 $out/lib64
+          cp /lib64/libresolv-2.28.so $out/lib64
+          cp /lib64/libresolv.so.2 $out/lib64
+          cp /lib64/librt-2.28.so $out/lib64
+          cp /lib64/librt.so.1 $out/lib64
+          cp /lib64/libutil-2.28.so $out/lib64
+          cp /lib64/libutil.so.1 $out/lib64
+          cp /lib64/libcrypto.so.1.1 $out/lib64
+          cp /lib64/libz.so.1 $out/lib64
+          cp /lib64/libcrypt.so.1 $out/lib64
+          cp /lib64/libselinux.so.1 $out/lib64
+          cp /lib64/libgssapi_krb5.so.2 $out/lib64
+          cp /lib64/libkrb5.so.3 $out/lib64
+          cp /lib64/libk5crypto.so.3 $out/lib64
+          cp /lib64/libcom_err.so.2 $out/lib64
+          cp /lib64/libpcre2-8.so.0 $out/lib64
+          cp /lib64/libkrb5support.so.0 $out/lib64
+          cp /lib64/libkeyutils.so.1 $out/lib64
 
           # Lustre
           cp /lib64/liblustreapi.so.1 $out/lib64
@@ -149,12 +152,9 @@ pack._merge (self:
           #cp /usr/bin/ssh $out/bin/ssh
         '';
       in [
-        mpi
-        #hemepure
-        #bashInteractive
-        #final.coreutils
-        #fakeNss
         (writeTextDir "etc/NAE/AppDef.json" (builtins.toJSON appDef))
-        fakeRhel
+        #mpi
+        #hemepure
+        #fakeRhel
       ];
     })

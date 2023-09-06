@@ -57,596 +57,619 @@ final: prev: let
     };
   };
 
-  overlaySelf = final: prev: with overlaySelf final prev;
-  with prev; {
-    inherit (lib) isLDep isRDep isRLDep;
-    inherit (lib) rpmVersion rpmExtern;
-    inherit (lib) packsFun loadPacks virtual;
-    inherit (lib) capture;
+  overlaySelf = final: prev:
+    with overlaySelf final prev;
+    with prev; {
+      inherit (lib) isLDep isRDep isRLDep;
+      inherit (lib) rpmVersion rpmExtern;
+      inherit (lib) packsFun loadPacks virtual;
+      inherit (lib) capture;
 
-    hpcw_repo = builtins.path {
-      name = "hpcw-repo";
-      path = "${inputs.hpcw}/spack/hpcw";
-    };
-    cbm_repo = builtins.path {
-      name = "cbm2";
-      path = inputs.cbm-spack;
-    };
-
-    mkDevShell = {
-      name,
-      mods,
-      autoloads ? "",
-      ...
-    } @ attrs:
-      with pkgs; let
-      in
-        stdenvNoCC.mkDerivation ({
-            ENVRC = name;
-            nativeBuildInputs = [bashInteractive];
-            shellHook = ''
-              # remove existing module vars/functions
-              unset MODULEPATH MODULEPATH_modshare MODULES_CMD MODULESHOME MODULES_RUN_QUARANTINE
-              unset -f module module_raw ml
-
-              echo_cmd() {
-                echo "+ $@"
-                $@
-              }
-              echo_cmd source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
-              ${
-                if mods != []
-                then ''
-                  echo_cmd ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
-                  ${
-                    if autoloads != ""
-                    then "echo_cmd ml load ${autoloads}"
-                    else ""
-                  }
-                  LMOD_PAGER=cat echo_cmd ml av
-                ''
-                else ""
-              }
-              test -e ~/PS1 && source ~/PS1
-              test -e ~/code/git-prompt.sh && source ~/code/git-prompt.sh
-              export __git_ps1
-
-              ${attrs.shellHook or ""}
-            '';
-          }
-          // (builtins.removeAttrs attrs ["shellHook"]));
-
-    default_pack = virtual (self:
-      with self; {
-        name = label;
-        pack = packsFun {
-          inherit os system label global spackConfig repos repoPatch package spackPython spackEnv spackShell;
-        };
-        inherit system;
-        spackShell = "/bin/bash";
-
-        global = {
-          verbose = true;
-          fixedDeps = true;
-          resolver = null;
-        };
-
-        spackConfig.config.url_fetch_method = "curl";
-        repos = [];
-        repoPatch = {};
-        package = {};
-
-        devShell = with final.pkgs;
-          mkDevShell {
-            name = label;
-            mods = self.mods;
-            autoloads = lib.concatMapStrings (x: let
-              pkg = x.pkg or x;
-              name =
-                if x ? projection
-                then "${builtins.head (builtins.split "/(.*)" x.projection)} "
-                else "${(builtins.parseDrvName (pack.getPackage pkg).spec.compiler_spec).name} ";
-            in
-              if x ? autoload
-              then
-                if x.autoload
-                then name
-                else ""
-              else name)
-            mod_pkgs;
-          };
-        mods = final.mkModules {
-          name = label;
-          pack = self.pack;
-          pkgs = mod_pkgs;
-        };
-
-        mod_pkgs = [];
-        #img_pkgs = self.mod_pkgs;
-
-        sifImg = final.pkgs.singularity-tools.buildImage {
-          name = label;
-          diskSize = 16384;
-          contents =
-            map (
-              x: let
-                pkg = x.pkg or x;
-              in
-                if pkg ? spec && pkg.spec.extern == null
-                then pkg
-                else builtins.trace "WARNING: external package ${pkg.name}" []
-              /*
-              FIXME might be a problem to rely on an external package inside the image
-              */
-            )
-              (self.img_pkgs or self.mod_pkgs);
-        };
-
-        dockerImgArgs = {};
-        dockerImg = final.pkgs.dockerTools.buildImage ({
-          name = label;
-          contents =
-            map (
-              x: let
-                pkg = x.pkg or x;
-              in
-                if pkg ? spec && pkg.spec.extern == null
-                then builtins.trace "              add package ${pkg.name}" pkg
-                else builtins.trace "WARNING: external package ${pkg.name}" pkg
-              /*
-              FIXME might be a problem to rely on an external package inside the image
-              */
-            )
-              (self.img_pkgs or self.mod_pkgs);
-        } // dockerImgArgs);
-      });
-
-    packs' = lib.loadPacks prev ../../packs;
-    host_packs' = {}; # entry point for overriding packs'
-    packs =
-      (packs' // host_packs')
-      // {
-        gcc10 = packs.default._merge (self:
-          with self; {
-            label = "gcc10";
-            package.compiler = packs.default.pack.pkgs.gcc.withPrefs {version = "10";};
-            #compiler = corePacks.pkgs.gcc.withPrefs { version = "10"; };
-            package.gcc.version = "10";
-          });
+      hpcw_repo = builtins.path {
+        name = "hpcw-repo";
+        path = "${inputs.hpcw}/spack/hpcw";
+      };
+      cbm_repo = builtins.path {
+        name = "cbm2";
+        path = inputs.cbm-spack;
       };
 
-    confPacks = lib.listToAttrs (
-      lib.flatten (map (attr:
-          with attr; let
-            pack_ = variants (mpis packs);
-          in [
-            {
-              name = pack_.label;
-              value = pack_;
-            }
-          ])
-        ([]
-          # hpcw configurations
-          ++ (lib.cartesianProductOfSets {
-            packs = let
-              append_pack = suffix: pack: args:
-                pack._merge (self:
-                  with self;
-                    {
-                      label = "${pack.label}${suffix}";
-                    }
-                    // args);
-            in [
-              final.packs.default
-              (append_pack "10" packs.gcc {package.gcc.version = "10";})
-              (append_pack "11" packs.gcc {package.gcc.version = "11";})
-              (append_pack "12" packs.gcc {package.gcc.version = "12";})
-              (append_pack "13" packs.gcc {package.gcc.version = "13";})
-              packs.aocc
-              (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
-              (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
-              (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
-              packs.intel
-              packs.llvm
-              (append_pack "16" packs.llvm {package.llvm.version = "16";})
-              packs.nvhpc
-              packs.oneapi
-            ];
-            mpis = [
-              (pack: pack)
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_bmpi";
-                    package.mpi = {name = "bull-openmpi";};
-                  }))
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_ompi";
-                    package.mpi = {name = "openmpi";};
+      mkDevShell = {
+        name,
+        mods,
+        autoloads ? "",
+        ...
+      } @ attrs:
+        with pkgs; let
+        in
+          stdenvNoCC.mkDerivation ({
+              ENVRC = name;
+              nativeBuildInputs = [bashInteractive];
+              shellHook = ''
+                # remove existing module vars/functions
+                unset MODULEPATH MODULEPATH_modshare MODULES_CMD MODULESHOME MODULES_RUN_QUARANTINE
+                unset -f module module_raw ml
 
-                    package.openmpi.variants = {
-                      cxx = true;
-                      legacylaunchers = true;
-                      orterunprefix = true;
-                      lustre = true;
-                      memchecker = false;
-                      schedulers.slurm = true;
-                      fabrics = {
-                        ucx = true;
-                        hcoll = true;
-                        xpmem = true;
-                        cma = true;
-                        knem = true;
-                      };
-                      mca_no_build = {
-                        crs = true;
-                        snapc = true;
-                        pml-crcpw = true;
-                        pml-v = true;
-                        vprotocol = true;
-                        crcp = true;
-                        btl-usnic = true;
-                        btl-uct = true;
-                        btl-openib = true;
-                      };
-                    };
-                    package.ucx.variants = {
-                      cma = true;
-                      dc = true;
-                      dm = true;
-                      logging = false;
-                      ib_hw_tm = true;
-                      knem = true;
-                      mlx5_dv = true;
-                      openmp = true;
-                      optimizations = true;
-                      parameter_checking = false;
-                      rc = true;
-                      rdmacm = true;
-                      thread_multiple = true;
-                      ud = true;
-                      verbs = true;
-                      xpmem = true;
-                    };
-                    mod_pkgs = with self.pack.pkgs; [
+                echo_cmd() {
+                  echo "+ $@"
+                  $@
+                }
+                echo_cmd source ${corePacks.pkgs.lmod}/lmod/lmod/init/bash
+                ${
+                  if mods != []
+                  then ''
+                    echo_cmd ml use ${mods}/linux-${corePacks.os}-${corePacks.target}/Core
+                    ${
+                      if autoloads != ""
+                      then "echo_cmd ml load ${autoloads}"
+                      else ""
+                    }
+                    LMOD_PAGER=cat echo_cmd ml av
+                  ''
+                  else ""
+                }
+                test -e ~/PS1 && source ~/PS1
+                test -e ~/code/git-prompt.sh && source ~/code/git-prompt.sh
+                export __git_ps1
+
+                ${attrs.shellHook or ""}
+              '';
+            }
+            // (builtins.removeAttrs attrs ["shellHook"]));
+
+      default_pack = virtual (self:
+        with self; {
+          name = label;
+          pack = packsFun {
+            inherit os system label global spackConfig repos repoPatch package spackPython spackEnv spackShell;
+          };
+          inherit system;
+          spackShell = "/bin/bash";
+
+          global = {
+            verbose = true;
+            fixedDeps = true;
+            resolver = null;
+          };
+
+          spackConfig.config.url_fetch_method = "curl";
+          repos = [];
+          repoPatch = {};
+          package = {};
+
+          devShell = with final.pkgs;
+            mkDevShell {
+              name = label;
+              mods = self.mods;
+              autoloads = lib.concatMapStrings (x: let
+                pkg = x.pkg or x;
+                name =
+                  if x ? projection
+                  then "${builtins.head (builtins.split "/(.*)" x.projection)} "
+                  else "${(builtins.parseDrvName (pack.getPackage pkg).spec.compiler_spec).name} ";
+              in
+                if x ? autoload
+                then
+                  if x.autoload
+                  then name
+                  else ""
+                else name)
+              mod_pkgs;
+            };
+          mods = final.mkModules {
+            name = label;
+            pack = self.pack;
+            pkgs = mod_pkgs;
+          };
+
+          mod_pkgs = [];
+          #img_pkgs = self.mod_pkgs;
+
+          sifImg = final.pkgs.singularity-tools.buildImage {
+            name = label;
+            diskSize = 16384;
+            contents =
+              map (
+                x: let
+                  pkg = x.pkg or x;
+                in
+                  if pkg ? spec && pkg.spec.extern == null
+                  then pkg
+                  else builtins.trace "WARNING: external package ${pkg.name}" []
+                /*
+                FIXME might be a problem to rely on an external package inside the image
+                */
+              )
+              (self.img_pkgs or self.mod_pkgs);
+          };
+
+          dockerImgArgs = {};
+          dockerImg = final.pkgs.dockerTools.buildLayeredImage ({
+              name = label;
+              contents =
+                map (
+                  x: let
+                    pkg = x.pkg or x;
+                  in
+                    if pkg ? spec && pkg.spec.extern == null
+                    then builtins.trace "              add package ${pkg.name}" pkg
+                    else builtins.trace "WARNING: external package ${pkg.name}" pkg
+                  /*
+                  FIXME might be a problem to rely on an external package inside the image
+                  */
+                )
+                (self.img_pkgs or self.mod_pkgs);
+            }
+            // self.dockerImgArgs);
+
+          nimbixImgArgs = {};
+          nimbixImg = final.nimbixImage ({
+              name = label;
+              contents =
+                map (
+                  x: let
+                    pkg = x.pkg or x;
+                  in
+                    if pkg ? spec && pkg.spec.extern == null
+                    then builtins.trace "              add package ${pkg.name}" pkg
+                    else builtins.trace "WARNING: external package ${pkg.name}" pkg
+                  /*
+                  FIXME might be a problem to rely on an external package inside the image
+                  */
+                )
+                (self.img_pkgs or self.mod_pkgs);
+            }
+            // self.nimbixImgArgs);
+        });
+
+      packs' = lib.loadPacks prev ../../packs;
+      host_packs' = {}; # entry point for overriding packs'
+      packs =
+        (packs' // host_packs')
+        // {
+          gcc10 = packs.default._merge (self:
+            with self; {
+              label = "gcc10";
+              package.compiler = packs.default.pack.pkgs.gcc.withPrefs {version = "10";};
+              #compiler = corePacks.pkgs.gcc.withPrefs { version = "10"; };
+              package.gcc.version = "10";
+            });
+        };
+
+      confPacks = lib.listToAttrs (
+        lib.flatten (map (attr:
+            with attr; let
+              pack_ = variants (mpis packs);
+            in [
+              {
+                name = pack_.label;
+                value = pack_;
+              }
+            ])
+          ([]
+            # hpcw configurations
+            ++ (lib.cartesianProductOfSets {
+              packs = let
+                append_pack = suffix: pack: args:
+                  pack._merge (self:
+                    with self;
                       {
-                        pkg = mpi;
-                        projection = "openmpi-opt/{version}";
+                        label = "${pack.label}${suffix}";
                       }
+                      // args);
+              in [
+                final.packs.default
+                (append_pack "10" packs.gcc {package.gcc.version = "10";})
+                (append_pack "11" packs.gcc {package.gcc.version = "11";})
+                (append_pack "12" packs.gcc {package.gcc.version = "12";})
+                (append_pack "13" packs.gcc {package.gcc.version = "13";})
+                packs.aocc
+                (append_pack "41" packs.aocc {package.aocc.version = "4.1.0";})
+                (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
+                (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
+                packs.intel
+                packs.llvm
+                (append_pack "16" packs.llvm {package.llvm.version = "16";})
+                packs.nvhpc
+                packs.oneapi
+              ];
+              mpis = [
+                (pack: pack)
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_bmpi";
+                      package.mpi = {name = "bull-openmpi";};
+                    }))
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_ompi";
+                      package.mpi = {name = "openmpi";};
+
+                      package.openmpi.variants = {
+                        cxx = true;
+                        legacylaunchers = true;
+                        orterunprefix = true;
+                        lustre = true;
+                        memchecker = false;
+                        schedulers.slurm = true;
+                        fabrics = {
+                          ucx = true;
+                          hcoll = true;
+                          xpmem = true;
+                          cma = true;
+                          knem = true;
+                        };
+                        mca_no_build = {
+                          crs = true;
+                          snapc = true;
+                          pml-crcpw = true;
+                          pml-v = true;
+                          vprotocol = true;
+                          crcp = true;
+                          btl-usnic = true;
+                          btl-uct = true;
+                          btl-openib = true;
+                        };
+                      };
+                      package.ucx.variants = {
+                        cma = true;
+                        dc = true;
+                        dm = true;
+                        logging = false;
+                        ib_hw_tm = true;
+                        knem = true;
+                        mlx5_dv = true;
+                        openmp = true;
+                        optimizations = true;
+                        parameter_checking = false;
+                        rc = true;
+                        rdmacm = true;
+                        thread_multiple = true;
+                        ud = true;
+                        verbs = true;
+                        xpmem = true;
+                      };
+                      mod_pkgs = with self.pack.pkgs; [
+                        {
+                          pkg = mpi;
+                          projection = "openmpi-opt/{version}";
+                        }
+                      ];
+                    }))
+                (pack:
+                  pack._merge (self:
+                    with self; {
+                      label = "${pack.label}_impi";
+                      package.mpi = {name = "intel-mpi";};
+                      # for conditionally load all packages with +mpi%compiler
+                      package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
+                      repoPatch = {
+                        intel-mpi = spec: old: {
+                          depends = old.depends // {compiler.deptype = ["build"];};
+                        };
+                      };
+                    }))
+              ];
+              variants = [
+                (import ../../confs/cbm2.nix final)
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_compiler";
+                    mod_pkgs = with self.pack.pkgs; [
+                      compiler
                     ];
                   }))
-              (pack:
-                pack._merge (self:
-                  with self; {
-                    label = "${pack.label}_impi";
-                    package.mpi = {name = "intel-mpi";};
-                    # for conditionally load all packages with +mpi%compiler
-                    package.intel-mpi.depends.compiler = self.pack.pkgs.compiler;
-                    repoPatch = {
-                      intel-mpi = spec: old: {
-                        depends = old.depends // {compiler.deptype = ["build"];};
-                      };
-                    };
+                (import ../../confs/emopass.nix final)
+                (import ../../confs/hip.nix final)
+                (import ../../confs/hpcw.nix final)
+                (import ../../confs/jube.nix final)
+                (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
+                (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
+                (import ../../confs/hpcw-ecrad.nix final)
+                (import ../../confs/hpcw-ectrans.nix final)
+                (pack:
+                  (import ../../confs/hpcw-ectrans.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ectrans_mkl";
+                    package.ectrans.variants.mkl = true;
+                  })
+                (pack:
+                  (import ../../confs/hpcw-ectrans.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ectrans_gpu";
+                    package.ectrans.version = "gpu";
+                    package.ectrans.variants.cuda = true;
+                  })
+                (pack:
+                  (import ../../confs/hpcw-ifs.nix final pack)._merge {
+                    label = "hpcw_" + pack.label + "_ifs_nonemo";
+                    package.ifs.variants.nemo = "no";
+                  })
+                (import ../../confs/hpcw-icon.nix final)
+                (import ../../confs/hpcw-ifs.nix final)
+                (import ../../confs/hpcw-ifs-fvm.nix final)
+                (import ../../confs/hpcw-nemo-small.nix final)
+                (import ../../confs/hpcw-nemo-medium.nix final)
+                #(import ../../confs/hpcw-nemo-big.nix final)
+                (import ../../confs/reframe.nix final)
+                (pack:
+                  pack._merge (self: {
+                    label = pack.label + "_osu";
+                    mod_pkgs = with self.pack.pkgs; [
+                      osu-micro-benchmarks
+                    ];
                   }))
-            ];
-            variants = [
-              (import ../../confs/cbm2.nix final)
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_compiler";
-                  mod_pkgs = with self.pack.pkgs; [
-                    compiler
-                  ];
-                }))
-              (import ../../confs/emopass.nix final)
-              (import ../../confs/hip.nix final)
-              (import ../../confs/hpcw.nix final)
-              (import ../../confs/jube.nix final)
-              (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)
-              (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
-              (import ../../confs/hpcw-ecrad.nix final)
-              (import ../../confs/hpcw-ectrans.nix final)
-              (pack:
-                (import ../../confs/hpcw-ectrans.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ectrans_mkl";
-                  package.ectrans.variants.mkl = true;
-                })
-              (pack:
-                (import ../../confs/hpcw-ectrans.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ectrans_gpu";
-                  package.ectrans.version = "gpu";
-                  package.ectrans.variants.cuda = true;
-                })
-              (pack:
-                (import ../../confs/hpcw-ifs.nix final pack)._merge {
-                  label = "hpcw_" + pack.label + "_ifs_nonemo";
-                  package.ifs.variants.nemo = "no";
-                })
-              (import ../../confs/hpcw-icon.nix final)
-              (import ../../confs/hpcw-ifs.nix final)
-              (import ../../confs/hpcw-ifs-fvm.nix final)
-              (import ../../confs/hpcw-nemo-small.nix final)
-              (import ../../confs/hpcw-nemo-medium.nix final)
-              #(import ../../confs/hpcw-nemo-big.nix final)
-              (import ../../confs/reframe.nix final)
-              (pack:
-                pack._merge (self: {
-                  label = pack.label + "_osu";
-                  mod_pkgs = with self.pack.pkgs; [
-                    osu-micro-benchmarks
-                  ];
-                }))
-            ];
-          })))
-      # end of configurations
-    );
+              ];
+            })))
+        # end of configurations
+      );
 
-    corePacks = final.packs.default.pack;
-    intelPacks = final.packs.intel.pack;
-    intelOneApiPacks = final.packs.oneapi.pack;
-    aoccPacks = final.packs.aocc.pack;
+      corePacks = final.packs.default.pack;
+      intelPacks = final.packs.intel.pack;
+      intelOneApiPacks = final.packs.oneapi.pack;
+      aoccPacks = final.packs.aocc.pack;
 
-    mkModules = {
-      name,
-      pack,
-      pkgs,
-      withDeps ? true,
-    }:
-      pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
-        coreCompilers = [
-          final.packs.default.pack.pkgs.compiler
+      mkModules = {
+        name,
+        pack,
+        pkgs,
+        withDeps ? true,
+      }:
+        pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
+          coreCompilers = [
+            final.packs.default.pack.pkgs.compiler
+          ];
+          pkgs =
+            if withDeps
+            then lib.findModDeps pkgs
+            else pkgs;
+          name = "modules-${name}";
+        });
+
+      modules = final.mkModules {
+        name = "modules";
+        pack = final.packs.default.pack;
+        withDeps = false;
+        # unique does not remove duplicate pkgconf
+        pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
+          []
+          # compilers
+          ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
+          # osu
+          ++ (lib.findModDeps final.confPacks.gcc13_osu.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.gcc13_ompi_osu.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.intel_ompi_osu.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.intel_impi_osu.mod_pkgs)
+          # emopass modules
+          ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
+          # hpcw modules
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_acraneb2.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_ectrans.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs_nonemo.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_nemo_small.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_ecrad.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_icon.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs_nonemo.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs-fvm.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_small.mod_pkgs)
+          ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_medium.mod_pkgs)
+        ));
+      };
+
+      gitrev = "${lib.substring 0 8 (prev.inputs.self.lastModifiedDate or prev.inputs.self.lastModified or "19700101")}.${prev.inputs.self.shortRev or prev.inputs.self.dirtyShortRev}";
+
+      modsMod = import lmod/modules.nix gitrev final.packs.default.pack modules;
+
+      viridianSImg = prev.singularity-tools.buildImage {
+        name = "viridian";
+        diskSize = 4096;
+        contents = with final.corePacks; [
+          pkgs.py-viridian-workflow
         ];
-        pkgs =
-          if withDeps
-          then lib.findModDeps pkgs
-          else pkgs;
-        name = "modules-${name}";
+      };
+      viridianDocker = prev.dockerTools.buildImage {
+        name = "viridian";
+        contents = with final.corePacks; [
+          pkgs.py-viridian-workflow
+        ];
+      };
+
+      libffi = prev.libffi.overrideAttrs (o: {
+        doCheck = false; # whoami error with nss_ssd
       });
-
-    modules = final.mkModules {
-      name = "modules";
-      pack = final.packs.default.pack;
-      withDeps = false;
-      # unique does not remove duplicate pkgconf
-      pkgs = builtins.filter (x: x.pkg != final.packs.default.pack.pkgs.pkgconf) (lib.unique (
-        []
-        # compilers
-        ++ (lib.findModDeps final.confPacks.aocc32_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc40_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.aocc41_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc10_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc11_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc12_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc13_compiler.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.llvm16_compiler.mod_pkgs)
-        # osu
-        ++ (lib.findModDeps final.confPacks.gcc13_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.gcc13_ompi_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.intel_ompi_osu.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.intel_impi_osu.mod_pkgs)
-        # emopass modules
-        ++ (lib.findModDeps final.confPacks.emopass_intel.mod_pkgs)
-        # hpcw modules
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_acraneb2.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ectrans.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ifs_nonemo.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_nemo_small.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_ecrad.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_icon.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs_nonemo.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_ifs-fvm.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_small.mod_pkgs)
-        ++ (lib.findModDeps final.confPacks.hpcw_intel_impi_nemo_medium.mod_pkgs)
-      ));
+      go_bootstrap = prev.go_bootstrap.overrideAttrs (attrs: {
+        doCheck = false;
+      });
+      go_1_16 = prev.go_1_16.overrideAttrs (attrs: {
+        doCheck = false;
+      });
     };
-
-    gitrev = "${lib.substring 0 8 (prev.inputs.self.lastModifiedDate or prev.inputs.self.lastModified or "19700101")}.${prev.inputs.self.shortRev or prev.inputs.self.dirtyShortRev}";
-
-    modsMod = import lmod/modules.nix gitrev final.packs.default.pack modules;
-
-    viridianSImg = prev.singularity-tools.buildImage {
-      name = "viridian";
-      diskSize = 4096;
-      contents = with final.corePacks; [
-        pkgs.py-viridian-workflow
-      ];
-    };
-    viridianDocker = prev.dockerTools.buildImage {
-      name = "viridian";
-      contents = with final.corePacks; [
-        pkgs.py-viridian-workflow
-      ];
-    };
-
-    libffi = prev.libffi.overrideAttrs (o: {
-      doCheck = false; # whoami error with nss_ssd
-    });
-    go_bootstrap = prev.go_bootstrap.overrideAttrs (attrs: {
-      doCheck = false;
-    });
-    go_1_16 = prev.go_1_16.overrideAttrs (attrs: {
-      doCheck = false;
-    });
-  };
 in
   (lib.composeManyExtensions [
-  overlaySelf
-  (import ./nimbix.nix)
-  # blom configurations
-  (final: prev: (lib.listToAttrs (map (attr:
-      with attr; {
-        name = packs.name + variants.name + "Packs_" + grid + "_" + processors;
-        value = packs.pack grid processors variants.v;
-      })
-    (lib.cartesianProductOfSets {
-      packs = [
-        {
-          name = "blomIntelOrig";
-          pack = grid: processors: v:
-            final.intelPacks.withPrefs {
-              repoPatch = {
-                intel-parallel-studio = spec: old: {
-                  compiler_spec = "intel@19.1.1.217";
-                  provides =
-                    old.provides
-                    or {}
-                    // {
-                      compiler = ":";
-                    };
-                  depends =
-                    old.depends
-                    or {}
-                    // {
-                      compiler = null;
-                    };
+    overlaySelf
+    (import ./nimbix.nix)
+    # blom configurations
+    (final: prev: (lib.listToAttrs (map (attr:
+        with attr; {
+          name = packs.name + variants.name + "Packs_" + grid + "_" + processors;
+          value = packs.pack grid processors variants.v;
+        })
+      (lib.cartesianProductOfSets {
+        packs = [
+          {
+            name = "blomIntelOrig";
+            pack = grid: processors: v:
+              final.intelPacks.withPrefs {
+                repoPatch = {
+                  intel-parallel-studio = spec: old: {
+                    compiler_spec = "intel@19.1.1.217";
+                    provides =
+                      old.provides
+                      or {}
+                      // {
+                        compiler = ":";
+                      };
+                    depends =
+                      old.depends
+                      or {}
+                      // {
+                        compiler = null;
+                      };
+                  };
+                };
+                package.compiler = {
+                  name = "intel-parallel-studio";
+                  version = "professional.2020.1";
+                };
+                package.intel-parallel-studio.variants.mpi = false;
+                package.mpi = {
+                  name = "intel-mpi";
+                  version = "2019.7.217";
+                };
+                package.blom = {
+                  version = "local";
+                  variants = let
+                    self =
+                      {
+                        inherit grid processors;
+                        mpi = true;
+                        parallel_netcdf = true;
+                        buildtype = "release";
+                      }
+                      // (v self);
+                  in
+                    self;
                 };
               };
-              package.compiler = {
-                name = "intel-parallel-studio";
-                version = "professional.2020.1";
-              };
-              package.intel-parallel-studio.variants.mpi = false;
-              package.mpi = {
-                name = "intel-mpi";
-                version = "2019.7.217";
-              };
-              package.blom = {
-                version = "local";
-                variants = let
-                  self =
-                    {
-                      inherit grid processors;
-                      mpi = true;
-                      parallel_netcdf = true;
-                      buildtype = "release";
-                    }
-                    // (v self);
-                in
-                  self;
-              };
-            };
-        }
+          }
 
-        {
-          name = "blomOneApi";
-          pack = grid: processors: v:
-            final.intelOneApiPacks.withPrefs {
-              package.mpi = {name = "intel-oneapi-mpi";};
-              package.blom = {
-                version = "local";
-                variants = let
-                  self =
-                    {
-                      inherit grid processors;
-                      mpi = true;
-                      parallel_netcdf = true;
-                      buildtype = "release";
-                    }
-                    // (v self);
-                in
-                  self;
+          {
+            name = "blomOneApi";
+            pack = grid: processors: v:
+              final.intelOneApiPacks.withPrefs {
+                package.mpi = {name = "intel-oneapi-mpi";};
+                package.blom = {
+                  version = "local";
+                  variants = let
+                    self =
+                      {
+                        inherit grid processors;
+                        mpi = true;
+                        parallel_netcdf = true;
+                        buildtype = "release";
+                      }
+                      // (v self);
+                  in
+                    self;
+                };
               };
-            };
-        }
-        {
-          name = "blomIntel";
-          pack = grid: processors: v:
-            final.intelPacks.withPrefs {
-              package.mpi = {name = "intel-oneapi-mpi";};
-              package.blom = {
-                version = "local";
-                variants = let
-                  self =
-                    {
-                      inherit grid processors;
-                      mpi = true;
-                      parallel_netcdf = true;
-                      buildtype = "release";
-                    }
-                    // (v self);
-                in
-                  self;
+          }
+          {
+            name = "blomIntel";
+            pack = grid: processors: v:
+              final.intelPacks.withPrefs {
+                package.mpi = {name = "intel-oneapi-mpi";};
+                package.blom = {
+                  version = "local";
+                  variants = let
+                    self =
+                      {
+                        inherit grid processors;
+                        mpi = true;
+                        parallel_netcdf = true;
+                        buildtype = "release";
+                      }
+                      // (v self);
+                  in
+                    self;
+                };
               };
-            };
-        }
-      ];
-      grid = [
-        "channel_small"
-        "channel_medium"
-        "channel_large"
-      ];
-      processors = [
-        "1"
-        "2"
-        "4"
-        "8"
-        "16"
-        "32"
-        "64"
-        "128"
-        "256"
-        "512"
-        "1024"
-      ];
-      variants = [
-        {
-          name = "";
-          v = variants: {};
-        }
-        {
-          name = "Opt0";
-          v = variants:
-            with variants; {
-              optims.no = false;
-              optims.opt0 = true;
-              optims.opt1 = false;
-              optims.opt2 = false;
-            };
-        }
-        {
-          name = "Opt1";
-          v = variants:
-            with variants; {
-              optims.no = false;
-              optims.opt1 = true;
-              optims.opt2 = false;
-            };
-        }
-        {
-          name = "Opt2";
-          v = variants:
-            with variants; {
-              optims.no = false;
-              optims.opt1 = false;
-              optims.opt2 = true;
-            };
-        }
-        {
-          name = "SafeOpts";
-          v = variants:
-            with variants; {
-              optims.no = false;
-              optims.opt0 = true;
-              optims.opt1 = true;
-              optims.opt2 = false;
-            };
-        }
-        {
-          name = "Opts";
-          v = variants:
-            with variants; {
-              optims.no = false;
-              optims.opt0 = true;
-              optims.opt1 = true;
-              optims.opt2 = true;
-            };
-        }
-      ];
-    }))))
-  ]) final prev
+          }
+        ];
+        grid = [
+          "channel_small"
+          "channel_medium"
+          "channel_large"
+        ];
+        processors = [
+          "1"
+          "2"
+          "4"
+          "8"
+          "16"
+          "32"
+          "64"
+          "128"
+          "256"
+          "512"
+          "1024"
+        ];
+        variants = [
+          {
+            name = "";
+            v = variants: {};
+          }
+          {
+            name = "Opt0";
+            v = variants:
+              with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = false;
+                optims.opt2 = false;
+              };
+          }
+          {
+            name = "Opt1";
+            v = variants:
+              with variants; {
+                optims.no = false;
+                optims.opt1 = true;
+                optims.opt2 = false;
+              };
+          }
+          {
+            name = "Opt2";
+            v = variants:
+              with variants; {
+                optims.no = false;
+                optims.opt1 = false;
+                optims.opt2 = true;
+              };
+          }
+          {
+            name = "SafeOpts";
+            v = variants:
+              with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = true;
+                optims.opt2 = false;
+              };
+          }
+          {
+            name = "Opts";
+            v = variants:
+              with variants; {
+                optims.no = false;
+                optims.opt0 = true;
+                optims.opt1 = true;
+                optims.opt2 = true;
+              };
+          }
+        ];
+      }))))
+  ])
+  final
+  prev
 # end of cartesians products
 
