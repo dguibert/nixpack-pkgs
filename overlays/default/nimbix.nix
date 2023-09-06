@@ -81,7 +81,7 @@ with prev; let
     name = "ubi8-image";
     tag = "latest";
     #fakeRootCommands = ''
-    #  mkdir -p ./home/nimbix/.ssh
+    #  mkdir -p ./home/nimbix
     #  chown 505:505 ./home/nimbix
     #'';
     fromImage = ubi8_image;
@@ -154,8 +154,8 @@ with prev; let
     tag = "latest";
     fromImage = alpine_image;
     fakeRootCommands = ''
-      mkdir -p ./home/nimbix/.ssh
-      chown 505:505 -P ./home/nimbix/.ssh
+      mkdir -p ./home/nimbix
+      chown 505:505 -P ./home/nimbix
     '';
     contents = [
       # should be last layer
@@ -213,8 +213,11 @@ with prev; let
             cp -vL ${fakeNss}/etc/passwd ./etc/passwd
             cp -vL ${fakeNss}/etc/group ./etc/group
 
-            mkdir -p ./home/nimbix/.ssh
-            chown 505:505 -P ./home/nimbix/.ssh
+            mkdir -p ./home/nimbix
+            chown 505:505 -R ./home/nimbix
+
+            mkdir ./tmp
+            chmod 1777 ./tmp
           ''
           + (args.fakeRootCommands or "");
         contents =
@@ -267,6 +270,7 @@ with prev; let
               nimbix ALL=(ALL) NOPASSWD: ALL
             '')
             shadow
+            openssh
           ]
           ++ args.contents;
       }
