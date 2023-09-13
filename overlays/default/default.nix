@@ -374,6 +374,7 @@ final: prev: let
                 (import ../../confs/hip.nix final)
                 (pack: append_pack "54" (import ../../confs/hip.nix final pack) {package.hip.version = "5.4";})
                 (pack: append_pack "55" (import ../../confs/hip.nix final pack) {package.hip.version = "5.5.0";})
+                (pack: append_pack "560" (import ../../confs/hip.nix final pack) {package.hip.version = "5.6.0";})
                 (pack: append_pack "56" (import ../../confs/hip.nix final pack) {package.hip.version = "5.6";})
                 (import ../../confs/hpcw.nix final)
                 (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
