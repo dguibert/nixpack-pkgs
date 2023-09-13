@@ -467,11 +467,11 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1693309009,
-        "narHash": "sha256-VrMqWP92icBrEd51Yoi7+yzAHP7DKklIWSsCKP/OtYM=",
+        "lastModified": 1694595349,
+        "narHash": "sha256-603LDZZFeKlbHTflIHuc9uxP6p0mi0+W0/HrhmLXVms=",
         "owner": "dguibert",
         "repo": "spack",
-        "rev": "612229a040fb14ff958bb177d5c27414012551f1",
+        "rev": "0b7c565c3408070a47ffc1bc70cb74fa4809332b",
         "type": "github"
       },
       "original": {
