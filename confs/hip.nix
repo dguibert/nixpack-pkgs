@@ -34,6 +34,8 @@ pack._merge (self:
       #package.rocprofiler-dev.depends.py-pyyaml = self.pack.pkgs.py-pyyaml;
       package.hippify-clang.patches = [];
 
+      package.mesa.variants.llvm = false;
+
       repoPatch = {
         #rocprofiler-dev = spec: old: {
         #  depends = old.depends // {
