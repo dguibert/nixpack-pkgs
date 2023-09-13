@@ -59,7 +59,7 @@ case "$cmd" in
 					attrs=".#packs.default.pack.pkgs.lmod"
 					;;
 				(modules)
-					attrs=".#modules"
+					attrs=".#modules-all"
 					;;
 				(*)
 					echo "Unknown profile"
