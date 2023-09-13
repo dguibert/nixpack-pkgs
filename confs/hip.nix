@@ -34,6 +34,9 @@ pack._merge (self:
       #package.rocprofiler-dev.depends.py-pyyaml = self.pack.pkgs.py-pyyaml;
       package.hippify-clang.patches = [];
 
+      # hip dependency mesa: package mesa@23.0.3+glx+llvm+opengl~opengles+osmesa~strip swr= default_library=+shared,~static build_system=meson buildtype=release does not match dependency constraints {"variants":{"llvm":false}}
+      package.mesa.variants.llvm = false;
+
       repoPatch = {
         #rocprofiler-dev = spec: old: {
         #  depends = old.depends // {
