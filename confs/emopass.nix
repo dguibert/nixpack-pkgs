@@ -1,10 +1,22 @@
-final: pack:
+final:
+# default HPCW
+pack:
 pack._merge (self:
     with self; {
-      label = "hpcw_" + pack.label + "_nemo_medium";
+      label = "emopass_" + pack.label;
+      package.intel-oneapi-compilers-classic.version = "2021.7.1";
+      package.intel-oneapi-compilers.version = "2022.2.1";
+      package.mkl.version = "2022.2.1";
+      package.intel-oneapi-mpi.version = "2021.7.1";
+      package.fftw.version = "3.3.10";
+      package.hdf5.version = "1.12.2";
+      package.netcdf-c.version = "4.9.0";
+      package.netcdf-fortran.version = "4.6.0";
 
-      #BUILD_COMMAND ./makenemo -m X64_hpcw -n MY_ORCA25 -r ORCA2_ICE_PISCES  -j ${NEMO_BUILD_PARALLEL_LEVEL} del_key "key_top" add_key "key_si3  key_iomput key_mpp_mpi key_mpi2"
-      package.nemo.variants.cfg = "ORCA2_ICE_PISCES";
+      package.mpi = {name = "intel-oneapi-mpi";};
+
+      #BUILD_COMMAND ./makenemo -a BENCH -m X64_hpcw -j ${NEMO_BUILD_PARALLEL_LEVEL}
+      package.nemo.variants.cfg = "BENCH";
       #error: xios dependency boost: package boost@1.72.0~atomic~chrono~clanglibcpp~container~context~contract
       #~coroutine~date_time~debug~exception~fiber~filesystem~graph~graph_parallel~icu~iostreams~json~locale~log
       # ~math~mpi+multithreaded~nowide~numpy~pic~program_options~python~random~regex~serialization+shared~signals
@@ -44,15 +56,9 @@ pack._merge (self:
         cmake
         {
           pkg = nemo;
-          projection = "nemo-orca2_ice_pisces/{version}";
+          projection = "nemo-bench/{version}";
         }
         cdo
         pkgconf # for hdf5?
-      ];
-
-      img_pkgs = with self.pack.pkgs; [
-        mpi
-        nemo
-        cdo
       ];
     })

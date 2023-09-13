@@ -1,7 +1,14 @@
-{packs}:
-packs.default._merge (self:
+{packs}: let
+  target = packs.default.pack.prefs.global.target or "x86_64";
+in
+  packs.default._merge (self:
     with self; {
       label = "nvhpc";
+      global.target =
+        if target == "x86_64"
+        then builtins.trace "packs/nvhpc: upgrading ${target} to x86_64_v3" "x86_64_v3"
+        else target;
+
       package = {
         compiler = {
           name = "nvhpc";

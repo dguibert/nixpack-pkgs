@@ -1,0 +1,143 @@
+#!/bin/sh -e
+shopt -s nullglob
+set -x
+
+cur=`dirname $0`
+. $cur/env
+gitrev=$(git describe --always)
+os=$( . /etc/os-release ; echo $ID${VERSION_ID%.[0-9]*} )
+arch=$(uname -m)
+#nixargs="$cur --argstr gitrev ${gitrev:-unknown} --argstr os $os"
+nixargs="--option sandbox false --impure -L"
+
+site=spartan
+lmodbase=/home_nfs/bguibertd/lmod/$arch/$os
+
+traceSpecs() {
+	nix eval $nixargs "$1" |& sed 's/^trace: //'
+}
+
+if [[ $# -eq 0 ]] ; then
+	cmd=help
+else
+	cmd="$1"
+	shift
+fi
+case "$cmd" in
+	(build)
+		#if [[ "$*" != *" -A "* ]] ; then
+		#	set -- "$@" -A mods
+		#fi
+		exec nix build --show-trace $nixargs $@
+		;;
+	(spec)
+		if [[ $# -eq 0 ]] ; then
+			traceSpecs traceModSpecs
+		else
+			for p in "$@" ; do
+				traceSpecs ".#packs.default.pack.traceSpecs.$p"
+			done
+		fi
+		;;
+#	(gc)
+#		exec nix store gc --verbose
+#		;;
+	(profile)
+		if [[ $# -eq 0 ]] ; then
+			echo "Nothing to do"
+		elif [[ $* == all ]] ; then
+			set -- nix
+		fi
+		for prof in "$@" ; do
+			prefix=
+			case "$prof" in
+				(nix)
+					attrs=".#nix .#git"
+					prefix=$arch/
+					;;
+				(lmod)
+					attrs=".#packs.default.pack.pkgs.lmod"
+					;;
+				(modules)
+					attrs=".#modules-all"
+					;;
+				(*)
+					echo "Unknown profile"
+					exit 1
+					;;
+			esac
+			profile=$NIX_STATE_DIR/profiles/${prefix:=$arch/$os/}$prof
+			mkdir -p $(dirname $profile)
+			if test -e $profile; then
+				nix profile upgrade --profile $profile $nixargs '.*'
+			else
+				# FIXME how to do the same as nix-env -i -r ...
+				nix profile install --profile $profile $nixargs $attrs
+			fi
+			l=$(readlink $profile)
+			git tag $site/$prefix${l%-link} HEAD || true
+		done
+		;;
+	(modules)
+		if [[ $1 == -f ]] ; then
+			shift
+		elif ! git diff-index --quiet HEAD -- ; then
+			echo "Local modifications: refusing to relase (without -f)"
+			exit 1
+		fi
+		if [[ $# -ne 1 ]] ; then
+			echo "Usage: modules NAME"
+			exit 1
+		fi
+		path=$1
+		if [[ $path != */* ]] ; then
+			tag=$path
+			path=$lmodbase/modules/modules/$path
+		fi
+		if [[ $path != *.lua ]] ; then
+			path=$path.lua
+		fi
+		## fixups
+		#nix-build -o singularity -A pkgs.singularity $nixargs
+		#for fix in singularity/bin/spack_perms_fix.sh ; do
+		#	sudo $fix || echo "YOU MUST RUN: sudo `realpath $fix`"
+		#done
+		# release
+		nix build -o $path .#modsMod $nixargs
+		if [[ -n $tag ]] ; then
+			git tag $site/$arch/$os/$tag HEAD
+		fi
+#		;& # fall-thru
+#	(cache)
+#		$lmodbase/lmod/lmod/libexec/update_lmod_system_cache_files -d $lmodbase/cacheDir -t $lmodbase/cacheTS.txt $lmodbase/modules:$(realpath $lmodbase/lmod/lmod/modulefiles/Core)
+		;;
+	(spack)
+		nix build -L -o spackBin $nixargs ".#packs.default.pack.spackBin"
+		exec ./spackBin "$@"
+		;;
+	(*)
+		if [[ $cmd != help ]] ; then
+			echo "Unknown command"
+		fi
+
+		cat <<EOF
+Usage: $0 COMMAND
+
+Commands:
+
+  build        Build modules into result.  Takes the same arguments as
+               nix-build (-jN, --cores M, -K, ...).
+  spec [PKG]   Print the spec tree for a specific package or all modules,
+	       along with the total number of unique packages.
+  gc           Cleanup any unreferenced nix stores (nix-store --gc).
+  profile      Update a nix profile for...
+    nix        nix build environment
+    lmod       lua modules environment
+    modules    nixpack lmod modules (for testing only)
+  modules NAME release nixpack lmod modules to modules/NAME
+  cache        Update lmod cache files
+  spack ...    Run a spack command in the nixpack environment (things like list
+	       and info work, but those managing packages will not)
+
+EOF
+esac
