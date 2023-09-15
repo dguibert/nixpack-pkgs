@@ -31,10 +31,19 @@ default_pack._merge (self:
               lua-luajit-openresty = null;
             };
         };
+
+        tmphome = {
+          build = {
+            setup = ''
+              os.environ['HOME'] = os.environ['TMPDIR']
+            '';
+          };
+        };
       in {
         arm-forge = nocompiler;
         lua-luafilesystem = no_lua_recdep;
         lua-luaposix = no_lua_recdep;
+        rust = tmphome;
         openmpi = spec: old: {
           build = {
             setup = ''

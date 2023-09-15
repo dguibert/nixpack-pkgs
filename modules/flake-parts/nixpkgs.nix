@@ -41,6 +41,15 @@
                   spackEnv.https_proxy = "http://10.11.0.1:33000";
                   spackEnv.HPCW_DOWNLOAD_URL = "/home_nfs/bguibertd/work/hpcw/downloads";
                   spackEnv.HPCW_URL = "/home_nfs/bguibertd/work/hpcw";
+                  # fix CURL certificates path
+                  #spackEnv.SSL_CERT_DIR="/etc/ssl/certs";
+                  #spackEnv.SSL_CERT_FILE="/etc/pki/ca-trust/extracted/pem/email-ca-bundle.pem";
+                  #spackEnv.GIT_SSL_CAINFO="/etc/ssl/certs/ca-bundle.crt";
+                  #spackEnv.CURL_CA_BUNDLE="/etc/ssl/certs/ca-bundle.crt";
+                  #spackEnv.NIX_SSL_CERT_FILE="/etc/pki/tls/certs/ca-bundle.crt";
+                  #spackEnv.CARGO_HTTP_CAINFO="/etc/ssl/certs/ca-bundle.crt";
+                  # https://stackoverflow.com/questions/50752302/python3-pycache-generating-even-if-pythondontwritebytecode-1
+                  spackEnv.PYTHONDONTWRITEBYTECODE = "1";
                   #spackEnv.__contentAddressed = true;
                   package = {
                     autoconf = rpmExtern "autoconf";
@@ -49,7 +58,7 @@
                     curl = rpmExtern "curl";
                     diffutils = rpmExtern "diffutils";
                     libssh = rpmExtern "libssh";
-                    libtool = rpmExtern "libtool";
+                    #libtool = rpmExtern "libtool";
                     m4 = rpmExtern "m4";
                     openssh = rpmExtern "openssh";
                     openssl = rpmExtern "openssl";
@@ -98,6 +107,7 @@
                       fabrics.knem = true;
                     };
                     lustre = rpmExtern "lustre-client";
+
                     #ucx =
                     #  rpmExtern "ucx" # extern and overriden fails libfabric> spack.repo.UnknownPackageError: Package 'spack.pkg.bench.ucx' not found.
                     #  // {
