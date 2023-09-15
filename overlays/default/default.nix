@@ -370,6 +370,14 @@ final: prev: let
                     ]);
                   }))
                 (import ../../confs/ai4sim.nix final)
+                (pack:
+                  (import ../../confs/ai4sim.nix final pack)._merge {
+                    label = "ai4sim_" + pack.label + "_cuda";
+                    package.py-tensorflow.variants.cuda = true;
+                    #package.py-tensorflow.variants.nccl = cuda;
+                    package.py-tensorflow.variants.cuda_arch.none = false;
+                    package.py-tensorflow.variants.cuda_arch."80" = true;
+                  })
                 (import ../../confs/ddfacet.nix final)
                 (import ../../confs/emopass.nix final)
                 (import ../../confs/hip.nix final)

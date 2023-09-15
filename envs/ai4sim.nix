@@ -11,6 +11,7 @@
     ...
   }: {
     envs = {
+      ai4sim_gcc11_cuda.pack = pkgs.confPacks.ai4sim_gcc11_cuda;
       ai4sim_gcc12.pack = pkgs.confPacks.ai4sim_gcc12;
     };
   };
