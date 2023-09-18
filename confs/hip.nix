@@ -37,33 +37,6 @@ pack._merge (self:
       # hip dependency mesa: package mesa@23.0.3+glx+llvm+opengl~opengles+osmesa~strip swr= default_library=+shared,~static build_system=meson buildtype=release does not match dependency constraints {"variants":{"llvm":false}}
       package.mesa.variants.llvm = false;
 
-      repoPatch = {
-        #rocprofiler-dev = spec: old: {
-        #  depends = old.depends // {
-        #    py-lxml.deptype = ["build" ];
-        #    py-pyyaml.deptype = ["build" ];
-        #    py-barectf.deptype = ["build" ];
-        #    py-cppheaderparser.deptype = [ "build" ];
-        #    hip.deptype = [ "build" "link" ];
-        #    googletest.deptype = [ "build" "test" ];
-        #  };
-        #  patches = [ ../patches/0001-Continue-build-in-absence-of-aql-profile-lib.patch ];
-        #  build.setup = ''
-        #    cmakeargs = pkg.cmake_args()
-        #    cmakeargs.append("-DHIP_ROOT_DIR={0}".format(spec["hip"].prefix))
-        #    pkg.cmake_args = lambda: cmakeargs
-        #  '';
-        #};
-        llvm-amdgpu = spec: old: {
-          provides =
-            old.provides
-            or {}
-            // {
-              compiler = null;
-            };
-        };
-      };
-
       mod_pkgs = with self.pack.pkgs; [
         hip
         {

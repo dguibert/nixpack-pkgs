@@ -49,6 +49,7 @@ in {
   config.perSystem = {
     config,
     pkgs,
+    system,
     ...
   }: let
     generateModules = name: mod_pkgs:
@@ -57,14 +58,20 @@ in {
         pack = pkgs.packs.default.pack;
         withDeps = false;
         # unique does not remove duplicate pkgconf/curl
-        pkgs = builtins.filter (x: (x.pkg or x) != pkgs.packs.default.pack.pkgs.pkgconf)
-          ( builtins.filter (x: (x.pkg.spec.name or "notdef") != "curl")
-            ( builtins.filter (x: (x.pkg.spec.name or "notdef") != "pkgconf")
+        pkgs =
+          builtins.filter (x: (x.pkg or x) != pkgs.packs.default.pack.pkgs.pkgconf)
+          (builtins.filter (x: (x.pkg.spec.name or "notdef") != "curl")
+            (builtins.filter (x: (x.pkg.spec.name or "notdef") != "pkgconf")
               (l.unique mod_pkgs)));
       };
   in {
     /**/
-    checks = l.mapAttrs (name: env: env.pack.mods) config.envs;
+    checks =
+      l.mapAttrs (name: env: env.pack.mods) config.envs
+      // {
+        "modules-all" = config.packages.modules-all;
+        modsMod = config.packages.modsMod;
+      };
 
     devShells = l.mapAttrs (name: env: env.pack.devShell) config.envs;
 

@@ -61,18 +61,9 @@ pack._merge (self:
       package.py-google-auth-oauthlib.version = "0.4";
       package.py-tensorboard-data-server.version = "0.6";
 
-      repoPatch = {
-        llvm = spec: old: {
-          provides =
-            old.provides
-            or {}
-            // {
-              compiler = null;
-            };
-        };
-      };
-
       mod_pkgs = with self.pack.pkgs; [
+        compiler
+        python
         py-mlflow
         py-pandas
         py-tensorflow #@2.9.3 +cuda cuda_arch=80

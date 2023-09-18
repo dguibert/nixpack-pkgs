@@ -44,6 +44,26 @@ default_pack._merge (self:
         lua-luafilesystem = no_lua_recdep;
         lua-luaposix = no_lua_recdep;
         rust = tmphome;
+        aocc = spec: old: {
+          paths = {
+            cc = "bin/clang";
+            cxx = "bin/clang++";
+            f77 = "bin/flang";
+            fc = "bin/flang";
+          };
+          provides =
+            old.provides
+            or {}
+            // {
+              compiler = ":";
+            };
+          depends =
+            old.depends
+            // {
+              #compiler = null;
+              compiler = packs.default.pack.pkgs.compiler;
+            };
+        };
         openmpi = spec: old: {
           build = {
             setup = ''
@@ -61,6 +81,23 @@ default_pack._merge (self:
               shutil.rmtree(f"{spec.prefix}/intel", ignore_errors=True)
             '';
           };
+        };
+        llvm = spec: old: {
+          provides =
+            old.provides
+            or {}
+            // {
+              compiler = null;
+            };
+          compiler_spec = "clang";
+        };
+        llvm-amdgpu = spec: old: {
+          provides =
+            old.provides
+            or {}
+            // {
+              compiler = null;
+            };
         };
       };
 
@@ -168,6 +205,7 @@ default_pack._merge (self:
         # no need to be recompiled for each compiler
         unzip.depends.compiler = packs.default.pack.pkgs.compiler;
         swig.depends.compiler = packs.default.pack.pkgs.compiler;
+        pcre.depends.compiler = packs.default.pack.pkgs.compiler;
         pcre2.depends.compiler = packs.default.pack.pkgs.compiler;
         binutils.depends.compiler = packs.default.pack.pkgs.compiler;
         libedit.depends.compiler = packs.default.pack.pkgs.compiler;

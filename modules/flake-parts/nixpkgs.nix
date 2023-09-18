@@ -49,7 +49,7 @@
                   #spackEnv.NIX_SSL_CERT_FILE="/etc/pki/tls/certs/ca-bundle.crt";
                   #spackEnv.CARGO_HTTP_CAINFO="/etc/ssl/certs/ca-bundle.crt";
                   # https://stackoverflow.com/questions/50752302/python3-pycache-generating-even-if-pythondontwritebytecode-1
-                  spackEnv.PYTHONDONTWRITEBYTECODE = "1";
+                  #spackEnv.PYTHONDONTWRITEBYTECODE = "1"; # break py-pandas install?
                   #spackEnv.__contentAddressed = true;
                   package = {
                     autoconf = rpmExtern "autoconf";
