@@ -57,9 +57,10 @@ in {
         pack = pkgs.packs.default.pack;
         withDeps = false;
         # unique does not remove duplicate pkgconf/curl
-        pkgs = builtins.filter (x: (x.pkg or x) != pkgs.packs.default.pack.pkgs.pkgconf)
-          ( builtins.filter (x: (x.pkg.spec.name or "notdef") != "curl")
-            ( builtins.filter (x: (x.pkg.spec.name or "notdef") != "pkgconf")
+        pkgs =
+          builtins.filter (x: (x.pkg or x) != pkgs.packs.default.pack.pkgs.pkgconf)
+          (builtins.filter (x: (x.pkg.spec.name or "notdef") != "curl")
+            (builtins.filter (x: (x.pkg.spec.name or "notdef") != "pkgconf")
               (l.unique mod_pkgs)));
       };
   in {
