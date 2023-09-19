@@ -1,0 +1,20 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0a3895c..d7d3fbe 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0)
+ set(CMAKE_CXX_STANDARD 17)
+
+ # User-options
++option(BUILD_EXAMPLES "build examples" FALSE)
+ set(TORCHFORT_CUDA_CC_LIST "70;80" CACHE STRING "List of CUDA compute capabilities to build torchfort for.")
+
+ project(torchfort CXX Fortran)
+@@ -121,5 +122,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/python/wandb_helper.py DESTINATION
+ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+ # build examples
++if(BUILD_EXAMPLES)
+ add_subdirectory(examples/fortran/simulation)
+ add_subdirectory(examples/cpp/cart_pole)
++endif()

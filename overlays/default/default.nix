@@ -257,6 +257,7 @@ final: prev: let
                 packs.llvm
                 (append_pack "16" packs.llvm {package.llvm.version = "16";})
                 packs.nvhpc
+                (append_pack "235" packs.nvhpc {package.nvhpc.version = "23.5";})
                 (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
                 packs.oneapi
               ];
@@ -373,11 +374,12 @@ final: prev: let
                 (pack:
                   (import ../../confs/ai4sim.nix final pack)._merge {
                     label = "ai4sim_" + pack.label + "_cuda";
-                    package.py-tensorflow.variants.cuda = true;
                     #package.py-tensorflow.variants.nccl = cuda;
+                    package.py-tensorflow.variants.cuda = true;
                     package.py-tensorflow.variants.cuda_arch.none = false;
                     package.py-tensorflow.variants.cuda_arch."80" = true;
                   })
+                (import ../../confs/ai4sim-torchfort.nix final)
                 (import ../../confs/ddfacet.nix final)
                 (import ../../confs/emopass.nix final)
                 (import ../../confs/hip.nix final)
