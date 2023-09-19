@@ -3,30 +3,12 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-# ----------------------------------------------------------------------------
-# If you submit this package back to Spack as a pull request,
-# please first remove this boilerplate and all FIXME comments.
-#
-# This is a template package file for Spack.  We've put "FIXME"
-# next to all the things you'll want to change. Once you've handled
-# them, you can save this file and test your package like this:
-#
-#     spack install torchfort
-#
-# You can edit this file again by typing:
-#
-#     spack edit torchfort
-#
-# See the Spack documentation for more information on packaging.
-# ----------------------------------------------------------------------------
-
 from spack.package import *
 
 
 class Torchfort(CMakePackage,CudaPackage):
     """An Online Deep Learning Interface for HPC programs on NVIDIA GPUs"""
 
-    # FIXME: Add a proper url for your package's homepage here.
     homepage = "https://github.com/NVIDIA/TorchFort"
     url = "https://github.com/NVIDIA/TorchFort/archive/refs/tags/v0.1.0.tar.gz"
 
@@ -62,15 +44,20 @@ class Torchfort(CMakePackage,CudaPackage):
 ## Supervised learning example visualization related
 #matplotlib
 #h5py
+    def _nvhpc_version_prefix(self):
+        return join_path(self.spec['nvhpc'].prefix, "Linux_%s" % self.spec['nvhpc'].target.family, self.spec['nvhpc'].version)
+
     def setup_build_environment(self, env):
-        env.set("FC",f"{self.spec['nvhpc'].prefix}/Linux_x86_64/2023/compilers/bin/nvfortran")
+        nvhpc_prefix = self._nvhpc_version_prefix()
+        env.set("FC",f"{nvhpc_prefix}/compilers/bin/nvfortran")
 
     def cmake_args(self):
         # FIXME: Add arguments other than
         # FIXME: CMAKE_INSTALL_PREFIX and CMAKE_BUILD_TYPE
         # FIXME: If not needed delete this function
         args = []
-        args.append(self.define("NVHPC_DIR", f"{self.spec['nvhpc'].prefix}/Linux_x86_64/2023/cmake"))
+        nvhpc_prefix = self._nvhpc_version_prefix()
+        args.append(self.define("NVHPC_DIR", f"{nvhpc_prefix}/cmake"))
         #args.append(self.define("NVHPC_CUDA_VERSION", f"{self.spec['cuda'].version}")) # fixme only major.minor
         args.append(self.define("NVHPC_CUDA_VERSION", f"11.8"))
         args.append(self.define("YAML_CPP_ROOT", self.spec["yaml-cpp"].prefix))
