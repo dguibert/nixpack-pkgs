@@ -256,6 +256,7 @@ final: prev: let
                 packs.intel
                 packs.llvm
                 (append_pack "16" packs.llvm {package.llvm.version = "16";})
+                (append_pack "17" packs.llvm {package.llvm.version = "17";})
                 packs.nvhpc
                 (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
                 packs.oneapi
