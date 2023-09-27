@@ -369,6 +369,7 @@ final: prev: let
                       tig
                     ]);
                   }))
+                (import ../../confs/dask.nix final)
                 (import ../../confs/ddfacet.nix final)
                 (import ../../confs/emopass.nix final)
                 (import ../../confs/hip.nix final)
