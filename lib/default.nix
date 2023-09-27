@@ -35,6 +35,18 @@ in
     isRDep = builtins.elem "run";
     isRLDep = d: isLDep d || isRDep d;
 
+    /*
+        we can't have multiple python versions in a dep tree because of spack's
+    environment polution, but anything that doesn't need python at runtime
+    can fall back on default
+    */
+    ifHasPy = p: o: name: prefs: let
+      q = p.getResolver name prefs;
+    in
+      if builtins.any (p: p.spec.name == "python") (nixpack_lib.findDeps (x: isRLDep x.deptype) q)
+      then q
+      else o.getResolver name prefs;
+
     rpmVersion = pkg: nixpack_lib.capture ["/bin/rpm" "-q" "--queryformat=%{VERSION}" pkg] {};
     rpmExtern = pkg: {
       extern = "/usr";

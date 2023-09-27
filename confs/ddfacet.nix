@@ -9,21 +9,18 @@ pack._merge (self:
       # py-astropy dependency cfitsio: package cfitsio@4.2.0+bzip2+shared build_system=autotools does not match dependency constraints {"version":":3"}
       package.cfitsio.version = "3";
       # py-numpy dependency py-cython: package py-cython@3.0.0 build_system=python_pip does not match dependency constraints {"version":"0.29.34:2"}
-      package.py-numpy.version = "1.19.5";
-      package.python.version = "3.8"; # ddfacet requires <3.9,>=3.0
+      package.py-setuptools.version = "57";
+      package.py-numpy.version = "1.20.3";
+      package.python.version = "3.9"; # ddfacet requires <3.9,>=3.0
       package.py-ipython.version = "8.11.0";
       package.py-numba.version = "0.56.4";
       package.py-llvmlite.version = "0.39";
 
       # as cython is a build dep only will be taken from default pack
-      package.py-mpi4py.depends.py-pip = self.pack.pkgs.py-pip;
-      package.py-mpi4py.depends.py-cython = self.pack.pkgs.py-cython;
-      package.py-numpy.depends.py-cython = self.pack.pkgs.py-cython;
       package.py-cython.version = "0.29.34";
 
       # py-astropy dependency py-pip: package py-pip@23.1.2 build_system=generic does not match dependency constraints {"version":":23.0"}
       package.py-pip.version = "23.0";
-      package.py-astropy.depends.py-pip = self.pack.pkgs.py-pip;
 
       #py-ddfacet dependency py-codex-africanus: package py-codex-africanus@0.3.4 build_system=python_pip does not match dependency constraints {"version":":0.2.10"}
       package.py-codex-africanus.version = "0.2.10";
@@ -32,20 +29,17 @@ pack._merge (self:
       # py-dask dependency py-distributed: package py-distributed@2023.4.1 build_system=python_pip does not match dependency constraints {"version":"2020.12.0:2021.8.0"}
       package.py-distributed.version = "2021.6.2";
       # py-msgpack dependency py-cython: package py-cython@3.0.0 build_system=python_pip does not match dependency constraints {"version":"0.29.30:0.29"}
-      package.py-msgpack.depends.py-cython = self.pack.pkgs.py-cython;
-      package.py-pyyaml.depends.py-cython = self.pack.pkgs.py-cython;
-      package.py-pandas.depends.py-cython = self.pack.pkgs.py-cython;
-      package.py-pyfftw.depends.py-cython = self.pack.pkgs.py-cython;
-      package.py-scipy.depends.py-cython = self.pack.pkgs.py-cython;
       package.py-scipy.version = "1.10";
       package.py-pandas.version = "1.4";
       package.py-matplotlib.version = "3.6";
+      package.py-ninja.version = "1.10.2";
+      package.ninja.version = "1.10.2";
+      #package.py-ninja.depends.py-ninja = self.pack.pkgs.ninja;
+      package.py-blosc2.depends.py-ninja = self.pack.pkgs.py-ninja;
 
-      package.py-scipy.depends.py-meson-python = self.pack.pkgs.py-meson-python;
       package.py-meson-python.version = "0.11";
       package.py-pybind11.version = "2.10.1";
       package.py-pythran.version = "0.12";
-      package.py-scipy.depends.py-pythran = self.pack.pkgs.py-pythran;
       package.py-gast.version = "0.5.3";
       # py-ddfacet dependency py-sharedarray: package py-sharedarray@3.2.2 build_system=python_pip does not match dependency constraints {"version":"3.2.0:3.2.1"}
       package.py-sharedarray.version = "3.2.1";
@@ -59,19 +53,17 @@ pack._merge (self:
 
       package.py-regions.version = "0.7";
       package.py-pywavelets.version = "1.1.1";
-      package.py-pywavelets.depends.py-setuptools = self.pack.pkgs.py-setuptools;
 
       package.llvm.variants.flang = false;
       package.llvm.version = "11";
-      package.py-setuptools.version = "57";
 
+      package.py-wheel.version = "0.37";
       # py-ddfacet dependency py-deap: package py-deap@1.3.3 build_system=python_pip does not match dependency constraints {"version":"1.0.1:1.3.1"}
       package.py-deap.version = "1.3.1";
-      package.py-deap.depends.py-setuptools = self.pack.pkgs.py-setuptools;
-
-      package.py-nose.depends.py-setuptools = self.pack.pkgs.py-setuptools;
-
+      package.py-tables.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
       package.py-pygments.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
+      package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
+      package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
 
       repoPatch = {
         py-regions.build.setup = ''

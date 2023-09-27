@@ -65,7 +65,7 @@ final: prev: let
 
   overlaySelf = with overlaySelf;
   with prev; {
-    inherit (lib) isLDep isRDep isRLDep;
+    inherit (lib) isLDep isRDep isRLDep ifHasPy;
     inherit (lib) rpmVersion rpmExtern;
     inherit (lib) packsFun loadPacks virtual;
     inherit (lib) capture;
