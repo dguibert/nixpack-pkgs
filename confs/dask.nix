@@ -42,6 +42,7 @@ pack._merge (self:
       package.py-scipy.depends.py-pythran = self.pack.pkgs.py-pythran;
       package.py-gast.version = "0.5.3";
 
+      package.py-gevent.version = "1.5";
       package.py-pybind11.version = "2.10";
       package.py-msgpack.depends.py-cython = self.pack.pkgs.py-cython;
 
@@ -52,6 +53,13 @@ pack._merge (self:
             // {
               py-jinja2.version = "3.0.3";
               py-tornado.version = "6.2";
+            };
+        };
+        py-gevent = spec: old: {
+          depends =
+            old.depends
+            // {
+              python.version = "3.9";
             };
         };
       };

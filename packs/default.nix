@@ -4,6 +4,7 @@
   spack_configs_repo,
   packsFun,
   isRLDep,
+  ifHasPy,
   packs,
 }:
 default_pack._merge (self:
@@ -11,9 +12,12 @@ default_pack._merge (self:
       label = "core";
       global = {
         resolver = deptype:
-          if isRLDep deptype
-          then null
-          else packs.default.pack;
+          ifHasPy self.pack
+          (
+            if isRLDep deptype
+            then self.pack
+            else packs.default.pack
+          );
       };
       repos = [
         ../repo
@@ -175,7 +179,13 @@ default_pack._merge (self:
         libpciaccess.depends.compiler = packs.default.pack.pkgs.compiler;
         lua.depends.compiler = packs.default.pack.pkgs.compiler;
         numactl.depends.compiler = packs.default.pack.pkgs.compiler;
-        python.depends.compiler = packs.default.pack.pkgs.compiler;
+        python = {
+          resolver = deptype:
+            if isRLDep deptype
+            then self.pack
+            else packs.default.pack;
+          depends.compiler = packs.default.pack.pkgs.compiler;
+        };
         # for aocc, infinite recursion breaking
         berkeley-db.depends.compiler = packs.default.pack.pkgs.compiler;
         freetype.depends.compiler = packs.default.pack.pkgs.compiler;
