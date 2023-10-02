@@ -38,6 +38,11 @@ pack._merge (self:
       package.mesa.variants.llvm = false;
 
       repoPatch = {
+        hip = spec: old: {
+          patches = (old.patches or []) ++ [
+            ../patches/hip-nogpuinc.patch
+          ];
+        };
         hsakmt-roct = spec: old: {
           patches = (old.patches or []) ++ [
             ../patches/hsa-rocr-dev-2a67c0f26a27271f62636fa2fc7b41918ccc492b.patch
