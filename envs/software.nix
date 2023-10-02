@@ -34,6 +34,7 @@
       hip_core55.pack = pkgs.confPacks.hip_core55;
       hip_core560.pack = pkgs.confPacks.hip_core560;
       hip_core56.pack = pkgs.confPacks.hip_core56;
+      hip_core57.pack = pkgs.confPacks.hip_core57;
     };
   };
 }
