@@ -23,7 +23,10 @@ pack._merge (self:
       package.py-setuptools.version = "57";
       package.py-scipy.depends.py-cython = self.pack.pkgs.py-cython;
       package.py-scipy.depends.py-pybind11 = self.pack.pkgs.py-pybind11;
+      package.py-scipy.depends.py-meson-python = self.pack.pkgs.py-meson-python;
 
+      package.py-scipy.version = "1.11.0";
+      #package.py-meson-python.version = "0.12.0";
       package.py-protobuf.version = "3.17";
       package.protobuf.version = "3.17";
       package.py-pip.version = "23.0";
