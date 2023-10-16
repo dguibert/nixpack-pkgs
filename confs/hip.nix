@@ -42,22 +42,13 @@ pack._merge (self:
       package.mesa.variants.llvm = false;
 
       repoPatch = {
-        #rocprofiler-dev = spec: old: {
-        #  depends = old.depends // {
-        #    py-lxml.deptype = ["build" ];
-        #    py-pyyaml.deptype = ["build" ];
-        #    py-barectf.deptype = ["build" ];
-        #    py-cppheaderparser.deptype = [ "build" ];
-        #    hip.deptype = [ "build" "link" ];
-        #    googletest.deptype = [ "build" "test" ];
-        #  };
-        #  patches = [ ../patches/0001-Continue-build-in-absence-of-aql-profile-lib.patch ];
-        #  build.setup = ''
-        #    cmakeargs = pkg.cmake_args()
-        #    cmakeargs.append("-DHIP_ROOT_DIR={0}".format(spec["hip"].prefix))
-        #    pkg.cmake_args = lambda: cmakeargs
-        #  '';
-        #};
+        hip = spec: old: {
+          patches =
+            (old.patches or [])
+            ++ [
+              ../patches/hip-nogpuinc.patch
+            ];
+        };
         llvm-amdgpu = spec: old: {
           provides =
             old.provides
