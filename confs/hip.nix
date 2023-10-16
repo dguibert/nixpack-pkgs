@@ -30,6 +30,7 @@ pack._merge (self:
       package.hsakmt-roct.version = package.hip.version or null;
       package.rocminfo.version = package.hip.version or null;
       package.rocm-core.version = package.hip.version or null;
+      package.rocm-cmake.version = package.hip.version or null;
       package.rocm-smi-lib.version = package.hip.version or null;
       package.roctracer-dev-api.version = package.hip.version or null;
 
