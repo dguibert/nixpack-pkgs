@@ -30,9 +30,7 @@
       intel_ompi_osu.pack = pkgs.confPacks.intel_ompi_osu;
       intel_impi_osu.pack = pkgs.confPacks.intel_impi_osu;
 
-      hip_core54.pack = pkgs.confPacks.hip_core54;
       hip_core55.pack = pkgs.confPacks.hip_core55;
-      hip_core560.pack = pkgs.confPacks.hip_core560;
       hip_core56.pack = pkgs.confPacks.hip_core56;
       hip_core57.pack = pkgs.confPacks.hip_core57;
     };

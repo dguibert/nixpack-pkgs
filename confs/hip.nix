@@ -43,27 +43,6 @@ pack._merge (self:
             ../patches/hip-nogpuinc.patch
           ];
         };
-        hsakmt-roct = spec: old: {
-          patches = (old.patches or []) ++ [
-            ../patches/hsa-rocr-dev-2a67c0f26a27271f62636fa2fc7b41918ccc492b.patch
-          ];
-        };
-        #rocprofiler-dev = spec: old: {
-        #  depends = old.depends // {
-        #    py-lxml.deptype = ["build" ];
-        #    py-pyyaml.deptype = ["build" ];
-        #    py-barectf.deptype = ["build" ];
-        #    py-cppheaderparser.deptype = [ "build" ];
-        #    hip.deptype = [ "build" "link" ];
-        #    googletest.deptype = [ "build" "test" ];
-        #  };
-        #  patches = [ ../patches/0001-Continue-build-in-absence-of-aql-profile-lib.patch ];
-        #  build.setup = ''
-        #    cmakeargs = pkg.cmake_args()
-        #    cmakeargs.append("-DHIP_ROOT_DIR={0}".format(spec["hip"].prefix))
-        #    pkg.cmake_args = lambda: cmakeargs
-        #  '';
-        #};
         llvm-amdgpu = spec: old: {
           provides =
             old.provides
