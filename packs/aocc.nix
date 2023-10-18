@@ -6,7 +6,7 @@ packs.default._merge (self:
         compiler = {
           name = "aocc";
           extern = null;
-          version = null;
+          version = package.aocc.version or null;
         };
         aocc.variants.license-agreed = true;
       };
@@ -28,7 +28,8 @@ packs.default._merge (self:
           depends =
             old.depends
             // {
-              compiler = null;
+              #compiler = null;
+              compiler = packs.default.pack.pkgs.compiler;
             };
         };
       };

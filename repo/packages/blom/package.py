@@ -18,7 +18,6 @@ class Blom(MesonPackage):
     version('1.0.0', sha256='4a568fc251040087f66711b4a9f3f6bde7e6af400b95591dfe048b7319de0a98')
 
     #version('local', git='/cluster/projects/nn9560k/dguibert/blom', branch="feature_blom_atos_performance")
-    version('local', git='/cluster/projects/nn9560k/dguibert/blom', rev="b582a06c97ba1c501889f1794e6e069d0c1e3634")
     version('esiwace_atos_perf', git='https://github.com/ESiWACE-S1/BLOM', branch="feature_blom_atos_performance")
     version('feature_blom_atos_performance', git='https://github.com/NorESMhub/BLOM', branch="feature_blom_atos_performance")
 

@@ -4,7 +4,8 @@
 }: let
   virtual_lib = import ./virtual.nix {inherit lib;};
 in
-  nixpack_lib
+  lib
+  // nixpack_lib
   // virtual_lib
   // rec {
     loadPacks =
@@ -16,16 +17,16 @@ in
           out = attrNames filtered;
         in
           /*
-           if pathExists dir then
-           */
+          if pathExists dir then
+          */
           listToAttrs (map (n: {
               name = replaceStrings [".nix"] [""] n;
               value = removeAttrs (prev.callPackage (dir + "/${n}") {}) ["override"];
             })
             out)
       /*
-       else {}
-       */
+      else {}
+      */
       ;
 
     packsFun = nixpack_lib.packs;
@@ -33,6 +34,18 @@ in
     isLDep = builtins.elem "link";
     isRDep = builtins.elem "run";
     isRLDep = d: isLDep d || isRDep d;
+
+    /*
+        we can't have multiple python versions in a dep tree because of spack's
+    environment polution, but anything that doesn't need python at runtime
+    can fall back on default
+    */
+    ifHasPy = p: o: name: prefs: let
+      q = p.getResolver name prefs;
+    in
+      if builtins.any (p: p.spec.name == "python") (nixpack_lib.findDeps (x: isRLDep x.deptype) q)
+      then q
+      else o.getResolver name prefs;
 
     rpmVersion = pkg: nixpack_lib.capture ["/bin/rpm" "-q" "--queryformat=%{VERSION}" pkg] {};
     rpmExtern = pkg: {
@@ -51,8 +64,8 @@ in
             then {pkg = x;}
             else
               /*
-               builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
-               */
+              builtins.trace "addPkg: ${nixpkgs.lib.generators.toPretty { allowPrettyValues=true; } x.spec}"
+              */
               {
                 pkg = x;
                 projection = "${x.spec.name}/${x.spec.version}";
@@ -67,8 +80,8 @@ in
             filter
             (p:
               /*
-               builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
-               */
+              builtins.trace "adddeps: ${nixpkgs.lib.generators.toPretty { allowPrettyValues = true; } p}"
+              */
                 p
                 != null
                 && ! (any (x: pkgOrSpec x == pkgOrSpec p) s)

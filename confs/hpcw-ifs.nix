@@ -3,8 +3,18 @@ pack._merge (self:
     with self; {
       label = "hpcw_" + pack.label + "_ifs";
 
-      package.python.version = "2";
-      package.python.depends.compiler = final.corePacks.pkgs.compiler;
+      package.python2.version = "2.7.18";
+      package.python2.depends.compiler = final.corePacks.pkgs.compiler;
+
+      #package.python.version = "2";
+      #package.python.variants.pythoncmd = false;
+      #package.python.depends.compiler = final.corePacks.pkgs.compiler;
+
+      #satrad/module/rttov_hdf_mod.F90(48): error #7002: Error in opening the compiled module file.  Check INCLUDE paths.   [H5ES]
+      package.hdf5.version = "1.12";
+
+      # not required here but to be compliant with ifs-fvm
+      package.eccodes.variants.fortran = true;
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
@@ -18,18 +28,13 @@ pack._merge (self:
         netcdf-fortran
         szip
         pkgconf
-        ifs
-
-        # support python 2?
-        #py-pyaml
-        #{
-        #  pkg = jube;
-        #  environment = {
-        #    prepend_path = {
-        #      JUBE_INCLUDE_PATH = "${jube.out}/share/jube/platform/slurm";
-        #    };
-        #  };
-        #}
-
+        {
+          pkg = ifs;
+          projection = "ifs-${
+            if (package ? ifs && package.ifs.variants.nemo == "no")
+            then "no"
+            else ""
+          }nemo/{version}";
+        }
       ];
     })
