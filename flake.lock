@@ -216,16 +216,16 @@
     "hpcw": {
       "flake": false,
       "locked": {
-        "lastModified": 1677863289,
-        "narHash": "sha256-VbfE8CJ3tXFw5OaSpIPAanL2F+sdbhVfeC3GCGcH9qU=",
-        "ref": "dg/spack",
-        "rev": "1313c930f98536cbec4bed7193017eb4746c7857",
-        "revCount": 1319,
+        "lastModified": 1697562701,
+        "narHash": "sha256-aYiSIYZmd+whx2RHv+uV0f2Wl0ESWOmQvu+MfkaZY8E=",
+        "ref": "master",
+        "rev": "ac502a3e4359b3c238101d718ca0f82e6c130d85",
+        "revCount": 1376,
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       },
       "original": {
-        "ref": "dg/spack",
+        "ref": "master",
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       }
@@ -298,11 +298,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1693235570,
-        "narHash": "sha256-th8k3Bb5cxzj45OeGLoL8GNZccSA9HFuPDOXamyGbTY=",
+        "lastModified": 1696235417,
+        "narHash": "sha256-fxiC/6UqWRCgRFJR3a+LxMuvkj/HjoI2rPWEo7jmAsw=",
         "owner": "dguibert",
         "repo": "nixpack",
-        "rev": "a423f494a1a8a57322fbdd30c79b40d32083158a",
+        "rev": "28af5fddd02c184d7d825e0cde505114cdbec0f4",
         "type": "github"
       },
       "original": {
@@ -476,17 +476,18 @@
         "nixpack": "nixpack",
         "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks",
-        "spack": "spack"
+        "spack": "spack",
+        "spack-configs": "spack-configs"
       }
     },
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1693239553,
-        "narHash": "sha256-FqKKkZdIlFWKIuTD/Bg0mh64s0AYaAxgC3mpKpAQc3Y=",
+        "lastModified": 1697562297,
+        "narHash": "sha256-RTp9HYky7DWKL8cbfGTbkzES+RYml8rOkzcNXvOL6gk=",
         "owner": "dguibert",
         "repo": "spack",
-        "rev": "7c8626de977fcd7eba9098e5b9bfc28618bda32d",
+        "rev": "b4c97b9713494255e20478d014448375a3bfb518",
         "type": "github"
       },
       "original": {
@@ -494,6 +495,22 @@
         "ref": "develop",
         "repo": "spack",
         "type": "github"
+      }
+    },
+    "spack-configs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1687271503,
+        "narHash": "sha256-FoNjJDov3xN/WiPCHjUR4JASVVbgAKgkn4p49jqu/Fg=",
+        "ref": "refs/heads/main",
+        "rev": "d3f67bb775ef67a6ac41f1b6e973cb38031209cf",
+        "revCount": 56,
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git"
       }
     },
     "st-src": {

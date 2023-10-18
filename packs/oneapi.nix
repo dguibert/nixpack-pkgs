@@ -48,9 +48,9 @@ packs.default._merge (self:
         intel-oneapi-compilers.depends.compiler = packs.default.pack.pkgs.compiler;
         # /dev/shm/nix-build-ucx-1.11.2.drv-0/bguibertd/spack-stage-ucx-1.11.2-p4f833gchjkggkd1jhjn4rh93wwk2xn5/spack-src/src/ucs/datastruct/linear_func.h:147:21: error: comparison with infinity always evaluates to false in fast floating point mode> if (isnan(x) || isinf(x))
         ucx.depends.compiler =
-          if ucx.extern == null
+          if self.package.ucx.extern or null == null
           then packs.default.pack.pkgs.compiler
-          else ucx.depends.compiler;
+          else self.package.ucx.depends.compiler;
       };
 
       pkgs = pack: [

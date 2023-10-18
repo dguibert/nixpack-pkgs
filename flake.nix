@@ -12,7 +12,7 @@
   inputs.spack.flake = false;
   inputs.hpcw = {
     #url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
-    url = "git+https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw?ref=dg/spack";
+    url = "git+https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw?ref=master";
     #url = "git@gitlab.dkrz.de:esiwace/hpcw.git";
     flake = false;
   };
@@ -20,9 +20,16 @@
     url = "github:dguibert/compbiomed-spack?ref=dg/hemepure";
     flake = false;
   };
+  inputs.spack-configs = {
+    url = "git+https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git";
+    flake = false;
+  };
 
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
+
+  nixConfig.pure-eval = true;
+  nixConfig.sandbox = false;
 
   outputs = inputs @ {
     self,
@@ -46,7 +53,7 @@
         ./modules/all-modules.nix
         #./lib
         #./apps
-        ./checks
+        ./envs
         ./shells
       ];
 
