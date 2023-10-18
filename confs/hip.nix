@@ -43,13 +43,6 @@ pack._merge (self:
       package.mesa.variants.llvm = false;
 
       repoPatch = {
-        hip = spec: old: {
-          patches =
-            (old.patches or [])
-            ++ [
-              ../patches/hip-nogpuinc.patch
-            ];
-        };
         llvm-amdgpu = spec: old: {
           provides =
             old.provides
@@ -62,7 +55,7 @@ pack._merge (self:
 
       mod_pkgs = with self.pack.pkgs; [
         hip
-        rccl
+        #rccl
         {
           pkg = llvm-amdgpu;
           context.provides = []; # not real compiler
