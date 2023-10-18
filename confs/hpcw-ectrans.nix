@@ -6,6 +6,7 @@ pack._merge (self:
       package.ectrans.version = "main";
       package.ecbuild.version = "3.6.5"; # FIXME used package from spack instead of hpcw
       package.eckit.version = "1.20";
+      package.fckit.version = "0.10.1";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
