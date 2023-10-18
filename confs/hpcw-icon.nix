@@ -10,24 +10,24 @@ pack._merge (self:
       package.intel-oneapi-compilers-classic.version = pack.package.intel-oneapi-compilers-classic.version or "2021.6.0";
       package.intel-oneapi-compilers.version = pack.package.intel-oneapi-compilers-classic.version or "2022.1.0";
 
-      mod_pkgs = with self.pack.pkgs; [
-        compiler
-        mpi
-        blas
-        libxml2
-        zlib
-        eccodes
-        cmake
-        netcdf-c
-        netcdf-fortran
-        szip
-        #cdo
-        pkgconf
-        #        icon
-      ]
-      ++ final.lib.optionals (self.package.icon.variants.gpu) [
-        cuda
-      ]
-      ;
+      mod_pkgs = with self.pack.pkgs;
+        [
+          compiler
+          mpi
+          blas
+          libxml2
+          zlib
+          eccodes
+          cmake
+          netcdf-c
+          netcdf-fortran
+          szip
+          #cdo
+          pkgconf
+          #        icon
+        ]
+        ++ final.lib.optionals (self.package.icon.variants.gpu or false) [
+          cuda
+        ];
       builtin_pkgs = with self.pack.pkgs; [cdo];
     })
