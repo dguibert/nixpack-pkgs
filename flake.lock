@@ -201,11 +201,11 @@
     "hpcw": {
       "flake": false,
       "locked": {
-        "lastModified": 1697643381,
-        "narHash": "sha256-EIeMf+iLYV5rfnx6DXFHkMxpn3E5v3B/dk1ZBnBr81k=",
+        "lastModified": 1697645987,
+        "narHash": "sha256-78Ke8jZos5zE+KGdKnHZG0lt6H0eN/iu5yxAT5Z/pw8=",
         "ref": "dg/spack",
-        "rev": "0f23586dba69afb6fd89fd445393d84b4dd69735",
-        "revCount": 1380,
+        "rev": "fac6eec1a572e9d051e1a74912862b61909032b3",
+        "revCount": 1381,
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       },
