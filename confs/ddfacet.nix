@@ -11,7 +11,7 @@ pack._merge (self:
       # py-numpy dependency py-cython: package py-cython@3.0.0 build_system=python_pip does not match dependency constraints {"version":"0.29.34:2"}
       package.py-setuptools.version = "57";
       package.py-numpy.version = "1.20.3";
-      package.python.version = "3.9"; # ddfacet requires <3.9,>=3.0
+      package.python.version = "3.8"; # ddfacet requires <3.9,>=3.0
       package.py-ipython.version = "8.11.0";
       package.py-numba.version = "0.56.4";
       package.py-llvmlite.version = "0.39";
@@ -51,6 +51,7 @@ pack._merge (self:
       # casacore dependency wcslib: package wcslib@7.3~cfitsio~x build_system=autotools does not match dependency constraints {"variants":{"cfitsio":true},"version":"4.20:"}
       package.wcslib.variants.cfitsio = true;
 
+      package.py-tables.version = "3.7.0";
       package.py-regions.version = "0.7";
       package.py-pywavelets.version = "1.1.1";
 
@@ -60,10 +61,10 @@ pack._merge (self:
       package.py-wheel.version = "0.37";
       # py-ddfacet dependency py-deap: package py-deap@1.3.3 build_system=python_pip does not match dependency constraints {"version":"1.0.1:1.3.1"}
       package.py-deap.version = "1.3.1";
-      package.py-tables.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
-      package.py-pygments.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
-      package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
-      package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "62.3.2";};
+      package.py-tables.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-pygments.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
 
       repoPatch = {
         py-regions.build.setup = ''
