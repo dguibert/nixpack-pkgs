@@ -201,16 +201,16 @@
     "hpcw": {
       "flake": false,
       "locked": {
-        "lastModified": 1697562701,
-        "narHash": "sha256-aYiSIYZmd+whx2RHv+uV0f2Wl0ESWOmQvu+MfkaZY8E=",
-        "ref": "master",
-        "rev": "ac502a3e4359b3c238101d718ca0f82e6c130d85",
-        "revCount": 1376,
+        "lastModified": 1697643381,
+        "narHash": "sha256-EIeMf+iLYV5rfnx6DXFHkMxpn3E5v3B/dk1ZBnBr81k=",
+        "ref": "dg/spack",
+        "rev": "0f23586dba69afb6fd89fd445393d84b4dd69735",
+        "revCount": 1380,
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       },
       "original": {
-        "ref": "master",
+        "ref": "dg/spack",
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw"
       }
