@@ -8,7 +8,7 @@ gitrev=$(git describe --always)
 os=$( . /etc/os-release ; echo $ID${VERSION_ID%.[0-9]*} )
 arch=$(uname -m)
 #nixargs="$cur --argstr gitrev ${gitrev:-unknown} --argstr os $os"
-nixargs="--option sandbox false --impure -L"
+nixargs="-L --accept-flake-config"
 
 site=spartan
 lmodbase=/home_nfs/bguibertd/lmod/$arch/$os

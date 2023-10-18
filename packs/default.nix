@@ -197,6 +197,7 @@ default_pack._merge (self:
         ncurses.depends.compiler = packs.default.pack.pkgs.compiler;
         perl.depends.compiler = packs.default.pack.pkgs.compiler;
         rdma-core.depends.compiler = packs.default.pack.pkgs.compiler;
+        rdma-core.depends.py-docutils = packs.default.pack.pkgs.py-docutils.withPrefs {depends.python = packs.default.pack.pkgs.python;};
         readline.depends.compiler = packs.default.pack.pkgs.compiler;
         texinfo.depends.compiler = packs.default.pack.pkgs.compiler;
         xz.depends.compiler = packs.default.pack.pkgs.compiler;
