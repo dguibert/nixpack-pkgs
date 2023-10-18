@@ -393,12 +393,12 @@ final: prev: let
                     package.ectrans.version = "gpu";
                     package.ectrans.variants.cuda = true;
                   })
+                (import ../../confs/hpcw-icon.nix final)
                 (pack:
                   (import ../../confs/hpcw-ifs.nix final pack)._merge {
                     label = "hpcw_" + pack.label + "_ifs_nonemo";
                     package.ifs.variants.nemo = "no";
                   })
-                (import ../../confs/hpcw-icon.nix final)
                 (import ../../confs/hpcw-ifs.nix final)
                 (import ../../confs/hpcw-ifs-fvm.nix final)
                 (import ../../confs/hpcw-nemo-small.nix final)
