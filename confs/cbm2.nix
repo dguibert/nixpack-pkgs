@@ -4,9 +4,6 @@ pack:
 pack._merge (self:
     with self; {
       label = "cbm2_" + pack.label;
-      repos = [
-        final.cbm_repo
-      ];
 
       package.boost.variants.mpi = true;
       # ctemplate dependency python: package python@3.9.13+bz2+ctypes+dbm~debug+libxml2+lzma~nis~optimizations+pic+pyexpat+pythoncmd+readline+shared+sqlite3+ssl~tix~tkinter~ucs4+uuid+zlib does not match dependency constraints {"version":":2"}

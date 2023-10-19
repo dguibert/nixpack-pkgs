@@ -175,6 +175,10 @@ final: prev: let
             name = label;
             pack = self.pack;
             pkgs = mod_pkgs;
+            coreCompilers = [
+              final.packs.default.pack.pkgs.compiler
+              self.pack.pkgs.compiler
+            ];
           };
 
           mod_pkgs = [];
@@ -475,11 +479,10 @@ final: prev: let
         pack,
         pkgs,
         withDeps ? true,
+        coreCompilers ? [pack.pkgs.compiler],
       }:
         pack.modules (inputs.nixpack.lib.recursiveUpdate modulesConfig {
-          coreCompilers = [
-            pack.pkgs.compiler
-          ];
+          inherit coreCompilers;
           pkgs =
             if withDeps
             then lib.findModDeps pkgs

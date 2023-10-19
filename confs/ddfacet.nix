@@ -65,6 +65,7 @@ pack._merge (self:
       package.py-pygments.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
       package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
       package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-kiwisolver.version = "1.3.2";
 
       repoPatch = {
         py-regions.build.setup = ''

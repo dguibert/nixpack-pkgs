@@ -24,6 +24,7 @@ default_pack._merge (self:
         ../repo
         hpcw_repo
         spack_configs_repo
+        cbm_repo
       ];
       repoPatch = let
         nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};
