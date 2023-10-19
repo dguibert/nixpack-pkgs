@@ -34,11 +34,6 @@ pack._merge (self:
       package.rocm-smi-lib.version = package.hip.version or null;
       package.roctracer-dev-api.version = package.hip.version or null;
 
-      #package.py-pyyaml.depends.py-cython = self.pack.pkgs.py-cython;
-      #package.py-cython.version = "0.29.34";
-      #package.rocprofiler-dev.depends.py-pyyaml = self.pack.pkgs.py-pyyaml;
-      package.hippify-clang.patches = [];
-
       # hip dependency mesa: package mesa@23.0.3+glx+llvm+opengl~opengles+osmesa~strip swr= default_library=+shared,~static build_system=meson buildtype=release does not match dependency constraints {"variants":{"llvm":false}}
       package.mesa.variants.llvm = false;
 
