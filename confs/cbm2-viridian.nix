@@ -26,7 +26,7 @@ pack._merge (self:
       package.py-llvmlite.version = "0.39";
       package.py-numpy.version = "1.23";
 
-      package.racon.version = "1.4.3";
+      package.racon.version = "1.5.0";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
