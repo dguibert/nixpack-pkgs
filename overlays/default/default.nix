@@ -84,6 +84,10 @@ final: prev: let
         name = "cbm2";
         path = inputs.cbm-spack;
       };
+      spack_repo = builtins.path {
+        name = "spack";
+        path = inputs.spackPkgs + "/var/spack/repos/builtin";
+      };
 
       dockerTools = callPackage ./build-support-docker {
         writePython3 = buildPackages.writers.writePython3;

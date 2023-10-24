@@ -3,6 +3,7 @@
   hpcw_repo,
   cbm_repo,
   spack_configs_repo,
+  spack_repo,
   packsFun,
   isRLDep,
   ifHasPy,
@@ -25,6 +26,7 @@ default_pack._merge (self:
         hpcw_repo
         spack_configs_repo
         cbm_repo
+        spack_repo
       ];
       repoPatch = let
         nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};

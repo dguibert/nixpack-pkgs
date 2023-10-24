@@ -10,6 +10,8 @@
   inputs.nixpack.inputs.nixpkgs.follows = "nixpkgs";
   inputs.spack.url = "github:dguibert/spack/develop";
   inputs.spack.flake = false;
+  inputs.spackPkgs.url = "github:dguibert/spack/develop";
+  inputs.spackPkgs.flake = false;
   inputs.hpcw = {
     #url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
     url = "git+https://castle.frec.bull.fr:24443/cepp/apps/hpcw/hpcw?ref=master";
