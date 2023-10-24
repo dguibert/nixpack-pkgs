@@ -298,11 +298,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1696235417,
-        "narHash": "sha256-fxiC/6UqWRCgRFJR3a+LxMuvkj/HjoI2rPWEo7jmAsw=",
+        "lastModified": 1698138389,
+        "narHash": "sha256-YBTskCv4cy5VvdryyCysjDOcqaLMwCXyYOChkq62B+4=",
         "owner": "dguibert",
         "repo": "nixpack",
-        "rev": "28af5fddd02c184d7d825e0cde505114cdbec0f4",
+        "rev": "f3aea23a5a5c03992cc3f024b92a9a57d1ee21d9",
         "type": "github"
       },
       "original": {
@@ -477,7 +477,8 @@
         "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks",
         "spack": "spack",
-        "spack-configs": "spack-configs"
+        "spack-configs": "spack-configs",
+        "spackPkgs": "spackPkgs"
       }
     },
     "spack": {
@@ -511,6 +512,23 @@
       "original": {
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git"
+      }
+    },
+    "spackPkgs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1698149316,
+        "narHash": "sha256-O2RLuTwA31DVBmdMGRrNWvd6bn9vlig8CagWscdqtkw=",
+        "owner": "dguibert",
+        "repo": "spack",
+        "rev": "cbe3551e969dca4d58e1842eb2bcdb13c3cea0e3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dguibert",
+        "ref": "develop",
+        "repo": "spack",
+        "type": "github"
       }
     },
     "st-src": {
