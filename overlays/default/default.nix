@@ -84,6 +84,10 @@ final: prev: let
         name = "cbm2";
         path = inputs.cbm-spack;
       };
+      spack_repo = builtins.path {
+        name = "spack";
+        path = inputs.spackPkgs + "/var/spack/repos/builtin";
+      };
 
       dockerTools = callPackage ./build-support-docker {
         writePython3 = buildPackages.writers.writePython3;
@@ -279,6 +283,15 @@ final: prev: let
               ++ (lib.cartesianProductOfSets {
                 packs = [
                   final.packs.default
+                  (append_pack "9" packs.gcc rec {
+                    #package.gcc.version = "9";
+                    package.mpfr.version = "3.1.6";
+                    package.gcc = package.compiler;
+                    package.compiler = final.packs.default.pack.pkgs.gcc.withPrefs {
+                      version = "9";
+                      depends.mpfr.version = "3.1.6";
+                    }; # racon: has conflicts: %gcc@:4.7,10.1.0:
+                  })
                   (append_pack "10" packs.gcc {package.gcc.version = "10";})
                   (append_pack "11" packs.gcc {package.gcc.version = "11";})
                   (append_pack "12" packs.gcc {package.gcc.version = "12";})
@@ -405,6 +418,7 @@ final: prev: let
                       ]);
                     }))
                   (import ../../confs/cbm2.nix final)
+                  (import ../../confs/cbm2-viridian.nix final)
                   (import ../../confs/ddfacet.nix final)
                   (import ../../confs/emopass.nix final)
                   (import ../../confs/hip.nix final)
@@ -489,20 +503,6 @@ final: prev: let
             else pkgs;
           name = "modules-${name}";
         });
-
-      viridianSImg = prev.singularity-tools.buildImage {
-        name = "viridian";
-        diskSize = 4096;
-        contents = with final.corePacks; [
-          pkgs.py-viridian-workflow
-        ];
-      };
-      viridianDocker = prev.dockerTools.buildImage {
-        name = "viridian";
-        contents = with final.corePacks; [
-          pkgs.py-viridian-workflow
-        ];
-      };
 
       libffi = prev.libffi.overrideAttrs (o: {
         doCheck = false; # whoami error with nss_ssd
