@@ -484,11 +484,11 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1698240669,
-        "narHash": "sha256-HuUzRLvRnyW8DdwCYIqOQGT3KV4LZVijP/TMO2PX9V4=",
+        "lastModified": 1698264729,
+        "narHash": "sha256-iyMKq0S/uo7IlpmHrjaZnnKiZSY/6ySfO9O7R1ZAXT0=",
         "owner": "dguibert",
         "repo": "spack",
-        "rev": "887e5d4d6a33c280f2cb4685a6b17fc6d6b38669",
+        "rev": "8d2b9fe1b70a30b09f2fc2d411d880d60fa06cbc",
         "type": "github"
       },
       "original": {
@@ -517,11 +517,11 @@
     "spackPkgs": {
       "flake": false,
       "locked": {
-        "lastModified": 1698240669,
-        "narHash": "sha256-HuUzRLvRnyW8DdwCYIqOQGT3KV4LZVijP/TMO2PX9V4=",
+        "lastModified": 1698264729,
+        "narHash": "sha256-iyMKq0S/uo7IlpmHrjaZnnKiZSY/6ySfO9O7R1ZAXT0=",
         "owner": "dguibert",
         "repo": "spack",
-        "rev": "887e5d4d6a33c280f2cb4685a6b17fc6d6b38669",
+        "rev": "8d2b9fe1b70a30b09f2fc2d411d880d60fa06cbc",
         "type": "github"
       },
       "original": {
