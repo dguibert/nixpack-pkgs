@@ -165,6 +165,7 @@ default_pack._merge (self:
         patchelf.version = "0.17";
 
         # no need to be recompiled for each compiler
+        gmake.depends.compiler = packs.default.pack.pkgs.compiler;
         unzip.depends.compiler = packs.default.pack.pkgs.compiler;
         swig.depends.compiler = packs.default.pack.pkgs.compiler;
         pcre2.depends.compiler = packs.default.pack.pkgs.compiler;
