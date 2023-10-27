@@ -89,7 +89,6 @@ default_pack._merge (self:
         };
         gcc.version = "10";
         gcc.variants.binutils = true;
-        pmix.version = "4.1.1";
         boost.version = "1.72.0";
         # gcc dependency binutils: package binutils@2.38~gas+gold~headers~interwork+ld~libiberty~lto+nls+plugins libs=+shared,+static build_system=autotools does not match dependency constraints {"variants":{"gas":true,"ld":true,"libiberty":false,"plugins":true}}
         # llvm dependency binutils: package binutils@2.40+gas+gold~gprofng~headers~interwork+ld~libiberty~lto~nls~pgo+plugins libs=+shared,+static build_system=autotools compress_debug_sections=zlib does not match dependency constraints {"variants":{"gold":true,"headers":true,"ld":true,"plugins":true}}
