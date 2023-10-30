@@ -78,12 +78,16 @@ in {
     packages =
       (l.mapAttrs' (name: env: l.nameValuePair "modules-${name}" (generateModules name (pkgs.findModDeps env.pack.mod_pkgs))) config.envs)
       // rec {
-        "modules-all" = generateModules "all" (
-          l.concatMap (n:
-            if config.envs.${n}.in-modules-all
-            then pkgs.findModDeps config.envs.${n}.pack.mod_pkgs
-            else []) (l.attrNames config.envs)
-        );
+        "modules-all" = generateModules "all" (let
+          p = pkgs.findModDeps (
+            l.concatMap (n:
+              if config.envs.${n}.in-modules-all
+              then config.envs.${n}.pack.mod_pkgs
+              else []) (l.attrNames config.envs)
+          );
+        in
+          builtins.trace "modules-all: ${lib.generators.toPretty {allowPrettyValues = true;} p}"
+          p);
 
         modsMod = import ../../overlays/default/lmod/modules.nix gitrev pkgs.packs.default.pack modules-all;
       };

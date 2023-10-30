@@ -10,6 +10,8 @@ pack._merge (self:
       package.dwarf-p-cloudsc.variants.cloudsc-c = false; # require serialbox?
       package.serialbox.version = "2.5.4-patched"; # require private url (TODO implement curl -n)
       package.hdf5.version = "1.12";
+      package.ecbuild.version = "3.6.5"; # FIXME used package from spack instead of hpcw
+      package.eckit.version = "1.20";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler

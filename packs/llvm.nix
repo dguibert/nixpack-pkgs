@@ -3,10 +3,8 @@ packs.default._merge (self:
     with self; {
       label = "llvm";
       package = {
-        compiler = {
-          name = "llvm";
-          extern = null;
-          version = package.llvm.version or null;
-        };
+        compiler =
+          {extern = null;}
+          // packs.default.pack.pkgs.llvm.withPrefs {version = self.package.llvm.version or null;};
       };
     })

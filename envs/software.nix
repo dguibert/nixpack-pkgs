@@ -21,6 +21,7 @@
       aocc40_compiler.pack = pkgs.confPacks.aocc40_compiler;
       aocc32_compiler.pack = pkgs.confPacks.aocc32_compiler;
       llvm16_compiler.pack = pkgs.confPacks.llvm16_compiler;
+      llvm17_compiler.pack = pkgs.confPacks.llvm17_compiler;
       nvhpc237_compiler.pack = pkgs.confPacks.nvhpc237_compiler;
       nvhpc_compiler.pack = pkgs.confPacks.nvhpc_compiler;
 
@@ -29,10 +30,9 @@
       intel_ompi_osu.pack = pkgs.confPacks.intel_ompi_osu;
       intel_impi_osu.pack = pkgs.confPacks.intel_impi_osu;
 
-      hip_core54.pack = pkgs.confPacks.hip_core54;
-      hip_core55.pack = pkgs.confPacks.hip_core55;
-      hip_core560.pack = pkgs.confPacks.hip_core560;
-      hip_core56.pack = pkgs.confPacks.hip_core56;
+      hip55_core.pack = pkgs.confPacks.hip55_core;
+      hip56_core.pack = pkgs.confPacks.hip56_core;
+      hip57_core.pack = pkgs.confPacks.hip57_core;
     };
   };
 }

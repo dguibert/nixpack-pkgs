@@ -8,7 +8,7 @@ gitrev=$(git describe --always)
 os=$( . /etc/os-release ; echo $ID${VERSION_ID%.[0-9]*} )
 arch=$(uname -m)
 #nixargs="$cur --argstr gitrev ${gitrev:-unknown} --argstr os $os"
-nixargs="--option sandbox false --impure -L"
+nixargs="-L --accept-flake-config"
 
 site=spartan
 lmodbase=/home_nfs/bguibertd/lmod/$arch/$os
@@ -60,6 +60,7 @@ case "$cmd" in
 					;;
 				(modules)
 					attrs=".#modules-all"
+                                        attrs_name="modules-all"
 					;;
 				(*)
 					echo "Unknown profile"
@@ -68,12 +69,9 @@ case "$cmd" in
 			esac
 			profile=$NIX_STATE_DIR/profiles/${prefix:=$arch/$os/}$prof
 			mkdir -p $(dirname $profile)
-			if test -e $profile; then
-				nix profile upgrade --profile $profile $nixargs '.*'
-			else
-				# FIXME how to do the same as nix-env -i -r ...
-				nix profile install --profile $profile $nixargs $attrs
-			fi
+			nix profile list --profile $profile --json 2>/dev/null | jq -r --arg name "$attrs_name" '.elements[].storePaths[] | select(endswith($name))' | xargs -t nix profile remove --profile $profile
+			# FIXME how to do the same as nix-env -i -r ...
+			nix profile install --profile $profile $nixargs $attrs
 			l=$(readlink $profile)
 			git tag $site/$prefix${l%-link} HEAD || true
 		done
