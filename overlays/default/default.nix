@@ -28,9 +28,9 @@ final: prev: let
           "^cuda" = "cuda";
           "^libllvm@15" = "libllvm15";
         };
-        filter = {
-          environment_blacklist = ["CC" "FC" "CXX" "F77"];
-        };
+        #filter = {
+        #  environment_blacklist = ["CC" "FC" "CXX" "F77"];
+        #};
       };
       projections = {
         "ifs nemo=yes" = "{name}-nemo/{version}";
