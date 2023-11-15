@@ -24,7 +24,8 @@ pack._merge (self:
 
       package.py-numba.version = "0.56.4";
       package.py-llvmlite.version = "0.39";
-      package.py-numpy.version = "1.23";
+      package.py-numpy.version = "1.25";
+      package.py-matplotlib.version = "3.6";
 
       package.racon.version = "1.5.0";
 
