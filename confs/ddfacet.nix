@@ -20,7 +20,7 @@ pack._merge (self:
       package.py-cython.version = "0.29.34";
 
       # py-astropy dependency py-pip: package py-pip@23.1.2 build_system=generic does not match dependency constraints {"version":":23.0"}
-      package.py-pip.version = "23.1";
+      package.py-pip.version = "23.0";
 
       #py-ddfacet dependency py-codex-africanus: package py-codex-africanus@0.3.4 build_system=python_pip does not match dependency constraints {"version":":0.2.10"}
       package.py-codex-africanus.version = "0.2.10";
@@ -30,6 +30,7 @@ pack._merge (self:
       package.py-distributed.version = "2021.6.2";
       # py-msgpack dependency py-cython: package py-cython@3.0.0 build_system=python_pip does not match dependency constraints {"version":"0.29.30:0.29"}
       package.py-scipy.version = "1.10";
+      package.py-scipy.depends.py-pip = self.pack.pkgs.py-pip.withPrefs {version = "23.1";};
       package.py-pandas.version = "1.4";
       package.py-matplotlib.version = "3.6";
       package.py-ninja.version = "1.10.2";
