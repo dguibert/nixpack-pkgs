@@ -20,7 +20,7 @@ pack._merge (self:
       package.py-cython.version = "0.29.34";
 
       # py-astropy dependency py-pip: package py-pip@23.1.2 build_system=generic does not match dependency constraints {"version":":23.0"}
-      package.py-pip.version = "23.0";
+      package.py-pip.version = "23.1";
 
       #py-ddfacet dependency py-codex-africanus: package py-codex-africanus@0.3.4 build_system=python_pip does not match dependency constraints {"version":":0.2.10"}
       package.py-codex-africanus.version = "0.2.10";
