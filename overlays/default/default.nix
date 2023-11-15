@@ -323,7 +323,6 @@ final: prev: let
                         package.mpi = {name = "openmpi";};
 
                         package.openmpi.variants = {
-                          cxx = true;
                           legacylaunchers = true;
                           orterunprefix = true;
                           lustre = true;
