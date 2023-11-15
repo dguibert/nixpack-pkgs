@@ -19,6 +19,9 @@ class Torchfort(CMakePackage,CudaPackage):
     version("master", git="https://github.com/NVIDIA/TorchFort")
     version("0.1.0", sha256="0f46a07c1731cec42f8cf72a0d0ab91c550c62e6383ab33a870bae0801f64852")
 
+    variant("examples-cpp", default=False, description="build cpp examples")
+    variant("examples-fortran", default=False, description="build fortran examples")
+
     # FIXME: Add dependencies if required.
     depends_on("yaml-cpp~shared")
     depends_on("py-torch")
@@ -61,4 +64,6 @@ class Torchfort(CMakePackage,CudaPackage):
         #args.append(self.define("NVHPC_CUDA_VERSION", f"{self.spec['cuda'].version}")) # fixme only major.minor
         args.append(self.define("NVHPC_CUDA_VERSION", f"11.8"))
         args.append(self.define("YAML_CPP_ROOT", self.spec["yaml-cpp"].prefix))
+        args.append(self.define_from_variant("BUILD_EXAMPLES_CPP", "examples-cpp"))
+        args.append(self.define_from_variant("BUILD_EXAMPLES_FORTRAN", "examples-fortran"))
         return args

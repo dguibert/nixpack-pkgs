@@ -32,6 +32,7 @@ pack._merge (self:
       package.py-pip.version = "23.0";
 
       package.torchfort.version = "master";
+      package.torchfort.variants.examples-fortran = false; # need hdf5.mod from hdf5%nvhpc
       package.openmpi.version = "3"; # for cxx
       package.hwloc.version = "1";
       package.openmpi.variants.cxx = true;

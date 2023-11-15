@@ -206,6 +206,7 @@ default_pack._merge (self:
         unzip.depends.compiler = packs.default.pack.pkgs.compiler;
         swig.depends.compiler = packs.default.pack.pkgs.compiler;
         pcre.depends.compiler = packs.default.pack.pkgs.compiler;
+        ninja.depends.compiler = packs.default.pack.pkgs.compiler;
         yaml-cpp.depends.compiler = packs.default.pack.pkgs.compiler;
         intel-tbb.depends.compiler = packs.default.pack.pkgs.compiler;
         pcre2.depends.compiler = packs.default.pack.pkgs.compiler;

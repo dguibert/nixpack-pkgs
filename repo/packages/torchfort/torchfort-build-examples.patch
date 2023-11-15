@@ -10,11 +10,13 @@ index 0a3895c..d7d3fbe 100644
  set(TORCHFORT_CUDA_CC_LIST "70;80" CACHE STRING "List of CUDA compute capabilities to build torchfort for.")
 
  project(torchfort CXX Fortran)
-@@ -121,5 +122,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/python/wandb_helper.py DESTINATION
+@@ -121,5 +122,9 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/python/wandb_helper.py DESTINATION
  install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs DESTINATION ${CMAKE_INSTALL_PREFIX})
 
  # build examples
-+if(BUILD_EXAMPLES)
++if(BUILD_EXAMPLES_FORTRAN)
  add_subdirectory(examples/fortran/simulation)
++endif()
++if(BUILD_EXAMPLES_CPP)
  add_subdirectory(examples/cpp/cart_pole)
 +endif()
