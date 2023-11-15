@@ -164,6 +164,7 @@ default_pack._merge (self:
         patchelf.version = "0.17";
 
         # no need to be recompiled for each compiler
+        libszip.depends.compiler = packs.default.pack.pkgs.compiler;
         libpng.depends.compiler = packs.default.pack.pkgs.compiler;
         gmake.depends.compiler = packs.default.pack.pkgs.compiler;
         unzip.depends.compiler = packs.default.pack.pkgs.compiler;
