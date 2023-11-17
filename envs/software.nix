@@ -24,6 +24,9 @@
       llvm17_compiler.pack = pkgs.confPacks.llvm17_compiler;
       nvhpc237_compiler.pack = pkgs.confPacks.nvhpc237_compiler;
       nvhpc_compiler.pack = pkgs.confPacks.nvhpc_compiler;
+      intel-oneapi_compiler.pack = pkgs.confPacks.intel-oneapi_compiler;
+      intel-oneapi202400_compiler.pack = pkgs.confPacks.intel-oneapi202400_compiler;
+      intel-oneapi2024_compiler.pack = pkgs.confPacks.intel-oneapi2024_compiler;
 
       gcc13_osu.pack = pkgs.confPacks.gcc13_osu;
       gcc13_ompi_osu.pack = pkgs.confPacks.gcc13_ompi_osu;
