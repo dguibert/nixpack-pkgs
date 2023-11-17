@@ -307,6 +307,8 @@ final: prev: let
                   packs.nvhpc
                   (append_pack "237" packs.nvhpc {package.nvhpc.version = "23.7";})
                   packs.oneapi
+                  (append_pack "202400" packs.oneapi {package.intel-oneapi-compilers.version = "2024.0.0";})
+                  (append_pack "2024" packs.oneapi {package.intel-oneapi-compilers.version = "2024";})
                 ];
                 mpis = [
                   (pack: pack)
