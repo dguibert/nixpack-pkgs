@@ -440,6 +440,11 @@ final: prev: let
                     }))
                   (pack:
                     (import ../../confs/hip.nix final pack)._merge (self: {
+                      label = "hip570_" + pack.label;
+                      package.hip.version = "5.7.0";
+                    }))
+                  (pack:
+                    (import ../../confs/hip.nix final pack)._merge (self: {
                       label = "hip57_" + pack.label;
                       package.hip.version = "5.7";
                     }))
