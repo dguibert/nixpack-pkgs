@@ -87,11 +87,9 @@ in rec {
       (nixosTests)
       docker-tools
       docker-tools-overlay
-      # requires remote builder
-
-      # docker-tools-cross
-
       ;
+    # requires remote builder
+    # docker-tools-cross
   };
 
   pullImage = let
