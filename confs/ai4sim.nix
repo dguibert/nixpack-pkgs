@@ -6,6 +6,7 @@ pack._merge (self:
       label = "ai4sim_" + pack.label;
 
       # py-numba dependency py-numpy: package py-numpy@1.23.3+blas+lapack does not match dependency constraints {"version":"1.18:1.22"}
+      package.py-matplotlib.version = "3.7";
       package.py-numpy.version = "1.24.3";
       # llvm: has conflicts: %gcc@:10
       package.llvm.variants.libcxx = "runtime";
@@ -30,10 +31,13 @@ pack._merge (self:
       package.py-scipy.depends.py-pythran = self.pack.pkgs.py-pythran;
       package.py-pandas.depends.py-cython = self.pack.pkgs.py-cython;
       package.py-grpcio.depends.py-cython = self.pack.pkgs.py-cython;
-      package.py-pybind11.version = "2.10.4";
+      package.py-pybind11.version = "2.11.0";
       package.py-cython.version = "0.29";
-      package.py-setuptools.version = "57";
+      package.py-setuptools.version = "62";
+      package.py-urllib3.version = "1";
       package.py-scipy.depends.py-cython = self.pack.pkgs.py-cython;
+      package.py-scipy.depends.py-pip = self.pack.pkgs.py-pip.withPrefs {version = "23.1";};
+      package.meson.version = "1.2.1";
 
       package.py-tensorflow.variants.cuda = false;
       package.py-tensorflow.variants.nccl = false;
@@ -47,6 +51,7 @@ pack._merge (self:
       package.hdf5.variants.mpi = false;
       package.py-h5py.variants.mpi = false;
       package.py-h5py.depends.py-cython = self.pack.pkgs.py-cython;
+      package.py-h5py.depends.py-setuptools = self.pack.pkgs.py-setuptools;
       package.re2.variants.shared = true;
       package.py-libclang.depends.llvm = self.pack.pkgs.llvm;
       #package.py-libclang.depends.llvm = final.packs.default.pack.pkgs.llvm.withPrefs { version = self.package.llvm.version; };
@@ -55,11 +60,23 @@ pack._merge (self:
       package.py-keras.version = "2.10";
       package.py-tensorboard.version = "2.10";
       package.py-tensorflow.version = "2.10";
+      #package.py-tensorflow.depends.py-protobuf = self.pack.pkgs.py-protobuf.withPrefs { variants.cpp = true; };
+      package.py-protobuf.variants.cpp = true;
       package.py-protobuf.version = "3.17";
       package.protobuf.version = "3.17";
       package.py-pip.version = "23.0";
       package.py-google-auth-oauthlib.version = "0.4";
       package.py-tensorboard-data-server.version = "0.6";
+      package.python.version = "3.10";
+
+      package.py-torch.variants.cuda = false;
+      package.sleef.version = "3.5.1_2020-12-22";
+      package.boost.variants.atomic = true;
+      package.boost.variants.chrono = true;
+      package.boost.variants.exception = true;
+      package.boost.variants.system = true;
+      package.boost.variants.thread = true;
+      package.intel-oneapi-mkl.version = "2023.2.0";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
@@ -70,6 +87,8 @@ pack._merge (self:
         py-tensorflow-estimator #@2.9.0
         py-keras #@2.9.0
         py-cffi
+
+        py-torch
 
         # add raps/ifs
       ];

@@ -426,6 +426,12 @@ final: prev: let
                       package.py-tensorflow.variants.cuda = true;
                       package.py-tensorflow.variants.cuda_arch.none = false;
                       package.py-tensorflow.variants.cuda_arch."80" = true;
+                      package.py-torch.variants.cuda = true;
+                      package.py-torch.variants.cuda_arch.none = false;
+                      package.py-torch.variants.cuda_arch."80" = true;
+                      package.gloo.variants.cuda = true;
+                      package.magma.variants.cuda_arch.none = false;
+                      package.magma.variants.cuda_arch."80" = true;
                     })
                   (import ../../confs/ai4sim-torchfort.nix final)
                   (import ../../confs/cbm2.nix final)
