@@ -1,6 +1,7 @@
 {
   inputs,
   perSystem,
+  self,
   ...
 }: let
   nixpkgsFor = system:

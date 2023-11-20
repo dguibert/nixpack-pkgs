@@ -1,9 +1,12 @@
 {
   default_pack,
   hpcw_repo,
+  cbm_repo,
   spack_configs_repo,
+  spack_repo,
   packsFun,
   isRLDep,
+  ifHasPy,
   packs,
 }:
 default_pack._merge (self:
@@ -11,14 +14,19 @@ default_pack._merge (self:
       label = "core";
       global = {
         resolver = deptype:
-          if isRLDep deptype
-          then null
-          else packs.default.pack;
+          ifHasPy self.pack
+          (
+            if isRLDep deptype
+            then self.pack
+            else packs.default.pack
+          );
       };
       repos = [
         ../repo
         hpcw_repo
         spack_configs_repo
+        cbm_repo
+        spack_repo
       ];
       repoPatch = let
         nocompiler = spec: old: {depends = old.depends or {} // {compiler = null;};};
@@ -127,7 +135,6 @@ default_pack._merge (self:
         };
         gcc.version = "10";
         gcc.variants.binutils = true;
-        pmix.version = "4.1.1";
         boost.version = "1.72.0";
         # gcc dependency binutils: package binutils@2.38~gas+gold~headers~interwork+ld~libiberty~lto+nls+plugins libs=+shared,+static build_system=autotools does not match dependency constraints {"variants":{"gas":true,"ld":true,"libiberty":false,"plugins":true}}
         # llvm dependency binutils: package binutils@2.40+gas+gold~gprofng~headers~interwork+ld~libiberty~lto~nls~pgo+plugins libs=+shared,+static build_system=autotools compress_debug_sections=zlib does not match dependency constraints {"variants":{"gold":true,"headers":true,"ld":true,"plugins":true}}
@@ -203,6 +210,9 @@ default_pack._merge (self:
         patchelf.version = "0.17";
 
         # no need to be recompiled for each compiler
+        libszip.depends.compiler = packs.default.pack.pkgs.compiler;
+        libpng.depends.compiler = packs.default.pack.pkgs.compiler;
+        gmake.depends.compiler = packs.default.pack.pkgs.compiler;
         unzip.depends.compiler = packs.default.pack.pkgs.compiler;
         swig.depends.compiler = packs.default.pack.pkgs.compiler;
         pcre.depends.compiler = packs.default.pack.pkgs.compiler;
@@ -225,7 +235,13 @@ default_pack._merge (self:
         libpciaccess.depends.compiler = packs.default.pack.pkgs.compiler;
         lua.depends.compiler = packs.default.pack.pkgs.compiler;
         numactl.depends.compiler = packs.default.pack.pkgs.compiler;
-        python.depends.compiler = packs.default.pack.pkgs.compiler;
+        python = {
+          resolver = deptype:
+            if isRLDep deptype
+            then self.pack
+            else packs.default.pack;
+          depends.compiler = packs.default.pack.pkgs.compiler;
+        };
         # for aocc, infinite recursion breaking
         berkeley-db.depends.compiler = packs.default.pack.pkgs.compiler;
         freetype.depends.compiler = packs.default.pack.pkgs.compiler;
@@ -237,6 +253,7 @@ default_pack._merge (self:
         ncurses.depends.compiler = packs.default.pack.pkgs.compiler;
         perl.depends.compiler = packs.default.pack.pkgs.compiler;
         rdma-core.depends.compiler = packs.default.pack.pkgs.compiler;
+        rdma-core.depends.py-docutils = packs.default.pack.pkgs.py-docutils.withPrefs {depends.python = packs.default.pack.pkgs.python;};
         readline.depends.compiler = packs.default.pack.pkgs.compiler;
         texinfo.depends.compiler = packs.default.pack.pkgs.compiler;
         xz.depends.compiler = packs.default.pack.pkgs.compiler;
