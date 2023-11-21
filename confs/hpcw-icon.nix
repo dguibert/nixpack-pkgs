@@ -8,7 +8,7 @@ pack._merge (self:
 
       #                                                                                                 "2021.6.0": "2022.1.0"
       package.intel-oneapi-compilers-classic.version = pack.package.intel-oneapi-compilers-classic.version or "2021.6.0";
-      package.intel-oneapi-compilers.version = pack.package.intel-oneapi-compilers-classic.version or "2022.1.0";
+      package.intel-oneapi-compilers.version = pack.package.intel-oneapi-compilers.version or "2022.1.0";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
