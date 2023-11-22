@@ -301,6 +301,10 @@ final: prev: let
                   (append_pack "40" packs.aocc {package.aocc.version = "4.0.0";})
                   (append_pack "32" packs.aocc {package.aocc.version = "3.2.0";})
                   packs.intel
+                  (append_pack "202160" packs.intel {
+                    package.intel-oneapi-compilers-classic.version = "2021.6.0";
+                    package.intel-oneapi-compilers.version = "2022.1.0";
+                  })
                   packs.llvm
                   (append_pack "16" packs.llvm {package.llvm.version = "16";})
                   (append_pack "17" packs.llvm {package.llvm.version = "17";})

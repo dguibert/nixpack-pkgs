@@ -24,6 +24,8 @@ packs.default._merge (self:
         intel-oneapi-compilers.depends.compiler = packs.default.pack.pkgs.compiler;
 
         #intel-oneapi-compilers-classic dependency intel-oneapi-compilers: package intel-oneapi-compilers@2023.2.1+envmods build_system=generic does not match dependency constraints {"version":"2023.2.0"}
+
+        # with @2024:, icc and icpx have been discontinued
         intel-oneapi-compilers.version = "2023.2.0";
         intel-oneapi-compilers-classic.version = "2021.10.0";
 
