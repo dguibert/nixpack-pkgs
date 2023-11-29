@@ -103,7 +103,7 @@ final: prev: let
         in
           stdenvNoCC.mkDerivation ({
               ENVRC = name;
-              nativeBuildInputs = [bashInteractive];
+              nativeBuildInputs = [bashInteractive coreutils];
               shellHook = ''
                 # remove existing module vars/functions
                 unset MODULEPATH MODULEPATH_modshare MODULES_CMD MODULESHOME MODULES_RUN_QUARANTINE

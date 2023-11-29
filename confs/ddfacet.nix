@@ -53,7 +53,7 @@ pack._merge (self:
       package.wcslib.variants.cfitsio = true;
 
       package.py-tables.version = "3.7.0";
-      package.py-regions.version = "0.7";
+      package.py-regions.version = "0.5";
       package.py-pywavelets.version = "1.1.1";
 
       package.llvm.variants.flang = false;
@@ -78,7 +78,6 @@ pack._merge (self:
             // {
               py-cython.version = "0.29.34";
               py-pyfftw.version = "0.13.1";
-              py-regions = null; #fails to build
             };
         };
       };
@@ -101,9 +100,8 @@ pack._merge (self:
         py-ephem
         py-pandas
         py-pybind11
-        /*
+        # needs chmod +w /scratch_na/users/bguibertd/nix/store/sghrcw22al0nv8q4pw1pl441m9is8k4l-py-extension-helpers-0.1/lib/python3.8/site-packages/extension_helpers/src/compiler.c
         py-regions
-        */
         py-tables
         py-codex-africanus
         py-ipdb
@@ -156,9 +154,6 @@ pack._merge (self:
         py-matplotlib
         py-polygon3
         py-pycpuinfo
-        /*
-        py-regions
-        */
         py-tables
       ];
     })
