@@ -67,6 +67,8 @@ pack._merge (self:
       package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
       package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
       package.py-kiwisolver.version = "1.3.2";
+      package.swig.version = "4.0";
+      package.py-tqdm.version = "4.66.1";
 
       repoPatch = {
         py-regions.build.setup = ''
@@ -89,6 +91,8 @@ pack._merge (self:
         #py-ddfacet
         py-mpi4py
         py-tqdm
+        py-numba
+        py-contourpy
         # ./run spack info py-ddfacet -> Build Dependencies
         py-astlib
         py-deap
