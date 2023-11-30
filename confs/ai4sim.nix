@@ -57,13 +57,13 @@ pack._merge (self:
       #package.py-libclang.depends.llvm = final.packs.default.pack.pkgs.llvm.withPrefs { version = self.package.llvm.version; };
       package.py-typing-extensions.version = "4.5";
 
-      package.py-keras.version = "2.10";
-      package.py-tensorboard.version = "2.10";
-      package.py-tensorflow.version = "2.10";
+      package.py-keras.version = "2.12";
+      package.py-tensorboard.version = "2.12";
+      package.py-tensorflow.version = "2.12";
       #package.py-tensorflow.depends.py-protobuf = self.pack.pkgs.py-protobuf.withPrefs { variants.cpp = true; };
       package.py-protobuf.variants.cpp = true;
-      package.py-protobuf.version = "3.20.2";
-      package.protobuf.version = "3.20.2";
+      package.py-protobuf.version = "3.20.3";
+      package.protobuf.version = "3.20.3";
       package.py-pip.version = "23.0";
       package.py-google-auth-oauthlib.version = "0.4";
       package.py-tensorboard-data-server.version = "0.6";
