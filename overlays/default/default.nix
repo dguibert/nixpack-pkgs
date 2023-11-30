@@ -431,6 +431,9 @@ final: prev: let
                       package.py-tensorflow.variants.cuda = true;
                       package.py-tensorflow.variants.cuda_arch.none = false;
                       package.py-tensorflow.variants.cuda_arch."80" = true;
+                      package.py-onnxruntime.variants.cuda = true;
+                      package.py-onnxruntime.variants.cuda_arch.none = false;
+                      package.py-onnxruntime.variants.cuda_arch."80" = true;
                       package.py-torch.variants.cuda = true;
                       package.py-torch.variants.cuda_arch.none = false;
                       package.py-torch.variants.cuda_arch."80" = true;

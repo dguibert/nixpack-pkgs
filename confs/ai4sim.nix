@@ -77,6 +77,7 @@ pack._merge (self:
       package.boost.variants.system = true;
       package.boost.variants.thread = true;
       package.intel-oneapi-mkl.version = "2023.2.0";
+      package.py-onnxruntime.version = "1.16.3";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
@@ -89,6 +90,8 @@ pack._merge (self:
         py-cffi
 
         py-torch
+
+        py-onnxruntime
 
         # add raps/ifs
       ];
