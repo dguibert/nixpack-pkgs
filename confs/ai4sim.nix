@@ -78,6 +78,7 @@ pack._merge (self:
       package.boost.variants.thread = true;
       package.intel-oneapi-mkl.version = "2023.2.0";
       package.py-onnxruntime.version = "1.16.3";
+      package.py-wheel.version = "0.37.1";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
