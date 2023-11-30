@@ -427,7 +427,9 @@ final: prev: let
                   (pack:
                     (import ../../confs/ai4sim.nix final pack)._merge {
                       label = "ai4sim_" + pack.label + "_cuda";
-                      #package.py-tensorflow.variants.nccl = cuda;
+                      package.nccl.variants.cuda = true;
+                      package.nccl.variants.cuda_arch.none = false;
+                      package.nccl.variants.cuda_arch."80" = true;
                       package.py-tensorflow.variants.cuda = true;
                       package.py-tensorflow.variants.cuda_arch.none = false;
                       package.py-tensorflow.variants.cuda_arch."80" = true;
