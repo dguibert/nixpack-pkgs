@@ -62,8 +62,8 @@ pack._merge (self:
       package.py-tensorflow.version = "2.10";
       #package.py-tensorflow.depends.py-protobuf = self.pack.pkgs.py-protobuf.withPrefs { variants.cpp = true; };
       package.py-protobuf.variants.cpp = true;
-      package.py-protobuf.version = "3.17";
-      package.protobuf.version = "3.17";
+      package.py-protobuf.version = "3.20.2";
+      package.protobuf.version = "3.20.2";
       package.py-pip.version = "23.0";
       package.py-google-auth-oauthlib.version = "0.4";
       package.py-tensorboard-data-server.version = "0.6";
