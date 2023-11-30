@@ -41,6 +41,7 @@ pack._merge (self:
 
       package.py-tensorflow.variants.cuda = false;
       package.py-tensorflow.variants.nccl = false;
+      package.py-jaxlib.variants.cuda = false;
       #package.py-tensorflow.variants.cuda_arch.none = false;
       #package.py-tensorflow.variants.cuda_arch."80" = true;
       package.bazel.version = "5.3.0";
