@@ -7,7 +7,7 @@ pack._merge (self:
 
       # py-numba dependency py-numpy: package py-numpy@1.23.3+blas+lapack does not match dependency constraints {"version":"1.18:1.22"}
       package.py-matplotlib.version = "3.7";
-      package.py-numpy.version = "1.24.3";
+      package.py-numpy.version = "1.23";
       # llvm: has conflicts: %gcc@:10
       package.llvm.variants.libcxx = "runtime";
       package.llvm.variants.flang = false;
@@ -61,13 +61,14 @@ pack._merge (self:
       package.py-keras.version = "2.12";
       package.py-tensorboard.version = "2.12";
       package.py-tensorflow.version = "2.12";
+      package.py-tensorflow-estimator.version = "2.12";
       #package.py-tensorflow.depends.py-protobuf = self.pack.pkgs.py-protobuf.withPrefs { variants.cpp = true; };
       package.py-protobuf.variants.cpp = true;
       package.py-protobuf.version = "3.20.3";
       package.protobuf.version = "3.20.3";
       package.py-pip.version = "23.0";
       package.py-google-auth-oauthlib.version = "0.4";
-      package.py-tensorboard-data-server.version = "0.6";
+      package.py-tensorboard-data-server.version = "0.7";
       package.python.version = "3.10";
 
       package.py-torch.variants.cuda = false;
@@ -80,6 +81,7 @@ pack._merge (self:
       package.intel-oneapi-mkl.version = "2023.2.0";
       package.py-onnxruntime.version = "1.16.3";
       package.py-wheel.version = "0.37.1";
+      package.py-wrapt.version = "1.14";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
