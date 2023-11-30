@@ -24,8 +24,15 @@ pack._merge (self:
       package.py-scipy.depends.py-cython = self.pack.pkgs.py-cython;
       package.py-scipy.depends.py-pybind11 = self.pack.pkgs.py-pybind11;
       package.py-scipy.depends.py-meson-python = self.pack.pkgs.py-meson-python;
+      package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-matplotlib.version = "3.7";
+      package.meson.version = "1.2.1";
+      package.py-wheel.version = "0.37.1";
+      package.sleef.version = "3.5.1_2020-12-22";
 
       package.py-scipy.version = "1.11.0";
+      package.py-scipy.depends.py-pip = self.pack.pkgs.py-pip.withPrefs {version = "23.1";};
       #package.py-meson-python.version = "0.12.0";
       package.py-protobuf.version = "3.17";
       package.protobuf.version = "3.17";
@@ -34,6 +41,7 @@ pack._merge (self:
       package.torchfort.version = "master";
       package.torchfort.variants.examples-fortran = false; # need hdf5.mod from hdf5%nvhpc
       package.openmpi.version = "3"; # for cxx
+      package.openmpi.variants.internal-pmix = true;
       package.hwloc.version = "1";
       package.openmpi.variants.cxx = true;
       # {"variants":{"atomic":true,"chrono":true,"exception":true,"system":true,"thread":true}}
@@ -54,6 +62,10 @@ pack._merge (self:
       package.nccl.variants.cuda = true;
       package.nccl.variants.cuda_arch.none = false;
       package.nccl.variants.cuda_arch."80" = true;
+
+      package.gloo.variants.cuda = true;
+      package.gloo.variants.cuda_arch.none = false;
+      package.gloo.variants.cuda_arch."80" = true;
 
       repoPatch = {
         py-torch = spec: old:
