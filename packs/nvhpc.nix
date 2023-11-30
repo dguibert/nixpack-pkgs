@@ -21,6 +21,22 @@ in
         nvhpc.depends.compiler = packs.default.pack.pkgs.compiler;
 
         eckit.depends.compiler = packs.default.pack.pkgs.compiler;
+
+        py-kiwisolver.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-protobuf.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-pillow.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-cython.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-numpy.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-numexpr.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-bottleneck.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-contourpy.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-scipy.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-matplotlib.depends.compiler = packs.default.pack.pkgs.compiler;
+        valgrind.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-llvmlite.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-numba.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-pandas.depends.compiler = packs.default.pack.pkgs.compiler;
+        py-torch.depends.compiler = packs.default.pack.pkgs.compiler;
       };
 
       repoPatch = {

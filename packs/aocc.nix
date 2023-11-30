@@ -12,26 +12,6 @@ packs.default._merge (self:
       };
 
       repoPatch = {
-        aocc = spec: old: {
-          paths = {
-            cc = "bin/clang";
-            cxx = "bin/clang++";
-            f77 = "bin/flang";
-            fc = "bin/flang";
-          };
-          provides =
-            old.provides
-            or {}
-            // {
-              compiler = ":";
-            };
-          depends =
-            old.depends
-            // {
-              #compiler = null;
-              compiler = packs.default.pack.pkgs.compiler;
-            };
-        };
       };
 
       pkgs = pack: [

@@ -49,6 +49,7 @@ in {
   config.perSystem = {
     config,
     pkgs,
+    system,
     ...
   }: let
     generateModules = name: mod_pkgs:
@@ -65,7 +66,12 @@ in {
       };
   in {
     /**/
-    checks = l.mapAttrs (name: env: env.pack.mods) config.envs;
+    checks =
+      l.mapAttrs (name: env: env.pack.mods) config.envs
+      // {
+        "modules-all" = config.packages.modules-all;
+        modsMod = config.packages.modsMod;
+      };
 
     devShells = l.mapAttrs (name: env: env.pack.devShell) config.envs;
 
