@@ -43,7 +43,7 @@ pack._merge (self:
       package.py-tensorflow.variants.nccl = false;
       #package.py-tensorflow.variants.cuda_arch.none = false;
       #package.py-tensorflow.variants.cuda_arch."80" = true;
-      package.bazel.version = "5.1.1";
+      package.bazel.version = "5.3.0";
       package.py-tensorflow.depends.bazel = final.packs.default.pack.pkgs.bazel.withPrefs {version = self.package.bazel.version;};
       package.py-keras.depends.bazel = final.packs.default.pack.pkgs.bazel.withPrefs {version = self.package.bazel.version;};
       package.py-protobuf.depends.bazel = final.packs.default.pack.pkgs.py-protobuf.withPrefs {version = self.package.py-protobuf.version;};
