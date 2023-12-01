@@ -52,6 +52,7 @@ pack._merge (self:
       package.boost.variants.system = true;
       package.boost.variants.thread = true;
 
+      package.py-torch.variants.kineto = false;
       package.py-torch.variants.cuda = true;
       package.yaml-cpp.variants.shared = false;
       package.py-torch.variants.cuda_arch.none = false;

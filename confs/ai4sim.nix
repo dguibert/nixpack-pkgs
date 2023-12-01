@@ -82,6 +82,7 @@ pack._merge (self:
       package.py-onnxruntime.version = "1.16.3";
       package.py-wheel.version = "0.37.1";
       package.py-wrapt.version = "1.14";
+      package.py-mlflow.version = "2.8";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
