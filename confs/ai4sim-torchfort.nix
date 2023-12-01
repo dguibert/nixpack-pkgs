@@ -42,9 +42,9 @@ pack._merge (self:
       package.torchfort.version = "master";
       package.torchfort.variants.examples-fortran = false; # need hdf5.mod from hdf5%nvhpc
       package.openmpi.version = "3"; # for cxx
+      package.openmpi.variants.cxx = true;
       package.openmpi.variants.internal-pmix = true;
       package.hwloc.version = "1";
-      package.openmpi.variants.cxx = true;
       # {"variants":{"atomic":true,"chrono":true,"exception":true,"system":true,"thread":true}}
       package.boost.variants.atomic = true;
       package.boost.variants.chrono = true;

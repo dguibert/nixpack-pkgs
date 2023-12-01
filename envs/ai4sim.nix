@@ -15,7 +15,9 @@
       ai4sim_gcc11.pack = pkgs.confPacks.ai4sim_gcc11;
       ai4sim_gcc12.pack = pkgs.confPacks.ai4sim_gcc12;
 
-      ai4sim_torchfort_gcc11.pack = pkgs.confPacks.ai4sim_torchfort_gcc11;
+      # fails
+      #ai4sim_torchfort_gcc11.pack = pkgs.confPacks.ai4sim_torchfort_gcc11;
+      #ai4sim_torchfort_gcc11.in-modules-all = false;
       #ai4sim_torchfort_nvhpc235.pack = pkgs.confPacks.ai4sim_torchfort_nvhpc235;
     };
   };
