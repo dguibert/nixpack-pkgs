@@ -25,6 +25,7 @@ pack._merge (self:
       package.py-scipy.depends.py-pybind11 = self.pack.pkgs.py-pybind11;
       package.py-scipy.depends.py-meson-python = self.pack.pkgs.py-meson-python;
       package.py-cppy.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
+      package.py-kiwisolver.version = "1.3.2";
       package.py-kiwisolver.depends.py-setuptools = self.pack.pkgs.py-setuptools.withPrefs {version = "68.0.0";};
       package.py-matplotlib.version = "3.7";
       package.meson.version = "1.2.1";
