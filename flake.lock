@@ -501,11 +501,11 @@
     "spack-configs": {
       "flake": false,
       "locked": {
-        "lastModified": 1687271503,
-        "narHash": "sha256-FoNjJDov3xN/WiPCHjUR4JASVVbgAKgkn4p49jqu/Fg=",
+        "lastModified": 1701429156,
+        "narHash": "sha256-zqYHgMP0rOJA2sgQnQytbafbbyxl6uq+pj7H+95Y8nI=",
         "ref": "refs/heads/main",
-        "rev": "d3f67bb775ef67a6ac41f1b6e973cb38031209cf",
-        "revCount": 56,
+        "rev": "25ad84e72112e54a7291473979b8a9791ecd72ab",
+        "revCount": 68,
         "type": "git",
         "url": "https://castle.frec.bull.fr:24443/cepp/scripts-tools/spack-configs.git"
       },
