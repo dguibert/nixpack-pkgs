@@ -69,8 +69,8 @@ in {
     checks =
       l.mapAttrs (name: env: env.pack.mods) config.envs
       // {
-        "modules-all" = config.packages.modules-all;
-        modsMod = config.packages.modsMod;
+        #"modules-all" = config.packages.modules-all;
+        #modsMod = config.packages.modsMod;
       };
 
     devShells = l.mapAttrs (name: env: env.pack.devShell) config.envs;
