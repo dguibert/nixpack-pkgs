@@ -404,6 +404,7 @@ final: prev: let
                 gpu_layer = [
                   (pack: pack)
                   (import ../../confs/gpu_layer_cuda.nix final)
+                  (import ../../confs/gpu_layer_rocm.nix final)
                 ];
                 variants = [
                   (pack:

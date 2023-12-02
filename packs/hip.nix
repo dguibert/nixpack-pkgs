@@ -13,12 +13,7 @@ packs.default._merge (self:
 
       # rocprofiler-dev dependency hsa-rocr-dev: package hsa-rocr-dev@5.5.1+image~ipo+shared build_system=cmake build_type=Release generator=make does not match dependency constraints {"version":"5.4.3"}
       package.roctracer-dev.version = package.hip.version or null;
-      package.roctracer-dev.variants.rocm = true;
-      package.roctracer-dev.variants.amdgpu_target.none = false;
-      package.roctracer-dev.variants.amdgpu_target."gfx90a" = true;
       package.rccl.version = package.hip.version or null;
-      package.rccl.variants.amdgpu_target.auto = false;
-      package.rccl.variants.amdgpu_target."gfx90a" = true;
       package.rocprofiler-dev.version = package.hip.version or null;
       package.hsa-rocr-dev.version = package.hip.version or null;
       # hip dependency hsa-rocr-dev: package hsa-rocr-dev@5.4.3+image~ipo+shared build_system=cmake build_type=Release generator=make does not match dependency constraints {"version":"5.5.1"}
