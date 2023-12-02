@@ -314,6 +314,12 @@ final: prev: let
                   packs.oneapi
                   (append_pack "202400" packs.oneapi {package.intel-oneapi-compilers.version = "2024.0.0";})
                   (append_pack "2024" packs.oneapi {package.intel-oneapi-compilers.version = "2024";})
+                  packs.hip
+                  (append_pack "55" packs.hip {package.hip.version = "5.5";})
+                  (append_pack "560" packs.hip {package.hip.version = "5.6.0";})
+                  (append_pack "56" packs.hip {package.hip.version = "5.6";})
+                  (append_pack "570" packs.hip {package.hip.version = "5.7.0";})
+                  (append_pack "57" packs.hip {package.hip.version = "5.7";})
                 ];
                 mpis = [
                   (pack: pack)
@@ -451,32 +457,6 @@ final: prev: let
                   (import ../../confs/cbm2-viridian.nix final)
                   (import ../../confs/ddfacet.nix final)
                   (import ../../confs/emopass.nix final)
-                  (import ../../confs/hip.nix final)
-                  (pack:
-                    (import ../../confs/hip.nix final pack)._merge (self: {
-                      label = "hip55_" + pack.label;
-                      package.hip.version = "5.5";
-                    }))
-                  (pack:
-                    (import ../../confs/hip.nix final pack)._merge (self: {
-                      label = "hip560_" + pack.label;
-                      package.hip.version = "5.6.0";
-                    }))
-                  (pack:
-                    (import ../../confs/hip.nix final pack)._merge (self: {
-                      label = "hip56_" + pack.label;
-                      package.hip.version = "5.6";
-                    }))
-                  (pack:
-                    (import ../../confs/hip.nix final pack)._merge (self: {
-                      label = "hip570_" + pack.label;
-                      package.hip.version = "5.7.0";
-                    }))
-                  (pack:
-                    (import ../../confs/hip.nix final pack)._merge (self: {
-                      label = "hip57_" + pack.label;
-                      package.hip.version = "5.7";
-                    }))
                   (import ../../confs/hpcw.nix final)
                   (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
                   (import ../../confs/hpcw-dwarf-p-radiation-acraneb2.nix final)

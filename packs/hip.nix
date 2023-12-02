@@ -1,9 +1,7 @@
-final:
-# default benchmarking env with jube
-pack:
-pack._merge (self:
+{packs}:
+packs.default._merge (self:
     with self; {
-      label = "hip_" + pack.label;
+      label = "hip";
 
       package.llvm.version = "12";
       package.libllvm = {name = "llvm-amdgpu";};
