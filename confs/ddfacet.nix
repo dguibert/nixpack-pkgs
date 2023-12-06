@@ -86,78 +86,48 @@ pack._merge (self:
 
       mod_pkgs = with self.pack.pkgs; [
         compiler
-        #py-numpy
-        #py-cython
-        #py-ddfacet
-        py-mpi4py
-        py-tqdm
-        py-numba
-        py-contourpy
-        # ./run spack info py-ddfacet -> Build Dependencies
-        py-astlib
-        py-deap
-        py-numpy
-        py-ptyprocess
-        py-pywavelets
-        py-six
-        py-astropy
-        py-ephem
-        py-pandas
-        py-pybind11
-        # needs chmod +w /scratch_na/users/bguibertd/nix/store/sghrcw22al0nv8q4pw1pl441m9is8k4l-py-extension-helpers-0.1/lib/python3.8/site-packages/extension_helpers/src/compiler.c
-        py-regions
-        py-tables
-        py-codex-africanus
-        py-ipdb
-        py-pip
-        py-pycpuinfo
-        py-ruamel-yaml
-        py-wheel
-        py-configparser
-        py-matplotlib
-        py-polygon3
-        py-pyfftw
-        py-scipy
-        python
-        py-cython
-        py-nose
-        py-prettytable
-        py-pylru
-        py-setuptools
-        py-dask
-        py-numexpr
-        py-psutil
-        py-python-casacore
-        py-sharedarray
         # ./run spack info py-ddfacet -> Link Dependencies
         py-astlib
-        py-dask
-        py-nose
-        py-prettytable
-        py-pyfftw
-        py-ruamel-yaml
         py-astropy
-        py-deap
-        py-numexpr
-        py-psutil
-        py-pylru
-        py-scipy
         py-codex-africanus
-        py-ephem
-        py-numpy
-        py-ptyprocess
-        py-python-casacore
-        py-sharedarray
         py-configparser
-        py-ipdb
-        py-pandas
-        py-pybind11
-        py-pywavelets
-        py-six
+        py-contourpy
+        #py-cython
         py-cython
+        py-dask
+        #py-ddfacet
+        py-deap
+        py-ephem
+        py-ipdb
         py-matplotlib
+        py-mpi4py
+        py-nose
+        py-numba
+        py-numexpr
+        #py-numpy
+        py-numpy
+        py-pandas
+        py-pip
         py-polygon3
+        py-prettytable
+        py-psutil
+        py-ptyprocess
+        py-pybind11
         py-pycpuinfo
+        py-pyfftw
+        py-pylru
+        py-python-casacore
+        py-pywavelets
+        # needs chmod +w /scratch_na/users/bguibertd/nix/store/sghrcw22al0nv8q4pw1pl441m9is8k4l-py-extension-helpers-0.1/lib/python3.8/site-packages/extension_helpers/src/compiler.c
+        py-regions
+        py-ruamel-yaml
+        py-scipy
+        py-setuptools
+        py-sharedarray
+        py-six
         py-tables
+        python
+        py-tqdm
+        py-wheel
       ];
     })
