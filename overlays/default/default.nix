@@ -439,6 +439,7 @@ final: prev: let
                   (import ../../confs/cbm2.nix final)
                   (import ../../confs/cbm2-viridian.nix final)
                   (import ../../confs/ddfacet.nix final)
+                  (import ../../confs/ddfacet-exp.nix final)
                   (import ../../confs/emopass.nix final)
                   (import ../../confs/hpcw.nix final)
                   (import ../../confs/hpcw-dwarf-p-cloudsc.nix final)
@@ -468,6 +469,7 @@ final: prev: let
                   (import ../../confs/hpcw-nemo-medium.nix final)
                   #(import ../../confs/hpcw-nemo-big.nix final)
                   (import ../../confs/jube.nix final)
+                  (import ../../confs/python.nix final)
                   (import ../../confs/reframe.nix final)
                   (pack:
                     pack._merge (self: {
