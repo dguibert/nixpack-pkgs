@@ -5,12 +5,12 @@ pack._merge (self:
 
       package.py-ddfacet.version = "git.54169950a9ba5de038a84ed8b5a65e1f1da3f918=mpi";
       # py-ddfacet dependency py-astropy: package py-astropy@5.1~all build_system=python_pip does not match dependency constraints {"version":"3.0:4.1"}
-      package.py-astropy.version = "4";
+      #package.py-astropy.version = "4";
       # py-astropy dependency cfitsio: package cfitsio@4.2.0+bzip2+shared build_system=autotools does not match dependency constraints {"version":":3"}
       package.cfitsio.version = "3";
       # py-numpy dependency py-cython: package py-cython@3.0.0 build_system=python_pip does not match dependency constraints {"version":"0.29.34:2"}
       package.py-setuptools.version = "57";
-      package.py-numpy.version = "1.20.3";
+      package.py-numpy.version = "1.22";
       package.python.version = "3.8"; # ddfacet requires <3.9,>=3.0
       package.py-ipython.version = "8.11.0";
       package.py-numba.version = "0.56.4";
@@ -18,6 +18,8 @@ pack._merge (self:
 
       # as cython is a build dep only will be taken from default pack
       package.py-cython.version = "0.29.34";
+      package.py-astropy.version = "5.1.0";
+      package.py-astropy.depends.py-cython = self.pack.pkgs.py-cython.withPrefs {version = "0.29.30";};
 
       # py-astropy dependency py-pip: package py-pip@23.1.2 build_system=generic does not match dependency constraints {"version":":23.0"}
       package.py-pip.version = "23.0";
