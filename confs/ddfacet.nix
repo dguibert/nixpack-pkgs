@@ -89,6 +89,8 @@ pack._merge (self:
       mod_pkgs = with self.pack.pkgs; [
         compiler
         # ./run spack info py-ddfacet -> Link Dependencies
+        # ds
+        # lofar
         py-astlib
         py-astropy
         py-codex-africanus
