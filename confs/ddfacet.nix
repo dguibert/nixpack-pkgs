@@ -50,6 +50,9 @@ pack._merge (self:
       package.boost.variants.python = true;
       package.boost.variants.filesystem = true;
       package.boost.variants.system = true;
+      package.boost.variants.date_time = true;
+      package.boost.variants.regex = true;
+      package.casacore.version = "3.3.0";
       package.casacore.variants.python = true;
       # casacore dependency wcslib: package wcslib@7.3~cfitsio~x build_system=autotools does not match dependency constraints {"variants":{"cfitsio":true},"version":"4.20:"}
       package.wcslib.variants.cfitsio = true;
@@ -90,7 +93,7 @@ pack._merge (self:
         compiler
         # ./run spack info py-ddfacet -> Link Dependencies
         # ds
-        # lofar
+        lofar
         py-astlib
         py-astropy
         py-codex-africanus
