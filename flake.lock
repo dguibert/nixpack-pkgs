@@ -484,17 +484,16 @@
     "spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1702379477,
-        "narHash": "sha256-a4smdh8qT/uxH90mSyr/xa2WLkHjvB3kPFugw9DZuEY=",
-        "ref": "refs/heads/dg/ddfacet-busy-week",
-        "rev": "96167f554ea5a49149b9d569d06603b92a470365",
-        "revCount": 33819,
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/code/spack"
+        "lastModified": 1702571868,
+        "narHash": "sha256-JwtQXXaftiCxpY84sAUhKyoBQS4V9MyVecTRjwu+OFo=",
+        "owner": "dguibert",
+        "repo": "spack",
+        "rev": "fc4d2cc4688a3ffde8130c125d5d3c1cb997c84e",
+        "type": "github"
       },
       "original": {
         "owner": "dguibert",
-        "ref": "develop",
+        "ref": "dg/ddfacet-busy-week",
         "repo": "spack",
         "type": "github"
       }
@@ -518,17 +517,16 @@
     "spackPkgs": {
       "flake": false,
       "locked": {
-        "lastModified": 1702379477,
-        "narHash": "sha256-a4smdh8qT/uxH90mSyr/xa2WLkHjvB3kPFugw9DZuEY=",
-        "ref": "refs/heads/dg/ddfacet-busy-week",
-        "rev": "96167f554ea5a49149b9d569d06603b92a470365",
-        "revCount": 33819,
-        "type": "git",
-        "url": "file:///home_nfs/bguibertd/code/spack"
+        "lastModified": 1702571868,
+        "narHash": "sha256-JwtQXXaftiCxpY84sAUhKyoBQS4V9MyVecTRjwu+OFo=",
+        "owner": "dguibert",
+        "repo": "spack",
+        "rev": "fc4d2cc4688a3ffde8130c125d5d3c1cb997c84e",
+        "type": "github"
       },
       "original": {
         "owner": "dguibert",
-        "ref": "develop",
+        "ref": "dg/ddfacet-busy-week",
         "repo": "spack",
         "type": "github"
       }

@@ -8,9 +8,9 @@
   inputs.nixpack.url = "github:dguibert/nixpack/pu";
   inputs.nixpack.inputs.spack.follows = "spack";
   inputs.nixpack.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.spack.url = "github:dguibert/spack/develop";
+  inputs.spack.url = "github:dguibert/spack/dg/ddfacet-busy-week";
   inputs.spack.flake = false;
-  inputs.spackPkgs.url = "github:dguibert/spack/develop";
+  inputs.spackPkgs.url = "github:dguibert/spack/dg/ddfacet-busy-week";
   inputs.spackPkgs.flake = false;
   inputs.hpcw = {
     #url = "git+ssh://spartan/home_nfs/bguibertd/work/hpcw?ref=dg/spack";
