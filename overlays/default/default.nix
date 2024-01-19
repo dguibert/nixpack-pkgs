@@ -418,6 +418,7 @@ final: prev: let
                       ]);
                     }))
                   (import ../../confs/cbm2.nix final)
+                  (import ../../confs/cbm2-hemocell.nix final)
                   (import ../../confs/cbm2-viridian.nix final)
                   (import ../../confs/ddfacet.nix final)
                   (import ../../confs/emopass.nix final)

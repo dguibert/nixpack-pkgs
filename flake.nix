@@ -19,7 +19,7 @@
     flake = false;
   };
   inputs.cbm-spack = {
-    url = "github:dguibert/compbiomed-spack?ref=dg/hemepure";
+    url = "github:dguibert/compbiomed-spack?ref=dg/fix-hemocell-cube";
     flake = false;
   };
   inputs.spack-configs = {

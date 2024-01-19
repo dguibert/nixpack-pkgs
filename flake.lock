@@ -3,16 +3,16 @@
     "cbm-spack": {
       "flake": false,
       "locked": {
-        "lastModified": 1693379701,
-        "narHash": "sha256-TmqgzYLFUREKoIv0zTzzlvSfb1cFO+EdV44eMKKsA58=",
+        "lastModified": 1705674621,
+        "narHash": "sha256-zNiA/Az8ISQmk6rm07KWIAcmUfOzMOa+vgpyFNtkwks=",
         "owner": "dguibert",
         "repo": "compbiomed-spack",
-        "rev": "c384d02ca693e83f82605225d59f72b545fd9baf",
+        "rev": "4fc4040352587abc38917b1dad398a2d79c6ec4c",
         "type": "github"
       },
       "original": {
         "owner": "dguibert",
-        "ref": "dg/hemepure",
+        "ref": "dg/fix-hemocell-cube",
         "repo": "compbiomed-spack",
         "type": "github"
       }
