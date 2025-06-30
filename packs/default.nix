@@ -23,8 +23,8 @@ default_pack._merge (self:
       };
       repos = [
         ../repo
-        hpcw_repo
-        spack_configs_repo
+        #hpcw_repo
+        #spack_configs_repo
         cbm_repo
         spack_repo
       ];

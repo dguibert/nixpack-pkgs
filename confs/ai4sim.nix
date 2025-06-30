@@ -32,7 +32,11 @@ pack._merge (self:
       package.py-grpcio.depends.py-cython = self.pack.pkgs.py-cython;
       package.py-pybind11.version = "2.10.4";
       package.py-cython.version = "0.29";
-      package.py-setuptools.version = "57";
+      package.py-setuptools.version = "62";
+      package.py-importlib-metadata.version = "5";
+      package.py-packaging.version = "21";
+      package.meson.version = "1.2.1";
+      package.py-pandas.version = "1";
       package.py-scipy.depends.py-cython = self.pack.pkgs.py-cython;
 
       package.py-tensorflow.variants.cuda = false;
@@ -43,6 +47,7 @@ pack._merge (self:
       package.py-tensorflow.depends.bazel = final.packs.default.pack.pkgs.bazel.withPrefs {version = self.package.bazel.version;};
       package.py-keras.depends.bazel = final.packs.default.pack.pkgs.bazel.withPrefs {version = self.package.bazel.version;};
       package.py-protobuf.depends.bazel = final.packs.default.pack.pkgs.py-protobuf.withPrefs {version = self.package.py-protobuf.version;};
+      package.py-protobuf.variants.cpp = true;
       package.py-tensorflow.depends.hdf5 = self.pack.pkgs.hdf5;
       package.hdf5.variants.mpi = false;
       package.py-h5py.variants.mpi = false;
@@ -50,7 +55,7 @@ pack._merge (self:
       package.re2.variants.shared = true;
       package.py-libclang.depends.llvm = self.pack.pkgs.llvm;
       #package.py-libclang.depends.llvm = final.packs.default.pack.pkgs.llvm.withPrefs { version = self.package.llvm.version; };
-      package.py-typing-extensions.version = "4.5";
+      package.py-typing-extensions.version = "4.2.0";
 
       package.py-keras.version = "2.10";
       package.py-tensorboard.version = "2.10";
@@ -60,6 +65,20 @@ pack._merge (self:
       package.py-pip.version = "23.0";
       package.py-google-auth-oauthlib.version = "0.4";
       package.py-tensorboard-data-server.version = "0.6";
+
+      package.boost.variants.python = true;
+      package.boost.variants.filesystem = true;
+      package.boost.variants.system = true;
+      package.python.version = "3.9";
+      package.snappy.variants.shared = false;
+      package.arrow.variants.python = true;
+      package.utf8proc.variants.shared = true;
+      package.py-pytz.version = "2022";
+      package.py-wheel.version = "0.37.1";
+      package.py-sqlalchemy.version = "1";
+      package.py-urllib3.version = "1";
+      
+      package.libpng.variants.ldflags = "-lm";
 
       mod_pkgs = with self.pack.pkgs; [
         compiler

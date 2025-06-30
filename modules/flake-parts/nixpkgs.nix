@@ -30,18 +30,54 @@
                 with self; {
                   os = "rhel8";
                   spackConfig.config.database_root = "$tempdir"; # for database_directory
-                  spackConfig.config.source_cache = "/software/spack/mirror";
-                  #spackConfig.config.source_cache = "/dev/shm/spack/mirror";
-                  spackConfig.mirrors.software = "/software/spack/mirror";
+                  #spackConfig.config.source_cache = "/software/spack/mirror";
+                  spackConfig.config.source_cache = "/dev/shm/spack/mirror";
+                  #spackConfig.mirrors.software = "/software/spack/mirror";
                   spackPython = "${python3}/bin/python3";
-                  spackEnv.PATH = "/bin:/usr/bin:/usr/sbin";
+                  spackEnv.PATH = 
+                  inputs.nixpkgs.lib.concatStringsSep ":"
+                  ((builtins.map (x: "${x}/bin")
+                    [
+                      bash
+                      curl
+                      coreutils
+                      gnumake
+                      gnutar
+                      gzip
+                      bzip2
+                      xz
+                      gawk
+                      gnused
+                      gnugrep
+                      glib
+                      binutils.bintools # glib: locale
+                      patch
+                      texinfo
+                      diffutils
+                      pkgconfig
+                      gitMinimal
+                      findutils
+                      python3
+                      unzip
+                    ])
+                    ++ [ "/run/current-system/sw/bin:/bin:/usr/bin:/usr/sbin" ]);
                   #spackEnv.PROXYCHAINS_CONF_FILE = "/dev/shm/proxychains.conf";
                   #spackEnv.LD_PRELOAD = "/dev/shm/libproxychains4.so";
                   #spackEnv.all_proxy = "socks4a://127.0.0.1:33129";
-                  spackEnv.http_proxy = "http://10.11.0.1:33000";
-                  spackEnv.https_proxy = "http://10.11.0.1:33000";
+                  #spackEnv.http_proxy = "http://10.11.0.1:33000";
+                  #spackEnv.https_proxy = "http://10.11.0.1:33000";
                   spackEnv.HPCW_DOWNLOAD_URL = "/home_nfs/bguibertd/work/hpcw/downloads";
                   spackEnv.HPCW_URL = "/home_nfs/bguibertd/work/hpcw";
+                  spackEnv.LOCALE_ARCHIVE = "/run/current-system/sw/lib/locale/locale-archive";
+                  
+                  spackEnv.NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
+                    stdenv.cc.cc
+                    #openssl
+                    # ...
+                    zlib
+                  ];
+                  spackEnv.NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
+                  #spackEnv.NIX_LD = builtins.readFile "${stdenv.cc}/nix-support/dynamic-linker";
                   # fix CURL certificates path
                   #spackEnv.SSL_CERT_DIR="/etc/ssl/certs";
                   #spackEnv.SSL_CERT_FILE="/etc/pki/ca-trust/extracted/pem/email-ca-bundle.pem";
@@ -53,61 +89,89 @@
                   #spackEnv.PYTHONDONTWRITEBYTECODE = "1"; # break py-pandas install?
                   #spackEnv.__contentAddressed = true;
                   package = {
-                    autoconf = rpmExtern "autoconf";
-                    automake = rpmExtern "automake";
-                    bzip2 = rpmExtern "bzip2";
-                    curl = rpmExtern "curl";
-                    diffutils = rpmExtern "diffutils";
-                    libssh = rpmExtern "libssh";
-                    #libtool = rpmExtern "libtool";
-                    m4 = rpmExtern "m4";
-                    openssh = rpmExtern "openssh";
-                    openssl = rpmExtern "openssl";
-                    pkgconfig = rpmExtern "pkgconf";
-                    pkgconf = rpmExtern "pkgconf";
-                    #perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
-                    slurm =
-                      rpmExtern "slurm"
-                      // {
-                        variants = {
-                          #pmix = true;
-                          hwloc = true;
-                        };
-                      };
-                    /*
-                    must be set to an external compiler capable of building compiler (above)
-                    */
-                    compiler =
-                      {
-                        name = "gcc";
-                      }
-                      // rpmExtern "gcc";
+                    ##autoconf = rpmExtern "autoconf";
+                    ##automake = rpmExtern "automake";
+                    ##bzip2 = rpmExtern "bzip2";
+                    ##curl = rpmExtern "curl";
+                    ##diffutils = rpmExtern "diffutils";
+                    ##libssh = rpmExtern "libssh";
+                    ###libtool = rpmExtern "libtool";
+                    ##m4 = rpmExtern "m4";
+                    ##openssh = rpmExtern "openssh";
+                    ##openssl = rpmExtern "openssl";
+                    ##pkgconfig = rpmExtern "pkgconf";
+                    ##pkgconf = rpmExtern "pkgconf";
+                    ###perl      = rpmExtern "perl"; # https://github.com/spack/spack/issues/19144
+                    ##slurm =
+                    ##  rpmExtern "slurm"
+                    ##  // {
+                    ##    variants = {
+                    ##      #pmix = true;
+                    ##      hwloc = true;
+                    ##    };
+                    ##  };
+                    ##/*
+                    ##must be set to an external compiler capable of building compiler (above)
+                    ##*/
+                    ##compiler =
+                    ##  {
+                    ##    name = "gcc";
+                    ##  }
+                    ##  // rpmExtern "gcc";
+                compiler = let
+                  gccWithFortran = wrapCC (gcc.cc.override {
+                    langFortran = true;
+                  });
+                in {
+                  name = "gcc";
+                  extern = gccWithFortran;
+                  version = gccWithFortran.version;
+                };
+                perl = {
+                  extern = perl;
+                  version = perl.version;
+                };
+                #libpng = {
+                #  extern = libpng;
+                #  version = libpng.version;
+                #};
+                openssh = {
+                  extern = openssh;
+                  version = openssh.version;
+                };
+                openssl = {
+                  extern = symlinkJoin {
+                    name = "openssl";
+                    paths = [openssl.all];
+                  };
+                  version = openssl.version;
+                };
 
-                    ncurses = {
-                      version = rpmVersion "ncurses";
-                      variants = {
-                        termlib = true;
-                      };
-                    };
-                    hcoll = {
-                      extern = "/opt/mellanox/hcoll";
-                      version = rpmVersion "hcoll";
-                    };
-                    knem = rec {
-                      extern = "/opt/knem-${version}";
-                      version = rpmVersion "knem";
-                    };
-                    xpmem = {
-                      extern = "/opt/xpmem";
-                      version = rpmVersion "xpmem";
-                    };
-                    #pmix = rec { extern= "/opt/pmix/${version}"; version = rpmVersion "pmix"; };
-                    openmpi.variants = {
-                      lustre = true;
-                      fabrics.hcoll = true;
-                      fabrics.knem = true;
-                    };
-                    lustre = rpmExtern "lustre-client";
+                    ##ncurses = {
+                    ##  version = rpmVersion "ncurses";
+                    ##  variants = {
+                    ##    termlib = true;
+                    ##  };
+                    ##};
+                    ##hcoll = {
+                    ##  extern = "/opt/mellanox/hcoll";
+                    ##  version = rpmVersion "hcoll";
+                    ##};
+                    ##knem = rec {
+                    ##  extern = "/opt/knem-${version}";
+                    ##  version = rpmVersion "knem";
+                    ##};
+                    ##xpmem = {
+                    ##  extern = "/opt/xpmem";
+                    ##  version = rpmVersion "xpmem";
+                    ##};
+                    ###pmix = rec { extern= "/opt/pmix/${version}"; version = rpmVersion "pmix"; };
+                    ##openmpi.variants = {
+                    ##  lustre = true;
+                    ##  fabrics.hcoll = true;
+                    ##  fabrics.knem = true;
+                    ##};
+                    ##lustre = rpmExtern "lustre-client";
 
                     #ucx =
                     #  rpmExtern "ucx" # extern and overriden fails libfabric> spack.repo.UnknownPackageError: Package 'spack.pkg.bench.ucx' not found.
